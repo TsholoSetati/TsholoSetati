@@ -3,42 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Compounding Calculator</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Tsholofelo K. Setati - Personal Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <header>
+        <h1>Tsholofelo K. Setati</h1>
+        <p>Economist | Technology Consultant | Researcher</p>
+    </header>
     <div class="container">
-        <h1>Advanced Compounding Calculator</h1>
-        <label for="initialAmount">Enter Initial Amount ($):</label>
-        <input type="number" id="initialAmount" placeholder="Enter amount">
+        <aside class="sidebar">
+            <nav id="navbar">
+                <!-- Hamburger menu will be displayed on smaller screens -->
+                <button id="menuToggle" aria-label="Open navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul id="menu">
+                    <li><a href="#about">About Me</a></li>
+                    <li><a href="#experience">Experience</a></li>
+                    <li><a href="#education">Education</a></li>
+                    <li><a href="#skills">Areas of Expertise</a></li>
+                    <li><a href="#technical">Technical Proficiency</a></li>
+                  <li><a href="#interpersonal">Interpersonal Skills</a></li>
+                  <li><a href="#projects">Projects</a></li>
+                  <li><a href="#volunteer-work">Volunteer Work</a></li>
+                </ul>
+            </nav>
+            <section id="social-media">
+                <h2>Connect with me</h2>
+                <a href="https://linkedin.com/in/tsholosetati/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="https://twitter.com/TsholoSetati" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="https://www.instagram.com/tsholosetati/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i> Instagram</a>
+            </section>
+        </aside>
+        <main class="content">
+            <section id="about">
+            <h2>About Me</h2>
+            <p>I'm a behavioural economist with a passion for finance, investing, and integrating technology into business and social solutions. For me, it's not just about mastering technical skills; it's about using them to explore the world, uncover insights, and solve complex problems. As a pragmatic problem-solver, I believe in applying technical skills to drive business and social impact. Let's connect and explore how we can work together to make a difference.</p>
+        </section>
 
-        <label for="interestRate">Enter Annual Interest Rate (%):</label>
-        <input type="number" id="interestRate" placeholder="Enter interest rate">
+        <section id="experience">
+            <h2>Professional Experience</h2>
+            <article>
+                <h3>Technology Consultant</h3>
+              <p> </p>
+                <p>As a Technology Consultant, I specialize in guiding organizations to effectively use technology to achieve their business objectives. My expertise includes analyzing IT systems, managing technology projects, and aligning tech resources with business strategies. I keep up-to-date with the latest technologies, offer innovative solutions, and often handle the implementation and troubleshooting of IT systems. Bridging the gap between technical and non-technical stakeholders, I ensure that the technology solutions I propose and implement support and enhance business processes.</p>
+            </article>
+            <article>
+                <h3>Quantitative Analyst</h3>
+                <p>In my role as a Quantitative Analyst, I used fundamental, economic and quantitative analysis to evaluating a company's financial statements and health, its management team, and market conditions to determine its stock's intrinsic value. I analyze economic, financial, and other qualitative and quantitative factors to forecast the company's future performance. This approach helps in making informed investment decisions, particularly in identifying undervalued stocks or sectors with growth potential. My work is crucial for long-term investment strategies, focusing on intrinsic value rather than short-term market trends.</p>
+            </article>
+            <article>
+                <h3>Economic Researcher</h3>
+                <p>As an Economic Researcher, my role focuses on studying the behavior of individuals and businesses, and how they allocate resources. I examine market mechanisms, consumer behavior, production costs, and the effects of government policies on specific markets. Utilizing various research methods and statistical tools, I analyze how various factors influence supply and demand, pricing, and market competition. My research contributes to understanding and predicting economic trends at a granular level, aiding in policy formulation and business strategy development.</p>
+            </article>
+        </section>
 
-        <label for="timePeriod">Select Time Period:</label>
-        <select id="timePeriod">
-            <option value="12">1 Year</option>
-            <option value="24">2 Years</option>
-            <option value="36">3 Years</option>
-            <option value="60">5 Years</option>
-        </select>
+        <section id="education">
+          <article>
+            <h2>Education</h2>
+            <h3>Master of Commerce in Economics</h3>
+                <p>University of Cape Town</p>
+            <h3>Bachelor of Business Science in Management (BBusSci) (Honours)</h3>
+                <p>Monash University</p>
+            <h3>Bachelor of Business Science in Economics</h3>
+                <p>Monash University</p>
+            <h3>Certificates</h3>
+                <p>Project Management NQF 6</p>
+                <p>IBM DATA Science Professional Certificate</p>
+          </article>
+        </section>
 
-        <button id="calculateButton">Calculate</button>
+        <section id="skills">
+            <h2>Areas of Expertise</h2>
 
-        <div id="results">
-            <p id="compoundedResult"></p>
+<h3>Economics</h3>
+<p><strong>Microeconomics:</strong> Focuses on the behaviour of individuals and firms in making decisions regarding the allocation of scarce resources.</p>
+<p><strong>Behavioural Economics:</strong> Blends elements of economics and psychology to understand how individuals behave in practice.</p>
+<p><strong>Theory of the Firm:</strong> Examines the nature of firms, their behaviour, and their roles in an economy.</p>
+
+<h3>Quantitative & Qualitative Analysis</h3>
+<p><strong>Panel Data Analysis:</strong> Involves data that tracks the same subjects over multiple time periods, capturing both temporal dynamics and individual differences.</p>
+<p><strong>Time Series Analysis:</strong> Focused on analyzing data points collected or recorded at regular time intervals to identify trends, cycles, and seasonal variations.</p>
+<p><strong>Cross-Sectional Analysis:</strong> Examines data at a single point in time to capture a snapshot of a phenomenon, often used for comparative purposes.</p>
+<p><strong>Statistical Modelling:</strong> Uses statistical methods to quantify relationships among variables, often applied in forecasting and decision-making processes.</p>
+<p><strong>Data Visualization:</strong> The art of presenting data in graphical formats to help convey complex information in an intuitive manner.</p>
+
+<h3>Automation</h3>
+<p>Automation involves using technology to perform tasks with minimal human intervention, enhancing efficiency and accuracy.</p>
+
+<h3>Process Analysis</h3>
+<p>Process Analysis is the examination of workflows to identify inefficiencies or bottlenecks.</p>
+
+<h3>Process Improvement</h3>
+<p>Process Improvement is the proactive task of optimizing processes to increase efficiency, reduce costs, or improve quality.</p>
+          </section>
+        <section id="technical">
+            <h2>Technical Proficiency</h2>
+            <h3>Statistical Analysis and Econometrics</h3>
+                <p>Regression Analysis, Panel Data Analysis, Structural Equation Modelling and Time-Series Analysis</p>
+            <h3>Programming</h3>
+                <p>STATA, Python, Javascript & R</p>
+            <h3>Microsoft Power Suite</h3>
+                <p>Power BI, Power Query & Power Automate</p>
+        </section>
+          <section id="interpersonal">
+            <h2>Interpersonal Skills</h2>
+
+<h3>Team Leadership & Mentoring</h3>
+<p><strong>Leadership:</strong> Drives project success through teamwork and a collaborative work ethic, fostering a positive and productive environment for team growth and mentoring.</p>
+
+<h3>Team Collaboration</h3>
+<p><strong>Team Work:</strong> Demonstrates persuasive communication and relationship-building skills, essential for effective team collaborations and joint problem-solving.</p>
+
+<h3>Client Relationship Management</h3>
+<p><strong>Communication:</strong> Deep commitment to understanding and meeting client needs with tailored solutions, building long-term relationships based on trust and mutual respect.</p>
+
+<h3>Adaptability and Resilience</h3>
+<p><strong>Perserverance:</strong> Adaptability and resilience in dynamic environments, consistently achieving results under pressure and rapidly adjusting to changing circumstances.</p>
+
+<p><strong>Problem Solving:</strong> Exceptional problem-solving skills and data analysis expertise, capable of making insightful decisions based on a thorough understanding of the business landscape.</p>
+
+<p><strong>Strategy:</strong> An innovative strategist and trusted advisor, adept at navigating complex challenges and steering projects toward success.</p>
+
+</section>
+            </ul>
+        </section>
+<section id="projects">
+    <h2>Projects</h2>
+    <h3>Multinational Diversified Metals Client, 2023</h3>
+    <p>Formulated a project plan, assessed RPA opportunities, and designed Power BI dashboards.</p>
+    
+    <h3>Metropolitan Municipal Client, 2023</h3>
+    <p>Conducted data analysis adhering to standards, developed Power BI reports, and collaborated with stakeholders on real-time data projects.</p>
+
+    <h3>Business Analysis & RPA Development, 2022</h3>
+    <p>Directed a development team, overseeing a Proof of Concept project for a Financial Services Client.</p>
+
+    <h3>Financial Services Client, 2022</h3>
+    <p>Utilized Scrum and Agile methodologies for enhanced project management.</p>
+
+    <h3>Multinational Diversified Metals Client, 2022</h3>
+    <p>Managed stakeholder relationships, conducted solution walkthroughs, and executed end-to-end testing.</p>
+
+    <h3>Professional Services Client, 2022</h3>
+    <p>Orchestrated the design and deployment of Power Automate automation solutions.</p>
+
+    <h3>Green Economy Tracker, 2021</h3>
+    <p>Managed data procurement, conducted research, and formulated research proposals.</p>
+
+    <h3>merSETA Chamber Economic Analysis, 2020 to 2021</h3>
+    <p>Sourced and analyzed macroeconomic data, designed surveys, and authored reports.</p>
+
+    <h3>APORDE: Tracer Study, 2021</h3>
+    <p>Analyzed microeconomic data and authored research reports.</p>
+
+    <h3>Leading Entrepreneurship for African Development, 2017</h3>
+    <p>Oversaw project coordination, managed data collection and analysis, and compiled research findings.</p>
+</section>
+        <section id="volunteer-work">
+    <h2>Volunteer Work</h2>
+    <h3>Monash South Africa, 2016-2017</h3>
+    <p>Engaged as a Community Engagement Volunteer, supporting student events and participating in various outreach programs.</p>
+
+    <h3>JET Education Services, 2020</h3>
+    <p>Contributed to the Researchers Bootcamp (Theme 5), managing data effectively and performing quantitative analysis on microeconomic data.</p>
+</section>
+        </main>
+        <aside class="sidebar-right">
+            <section id="financialLiteracyQuiz">
+        <h2>Financial Literacy Quiz</h2>
+        <form id="quizForm">
+            <!-- Question 1 -->
+            <div class="question">
+                <p>Suppose you need to borrow R100. Which is the lower amount to pay back: R105 or R100 plus three percent?</p>
+                <input type="radio" id="q1a1" name="q1" value="R105">
+                <label for="q1a1">R105</label><br>
+                <input type="radio" id="q1a2" name="q1" value="R100 plus three percent">
+                <label for="q1a2">R100 plus three percent</label>
+            </div>
+
+        <!-- Question 2 -->
+            <div class="question">
+                <p>Suppose over the next 10 years the prices of the things you buy double. If your income also doubles, will you be able to buy less, the same, or more than you can buy today?</p>
+                <input type="radio" id="q2a1" name="q2" value="Less">
+                <label for="q2a1">Less</label><br>
+                <input type="radio" id="q2a2" name="q2" value="The same">
+                <label for="q2a2">The same</label><br>
+                <input type="radio" id="q2a3" name="q2" value="More">
+                <label for="q2a3">More</label>
+            </div>
+
+        <!-- Question 3 -->
+            <div class="question">
+                <p>Suppose you put money in the bank for two years and the bank agrees to add 15 percent per year to your account. Will the bank add more money the second year than it did the first year, or the same amount both years?</p>
+                <input type="radio" id="q3a1" name="q3" value="More">
+                <label for="q3a1">More</label><br>
+                <input type="radio" id="q3a2" name="q3" value="The same">
+                <label for="q3a2">The same</label>
+            </div>
+
+        <!-- Question 4 -->
+            <div class="question">
+                <p>Suppose you had R100 in a savings account and the bank adds 10 percent per year to the account. After five years, would you have more than R150, exactly R150, or less than R150?</p>
+                <input type="radio" id="q4a1" name="q4" value="More than R150">
+                <label for="q4a1">More than R150</label><br>
+                <input type="radio" id="q4a2" name="q4" value="Exactly R150">
+                <label for="q4a2">Exactly R150</label><br>
+                <input type="radio" id="q4a3" name="q4" value="Less than R150">
+                <label for="q4a3">Less than R150</label>
+            </div>
+
+        <!-- Submit Button -->
+            <button type="submit">Submit Quiz</button>
+        </form>
+        <div id="quizResult"></div>
+</section>
+
+    <section id="calculator">
+        <h2>Compound Interest Calculator</h2>
+        <form id="interestForm">
+            <div>
+                <label for="principal">Principal Amount:</label>
+                <input type="number" id="principal" required>
+            </div>
+            <div>
+                <label for="rate">Annual Interest Rate (%):</label>
+                <input type="number" step="0.01" id="rate" required>
+            </div>
+            <div>
+                <label for="time">Time (Years):</label>
+                <input type="number" id="time" required>
+            </div>
+            <div>
+                <label for="compound">Compounding Frequency (times per year):</label>
+                <input type="number" id="compound" required>
+            </div>
+            <button type="submit">Calculate</button>
+        </form>
+        <canvas id="chartContainer"></canvas>
+    </section>
+
+  <section id="retirementCalculator">
+    <h2>Retirement Savings Calculator</h2>
+    <form id="retirementForm">
+        <div>
+            <label for="currentAge">Current Age:</label>
+            <input type="number" id="currentAge" required>
         </div>
-
-        <div class="chart-container">
-            <canvas id="compoundingChart"></canvas>
+        <div>
+            <label for="retirementAge">Retirement Age:</label>
+            <input type="number" id="retirementAge" required>
         </div>
-
-        <div class="chart-container">
-            <canvas id="comparisonChart"></canvas>
+        <div>
+            <label for="currentSavings">Current Savings:</label>
+            <input type="number" id="currentSavings" required>
         </div>
+        <div>
+            <label for="monthlyContribution">Monthly Contribution:</label>
+            <input type="number" id="monthlyContribution" required>
+        </div>
+        <div>
+            <label for="annualReturn">Annual Return Rate (%):</label>
+            <input type="number" step="0.01" id="annualReturn" required>
+        </div>
+        <button type="submit">Calculate</button>
+    </form>
+    <p id="retirementResult"></p>
+</section>
+  
+  <section id="loanCalculator">
+    <h2>Loan Repayment Calculator</h2>
+    <form id="loanForm">
+        <div>
+            <label for="loanAmount">Loan Amount:</label>
+            <input type="number" id="loanAmount" required>
+        </div>
+        <div>
+            <label for="loanInterest">Interest Rate (%):</label>
+            <input type="number" step="0.01" id="loanInterest" required>
+        </div>
+        <div>
+            <label for="loanTerm">Loan Term (Years):</label>
+            <input type="number" id="loanTerm" required>
+        </div>
+        <button type="submit">Calculate</button>
+    </form>
+    <p id="loanResult"></p>
+</section>  
+        </aside>
     </div>
-
+    <footer>
+        <p>© 2024 Tsholofelo K. Setati</p>
+    </footer>
     <script src="script.js"></script>
 </body>
 </html>
