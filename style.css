@@ -1,176 +1,182 @@
 /* Basic Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Open Sans", sans-serif;
 }
 
-body, html {
-    height: 100%;
-    color: #4a4a4a;
-    background-color: #fff;
+body,
+html {
+  height: 100%;
+  color: #4a4a4a;
+  background-color: #fff;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 header {
-    background: #1c87c9;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-    width: 100%;
+  background: #1c87c9;
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+  width: 100%;
 }
 /* Container Styles */
 .container {
-    display: flex; /* Using flexbox for layout */
-    width: 100%; /* Full width of the container */
-    max-width: 12000px; /* Optional: limit the maximum width */
-    margin: auto; /* Center the container */
+  display: flex; /* Using flexbox for layout */
+  width: 100%; /* Full width of the container */
+  max-width: 12000px; /* Optional: limit the maximum width */
+  margin: auto; /* Center the container */
 }
 /* Main Content Wrapper */
 .main-content-wrapper {
-    display: flex;
-    width: 100%;
-    flex-grow: 1; /* Allows the container to fill the height */
+  display: flex;
+  width: 100%;
+  flex-grow: 1; /* Allows the container to fill the height */
 }
 
 /* Left Sidebar Styles */
 .sidebar {
-    width: 15%;
-    background: #fff;
-    padding: 0px 0;
-    position: fixed; /* Fix the position of the sidebar */
+  width: 15%;
+  background: #fff;
+  padding: 0px 0;
+  position: fixed; /* Fix the position of the sidebar */
 }
 
 .sidebar a {
-    padding: 6px 8px 4px 16px;
-    text-decoration: none;
-    font-size: 16px;
-    color: #2196F3;
-    display: block;
+  padding: 6px 8px 4px 16px;
+  text-decoration: none;
+  font-size: 16px;
+  color: #2196f3;
+  display: block;
 }
 
 .sidebar a:hover {
-    color: #064579;
+  color: #064579;
 }
 
 /* Content Styles */
 .content {
-    flex-grow: 1;
-    padding: 20px 10px;
-    width:190%; /* Adjust as necessary */
-    margin-left: 20%; /* Adjust the margin to prevent content from being hidden behind the sidebar */
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  flex-grow: 1;
+  padding: 20px 10px;
+  width: 190%; /* Adjust as necessary */
+  margin-left: 20%; /* Adjust the margin to prevent content from being hidden behind the sidebar */
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Right Sidebar Calculator Styles */
 .sidebar-right section {
-    margin-bottom: 2px; /* Adds space between each section */
-    padding: 15px; /* Adds padding inside each section */
-    background-color: #fff; /* Optional: background color for each section */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow for depth */
-    border-radius: 5px; /* Optional: rounds the corners of each section */
+  margin-bottom: 2px; /* Adds space between each section */
+  padding: 15px; /* Adds padding inside each section */
+  background-color: #fff; /* Optional: background color for each section */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow for depth */
+  border-radius: 5px; /* Optional: rounds the corners of each section */
 }
 
 /* Adjust form elements within each section for better alignment and spacing */
 .sidebar-right form {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px; /* Space between form elements */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px; /* Space between form elements */
 }
 
 /* Style adjustments for buttons */
 .sidebar-right button {
-    width: auto; /* Adjust as needed */
-    padding: 5px 10px; /* Adjust as needed */
-    margin-top: 10px;
-    background-color: #1c87c9; /* Adjust the color as needed */
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+  width: auto; /* Adjust as needed */
+  padding: 5px 10px; /* Adjust as needed */
+  margin-top: 10px;
+  background-color: #1c87c9; /* Adjust the color as needed */
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
 }
 
 .sidebar-right button:hover {
-    background-color: #105a82; /* Darker shade for hover effect */
+  background-color: #105a82; /* Darker shade for hover effect */
 }
 
 /* Right Sidebar Styles */
 .sidebar-right {
-    width: 20%; /* Adjust if necessary */
-    padding: 5px;
-    /* ... other existing styles ... */
+  width: 20%; /* Adjust if necessary */
+  padding: 5px;
+  /* ... other existing styles ... */
 }
 
 /* Form Styles within Right Sidebar */
 .sidebar-right form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Aligns form elements to the start */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Aligns form elements to the start */
 }
 
 /* Style for input fields and labels */
 .sidebar-right label {
-    margin-bottom: 5px; /* Space between label and input */
+  margin-bottom: 5px; /* Space between label and input */
 }
 
-.sidebar-right input[type="number"], 
+.sidebar-right input[type="number"],
 .sidebar-right input[type="text"] {
-    width: 100%; /* Full width of the sidebar-right */
-    padding: 5px; /* Padding inside the input field */
-    margin-bottom: 10px; /* Space after each input field */
+  width: 100%; /* Full width of the sidebar-right */
+  padding: 5px; /* Padding inside the input field */
+  margin-bottom: 10px; /* Space after each input field */
 }
 
 /* Style adjustments for buttons */
 .sidebar-right button {
-    width: auto; /* Adjust as needed */
-    padding: 5px 10px; /* Padding inside the button */
-    margin-top: 10px; /* Space above the button */
-    /* ... other button styles ... */
+  width: auto; /* Adjust as needed */
+  padding: 5px 10px; /* Padding inside the button */
+  margin-top: 10px; /* Space above the button */
+  /* ... other button styles ... */
 }
 
 footer {
-    text-align: center;
-    padding: 20px;
-    background: #1c87c9;
-    color: #fff;
-    width: 100%;
+  text-align: center;
+  padding: 20px;
+  background: #1c87c9;
+  color: #fff;
+  width: 100%;
 }
 
 /* Responsive Design Adjustments */
 @media screen and (max-width: 768px) {
-    .main-content-wrapper {
-        flex-direction: column;
-    }
+  .main-content-wrapper {
+    flex-direction: column;
+  }
 
-    .sidebar, .sidebar-right, .content {
-        width: 100%;
-    }
+  .sidebar,
+  .sidebar-right,
+  .content {
+    width: 100%;
+  }
 }
 
 /* Header Styles */
 h1 {
-    margin-top: 1em; /* Space above each header */
-    margin-bottom: 0.5em; /* Space below each header */
-    line-height: 1.3; /* Adjust line spacing for headers */
+  margin-top: 1em; /* Space above each header */
+  margin-bottom: 0.5em; /* Space below each header */
+  line-height: 1.3; /* Adjust line spacing for headers */
 }
-h2, h3, h4, h5, h6 {
-    color: #333; /* Darker color for headers */
-    margin-top: 1em; /* Space above each header */
-    margin-bottom: 0.5em; /* Space below each header */
-    line-height: 1.3; /* Adjust line spacing for headers */
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #333; /* Darker color for headers */
+  margin-top: 1em; /* Space above each header */
+  margin-bottom: 0.5em; /* Space below each header */
+  line-height: 1.3; /* Adjust line spacing for headers */
 }
 
 /* Paragraph Styles */
 p {
-    margin-top: 0; /* Remove top margin */
-    margin-bottom: 1em; /* Space after paragraphs */
+  margin-top: 0; /* Remove top margin */
+  margin-bottom: 1em; /* Space after paragraphs */
 }
-
