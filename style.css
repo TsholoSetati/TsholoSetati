@@ -319,3 +319,44 @@ a,button{min-height:48px;display:inline-flex;align-items:center;justify-content:
 /* Ensure text remains visible during web font load */
 @font-face{font-family:"Open Sans";font-display:swap}
 
+/* Stock Data Styling */
+.stocks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:16px}
+.stock-card{background:var(--card);padding:16px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);transition:var(--transition);cursor:pointer}
+.stock-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.stock-card.loading{text-align:center;color:var(--muted);padding:24px}
+.stock-card.positive{border-left:4px solid #22c55e}
+.stock-card.negative{border-left:4px solid #ef4444}
+.stock-card.neutral{border-left:4px solid #8b5cf6}
+.stock-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.stock-symbol{font-weight:600;color:var(--text);font-size:1rem}
+.stock-price{font-size:1.3rem;font-weight:700;color:var(--accent)}
+.stock-change{text-align:right;font-weight:600;margin-top:8px}
+
+/* Dashboard Grid */
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin:24px 0}
+.indicator-card{background:linear-gradient(135deg,rgba(14,165,233,0.08),rgba(14,165,233,0.04));padding:16px;border-radius:10px;border:1px solid rgba(14,165,233,0.2);text-align:center}
+.indicator-label{font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:8px}
+.indicator-value{font-size:1.8rem;font-weight:700;color:var(--accent);margin:8px 0}
+.indicator-meta{font-size:0.75rem;color:var(--muted)}
+
+/* Economic Insight Box */
+.economic-insight{background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(34,197,94,0.04));padding:16px;border-radius:10px;border-left:4px solid #22c55e;margin-top:24px}
+.economic-insight h4{margin-top:0;color:var(--text)}
+.economic-insight p{color:var(--muted);line-height:1.6;margin:8px 0}
+
+/* Portfolio Allocation */
+.portfolio-allocation{display:flex;gap:4px;height:40px;background:rgba(0,0,0,0.02);border-radius:8px;overflow:hidden}
+.allocation-item{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
+.allocation-bar{display:flex;align-items:center;justify-content:center;width:100%;height:100%;transition:var(--transition)}
+.allocation-bar:hover{opacity:0.8}
+.allocation-label{color:#fff;font-weight:600;font-size:0.75rem;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,0.2)}
+
+@media (max-width:640px){
+  .stocks-grid{grid-template-columns:1fr}
+  .dashboard-grid{grid-template-columns:repeat(2,1fr)}
+  .stock-card{padding:12px}
+  .stock-symbol{font-size:0.9rem}
+  .stock-price{font-size:1.1rem}
+  .indicator-card{padding:12px}
+  .indicator-value{font-size:1.5rem}
+}

@@ -1,0 +1,60 @@
+name: Update Stock Market Data
+
+on:
+  schedule:
+    - cron: '0 9 * * 1-5'  # Weekdays at 9 AM UTC (JSE trading hours)
+  workflow_dispatch:       # Manual trigger button
+
+jobs:
+  fetch-stocks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create data directory
+        run: mkdir -p data
+
+      - name: Fetch JSE stocks
+        env:
+          API_KEY: ${{ secrets.ALPHAVANTAGE }}
+        run: |
+          # Fetch major JSE stocks
+          stocks=("JSE:NPN" "JSE:APN" "JSE:BIL" "JSE:NED" "JSE:IMP" "JSE:SHP" "JSE:MTN" "JSE:OML")
+          
+          echo '{"stocks": [' > data/jse-stocks.json
+          
+          for i in "${!stocks[@]}"; do
+            stock="${stocks[$i]}"
+            response=$(curl -s "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stock}&apikey=${API_KEY}")
+            echo "$response" >> data/jse-stocks.json
+            
+            if [ $i -lt $((${#stocks[@]} - 1)) ]; then
+              echo "," >> data/jse-stocks.json
+            fi
+            
+            sleep 1  # Rate limiting (1 sec between calls)
+          done
+          
+          echo ']}' >> data/jse-stocks.json
+
+      - name: Fetch S&P 500 data
+        env:
+          API_KEY: ${{ secrets.ALPHAVANTAGE }}
+        run: |
+          curl -s "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=^GSPC&apikey=${API_KEY}" > data/sp500.json
+          sleep 1
+          curl -s "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=^IXIC&apikey=${API_KEY}" > data/nasdaq.json
+
+      - name: Fetch economic indicators
+        env:
+          API_KEY: ${{ secrets.ALPHAVANTAGE }}
+        run: |
+          curl -s "https://www.alphavantage.co/query?function=WTI&interval=monthly&apikey=${API_KEY}" > data/wti-oil.json
+          sleep 1
+          curl -s "https://www.alphavantage.co/query?function=COPPER&interval=monthly&apikey=${API_KEY}" > data/copper.json
+
+      - name: Commit and push data
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'chore: update stock market and commodity data'
+          file_pattern: 'data/*.json'

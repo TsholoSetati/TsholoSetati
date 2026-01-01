@@ -181,10 +181,152 @@
       <div id="loanResult" class="result-box"></div>
     </section>
 
+    <section class="card">
+      <h3>💰 Smart Financial Advisor</h3>
+      <p class="muted">Get personalized financial health assessment and investment recommendations based on your profile.</p>
+      <form id="advisorForm" class="calculator-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="annualIncome">Annual Income (R)</label>
+            <input type="number" id="annualIncome" placeholder="e.g. 600000" required>
+          </div>
+          <div class="form-group">
+            <label for="monthlyExpenses">Monthly Expenses (R)</label>
+            <input type="number" id="monthlyExpenses" placeholder="e.g. 15000" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="advAge">Age</label>
+            <input type="number" id="advAge" placeholder="e.g. 35" required>
+          </div>
+          <div class="form-group">
+            <label for="currentDebt">Total Debt (R)</label>
+            <input type="number" id="currentDebt" placeholder="e.g. 100000" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="emergencyFund">Emergency Savings (R)</label>
+            <input type="number" id="emergencyFund" placeholder="e.g. 30000" required>
+          </div>
+          <div class="form-group">
+            <label for="investmentGoal">Investment Goal (Years)</label>
+            <input type="number" id="investmentGoal" placeholder="e.g. 20" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">Get Financial Assessment</button>
+      </form>
+      <div id="advisorResult" class="result-box"></div>
+    </section>
+
+    <section class="card">
+      <h3>📊 Economic Indicators Dashboard</h3>
+      <p class="muted">Monitor SA and global economic health with key indicators and market performance.</p>
+      
+      <div class="dashboard-grid">
+        <div class="indicator-card">
+          <div class="indicator-label">SA Inflation Rate</div>
+          <div class="indicator-value">6.2%</div>
+          <div class="indicator-meta">Year-over-year</div>
+        </div>
+        
+        <div class="indicator-card">
+          <div class="indicator-label">Unemployment (SA)</div>
+          <div class="indicator-value">32.1%</div>
+          <div class="indicator-meta">Official rate</div>
+        </div>
+        
+        <div class="indicator-card">
+          <div class="indicator-label">Prime Lending Rate</div>
+          <div class="indicator-value">11.75%</div>
+          <div class="indicator-meta">SARB Base Rate</div>
+        </div>
+        
+        <div class="indicator-card">
+          <div class="indicator-label">ZAR/USD</div>
+          <div class="indicator-value">18.50</div>
+          <div class="indicator-meta">Spot rate</div>
+        </div>
+
+        <div class="indicator-card">
+          <div class="indicator-label">JSE All Share</div>
+          <div class="indicator-value">↑ 0.8%</div>
+          <div class="indicator-meta">Today</div>
+        </div>
+
+        <div class="indicator-card">
+          <div class="indicator-label">Business Cycle</div>
+          <div class="indicator-value">Expansion</div>
+          <div class="indicator-meta">Moderate growth</div>
+        </div>
+      </div>
+
+      <div class="economic-insight">
+        <h4>📈 Current Economic Context</h4>
+        <p>The SA economy is in a moderate expansion phase with inflation stabilizing but unemployment remaining elevated. Global markets show resilience with tech stocks leading. Commodity prices (oil, metals) remain volatile, impacting the JSE.</p>
+      </div>
+    </section>
+
   </main>
+
+  <!-- Market Data Sections -->
+  <section class="container content-area">
+    <div class="card">
+      <h3>🇿🇦 JSE Market Snapshot</h3>
+      <p class="muted">Real-time data from South African stock exchange (updated daily)</p>
+      <div id="jseStocks" class="stocks-grid">
+        <div class="stock-card loading">Loading market data...</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🌍 Global Markets</h3>
+      <p class="muted">International indices and commodities (updated daily)</p>
+      <div id="globalMarkets" class="stocks-grid">
+        <div class="stock-card loading">Loading global data...</div>
+      </div>
+    </div>
+  </section>
 
   <div id="site-footer" role="contentinfo"></div>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="stock-data.js"></script>
   <script src="script.js"></script>
+  
+  <script>
+    // Load and display market data
+    (async () => {
+      // JSE Stocks
+      const jseStocks = await StockDataModule.getJSEStocks();
+      const jseContainer = document.getElementById('jseStocks');
+      
+      if (jseStocks && jseStocks.length > 0) {
+        jseContainer.innerHTML = jseStocks
+          .map(stock => StockDataModule.createStockCard(stock))
+          .join('');
+      } else {
+        jseContainer.innerHTML = '<p class="muted">Market data unavailable. Check back later.</p>';
+      }
+
+      // Global Markets
+      const [sp500, nasdaq] = await Promise.all([
+        StockDataModule.getSP500(),
+        StockDataModule.getNASDAQ()
+      ]);
+      
+      const globalContainer = document.getElementById('globalMarkets');
+      let globalHTML = '';
+      
+      if (sp500) globalHTML += StockDataModule.createStockCard(sp500);
+      if (nasdaq) globalHTML += StockDataModule.createStockCard(nasdaq);
+      
+      if (globalHTML) {
+        globalContainer.innerHTML = globalHTML;
+      } else {
+        globalContainer.innerHTML = '<p class="muted">Global data unavailable. Check back later.</p>';
+      }
+    })();
+  </script>
 </body>
 </html>

@@ -236,3 +236,94 @@ document
       }
     });
   });
+// Smart Financial Advisor
+document.getElementById("advisorForm")?.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const income = parseFloat(document.getElementById("annualIncome").value);
+  const expenses = parseFloat(document.getElementById("monthlyExpenses").value);
+  const age = parseInt(document.getElementById("advAge").value);
+  const debt = parseFloat(document.getElementById("currentDebt").value);
+  const emergency = parseFloat(document.getElementById("emergencyFund").value);
+  const investYears = parseInt(document.getElementById("investmentGoal").value);
+
+  // Calculate metrics
+  const monthlyIncome = income / 12;
+  const savingsRate = ((monthlyIncome - expenses) / monthlyIncome) * 100;
+  const debtToIncome = (debt / income) * 100;
+  const emergencyMonths = emergency / expenses;
+
+  // Financial Health Score (0-100)
+  let healthScore = 50;
+  healthScore += Math.min(25, (savingsRate / 20) * 10); // Savings rate (max +25)
+  healthScore -= Math.min(20, (debtToIncome / 50) * 20); // Debt impact (max -20)
+  healthScore += Math.min(15, (emergencyMonths / 6) * 15); // Emergency fund (max +15)
+
+  // Determine risk profile based on age and debt
+  let riskProfile = "Conservative";
+  let stockAllocation = 40;
+  let bondAllocation = 40;
+  let cashAllocation = 20;
+
+  if (age < 35 && debtToIncome < 40) {
+    riskProfile = "Aggressive";
+    stockAllocation = 70;
+    bondAllocation = 20;
+    cashAllocation = 10;
+  } else if (age < 50 && debtToIncome < 50) {
+    riskProfile = "Moderate";
+    stockAllocation = 60;
+    bondAllocation = 30;
+    cashAllocation = 10;
+  } else if (age > 55) {
+    riskProfile = "Conservative";
+    stockAllocation = 35;
+    bondAllocation = 50;
+    cashAllocation = 15;
+  }
+
+  // Recommendations
+  let recommendations = [];
+  if (savingsRate < 10) recommendations.push("Increase savings rate - aim for 15-20% of income");
+  if (debtToIncome > 50) recommendations.push("Prioritize debt reduction before investing");
+  if (emergencyMonths < 3) recommendations.push("Build emergency fund to 3-6 months of expenses");
+  if (savingsRate >= 15) recommendations.push("✓ Good savings rate! Consider investing excess");
+
+  const resultContainer = document.getElementById("advisorResult");
+  resultContainer.innerHTML = `
+    <h4>Your Financial Health Score</h4>
+    <div class="score" style="font-size: 2.5rem; color: var(--accent); margin: 16px 0;">${Math.round(healthScore)}/100</div>
+    
+    <div class="result-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;">
+      <div class="detail-item">
+        <strong>Savings Rate</strong>
+        <span>${savingsRate.toFixed(1)}%</span>
+      </div>
+      <div class="detail-item">
+        <strong>Debt-to-Income</strong>
+        <span>${debtToIncome.toFixed(1)}%</span>
+      </div>
+      <div class="detail-item">
+        <strong>Emergency Fund</strong>
+        <span>${emergencyMonths.toFixed(1)} months</span>
+      </div>
+      <div class="detail-item">
+        <strong>Risk Profile</strong>
+        <span>${riskProfile}</span>
+      </div>
+    </div>
+
+    <h4 style="margin-top: 24px;">Recommended Asset Allocation</h4>
+    ${StockDataModule.createPortfolioDisplay({
+      stocks: stockAllocation,
+      bonds: bondAllocation,
+      cash: cashAllocation
+    })}
+
+    <h4 style="margin-top: 24px;">Smart Recommendations</h4>
+    <ul>
+      ${recommendations.map(r => `<li>${r}</li>`).join('')}
+    </ul>
+  `;
+  resultContainer.classList.add('show');
+});
