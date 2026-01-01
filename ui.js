@@ -15,6 +15,7 @@
       <a href="experience.html">Experience</a>
       <a href="projects.html">Projects</a>
       <a href="tools.html">Tools</a>
+      <a href="economics.html">Analysis</a>
       <a href="contact.html">Contact</a>
       <button id="themeToggle" aria-label="Toggle theme" title="Toggle dark mode">Theme</button>
     </nav>
