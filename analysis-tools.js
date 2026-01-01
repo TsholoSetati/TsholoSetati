@@ -11,16 +11,35 @@ function switchTab(tabName) {
   
   // Show selected tab
   document.getElementById(tabName).classList.add('active');
-  event.target.classList.add('active');
+  
+  // Mark active button
+  const buttons = document.querySelectorAll('.tab-button');
+  buttons.forEach(btn => {
+    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${tabName}'`)) {
+      btn.classList.add('active');
+    }
+  });
 }
 
 // Update slider values
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize all sliders
   const sliders = document.querySelectorAll('.slider');
   sliders.forEach(slider => {
+    // Set initial value display
+    const valueId = slider.id + 'Value';
+    const valueElement = document.getElementById(valueId);
+    if (valueElement) {
+      valueElement.textContent = slider.value;
+    }
+    
+    // Add input event listener
     slider.addEventListener('input', (e) => {
       const valueId = e.target.id + 'Value';
-      document.getElementById(valueId).textContent = e.target.value;
+      const valueElement = document.getElementById(valueId);
+      if (valueElement) {
+        valueElement.textContent = e.target.value;
+      }
     });
   });
 
