@@ -4,21 +4,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tsholofelo K. Setati - AI Strategy, Digital Transformation, and Innovation Economics expert">
   <title>Tsholofelo K. Setati</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="ui.js" defer></script>
 </head>
 
 <body>
-  <div id="site-header"></div>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="site-header" role="banner"></div>
 
-  <main class="container content-area">
-    <section class="hero">
+  <main id="main-content" class="container content-area">
+    <section class="hero" aria-label="Hero section">
       <div class="hero-inner">
         <h1>Tsholofelo K. Setati</h1>
-        <p class="lead">Innovation Economics | AI & Digital Transformation | PhD Candidate</p>
+        <p class="lead">Innovation Economics | AI & Digital | PhD Candidate</p>
         <p class="hero-desc">I partner with C-suite leaders to architect and deliver AI-driven business transformation that creates measurable value. Explore my work, tools, and thinking below.</p>
         <div class="hero-ctas">
           <a class="btn" href="about.html">About</a>
@@ -26,38 +29,38 @@
         </div>
       </div>
       <div class="hero-visual">
-        <img src="hero-illustration.svg" alt="Illustration" loading="lazy">
+        <img src="hero-illustration.svg" alt="Professional illustration" loading="lazy">
       </div>
     </section>
 
-    <section class="features">
+    <section class="features" aria-label="Key expertise areas">
       <div class="feature">
-        <h3>AI Strategy</h3>
+        <h2>AI Strategy</h2>
         <p>Designing AI roadmaps and establishing Centers of Excellence to scale AI responsibly and effectively.</p>
       </div>
       <div class="feature">
-        <h3>Value Realization</h3>
+        <h2>Value Realization</h2>
         <p>Building business cases with IRR/NPV analysis to demonstrate ROI and secure executive buy-in.</p>
       </div>
       <div class="feature">
-        <h3>Analytics & Automation</h3>
+        <h2>Analytics & Automation</h2>
         <p>Automating reporting and analytics workflows to reduce friction and increase insight delivery speed.</p>
       </div>
     </section>
 
-    <section class="spotlight">
+    <section class="spotlight" aria-label="Tools section">
       <h2>Tools & Calculators</h2>
       <p>Interactive calculators and a financial literacy quiz are available on the <a href="tools.html">Tools</a> page.</p>
     </section>
 
-    <section class="latest">
+    <section class="latest" aria-label="Featured projects">
       <h2>Selected Projects</h2>
       <div class="projects-grid small">
-        <a class="card" href="projects.html">
+        <a class="card" href="projects.html" tabindex="0">
           <h3>Enterprise AI Transformation</h3>
           <p>Led PoC and strategic positioning that converted to measurable pipeline and revenue.</p>
         </a>
-        <a class="card" href="projects.html">
+        <a class="card" href="projects.html" tabindex="0">
           <h3>Power BI RPA Dashboard Revival</h3>
           <p>Restored functionality and improved robustness of a production dashboard.</p>
         </a>
@@ -66,6 +69,6 @@
 
   </main>
 
-  <div id="site-footer"></div>
+  <div id="site-footer" role="contentinfo"></div>
 </body>
 </html>
