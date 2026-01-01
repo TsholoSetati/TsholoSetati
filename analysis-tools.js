@@ -3,14 +3,24 @@
  * 8 integrated strategic analysis tools
  */
 
+console.log('✓ analysis-tools.js loaded');
+
 // Tab Navigation
 function switchTab(tabName) {
+  console.log('Switching to tab:', tabName);
+  
   // Hide all tabs
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
   
   // Show selected tab
-  document.getElementById(tabName).classList.add('active');
+  const tabEl = document.getElementById(tabName);
+  if (tabEl) {
+    tabEl.classList.add('active');
+    console.log('Tab activated:', tabName);
+  } else {
+    console.error('Tab element not found:', tabName);
+  }
   
   // Mark active button
   const buttons = document.querySelectorAll('.tab-button');
@@ -23,8 +33,12 @@ function switchTab(tabName) {
 
 // Update slider values
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('✓ DOMContentLoaded event fired');
+  
   // Initialize all sliders
   const sliders = document.querySelectorAll('.slider');
+  console.log('Found sliders:', sliders.length);
+  
   sliders.forEach(slider => {
     // Set initial value display
     const valueId = slider.id + 'Value';
@@ -46,117 +60,166 @@ document.addEventListener('DOMContentLoaded', () => {
   // Porter's 5 Forces
   const porterForm = document.getElementById('porterForm');
   if (porterForm) {
+    console.log('✓ Porter form found');
     porterForm.addEventListener('submit', (e) => {
+      console.log('Porter form submitted');
       e.preventDefault();
       analyzePorter();
     });
+  } else {
+    console.warn('Porter form not found');
   }
 
   // PESTEL
   const pestelForm = document.getElementById('pestelForm');
   if (pestelForm) {
+    console.log('✓ PESTEL form found');
     pestelForm.addEventListener('submit', (e) => {
+      console.log('PESTEL form submitted');
       e.preventDefault();
       analyzePESTEL();
     });
+  } else {
+    console.warn('PESTEL form not found');
   }
 
   // SWOT
   const swotForm = document.getElementById('swotForm');
   if (swotForm) {
+    console.log('✓ SWOT form found');
     swotForm.addEventListener('submit', (e) => {
+      console.log('SWOT form submitted');
       e.preventDefault();
       analyzeSWOT();
     });
+  } else {
+    console.warn('SWOT form not found');
   }
 
   // Segmentation
   const segmentForm = document.getElementById('segmentForm');
   if (segmentForm) {
+    console.log('✓ Segmentation form found');
     segmentForm.addEventListener('submit', (e) => {
+      console.log('Segmentation form submitted');
       e.preventDefault();
       analyzeSegmentation();
     });
+  } else {
+    console.warn('Segmentation form not found');
   }
 
   // Scenario
   const scenarioForm = document.getElementById('scenarioForm');
   if (scenarioForm) {
+    console.log('✓ Scenario form found');
     scenarioForm.addEventListener('submit', (e) => {
+      console.log('Scenario form submitted');
       e.preventDefault();
       analyzeScenario();
     });
+  } else {
+    console.warn('Scenario form not found');
   }
 
   // Positioning
   const positionForm = document.getElementById('positionForm');
   if (positionForm) {
+    console.log('✓ Positioning form found');
     positionForm.addEventListener('submit', (e) => {
+      console.log('Positioning form submitted');
       e.preventDefault();
       analyzePositioning();
     });
+  } else {
+    console.warn('Positioning form not found');
   }
 
   // Risk Matrix
   const riskForm = document.getElementById('riskForm');
   if (riskForm) {
+    console.log('✓ Risk form found');
     riskForm.addEventListener('submit', (e) => {
+      console.log('Risk form submitted');
       e.preventDefault();
       analyzeRisk();
     });
+  } else {
+    console.warn('Risk form not found');
   }
+  
+  console.log('✓ All event listeners initialized');
 });
 
 // PORTER'S 5 FORCES
 function analyzePorter() {
-  const suppliers = parseInt(document.getElementById('suppliers').value);
-  const buyers = parseInt(document.getElementById('buyers').value);
-  const substitutes = parseInt(document.getElementById('substitutes').value);
-  const entrants = parseInt(document.getElementById('entrants').value);
-  const rivalry = parseInt(document.getElementById('rivalry').value);
+  console.log('analyzePorter() called');
+  
+  try {
+    const suppliers = parseInt(document.getElementById('suppliers').value);
+    const buyers = parseInt(document.getElementById('buyers').value);
+    const substitutes = parseInt(document.getElementById('substitutes').value);
+    const entrants = parseInt(document.getElementById('entrants').value);
+    const rivalry = parseInt(document.getElementById('rivalry').value);
 
-  const avgForce = (suppliers + buyers + substitutes + entrants + rivalry) / 5;
-  const attractiveness = Math.round((25 - (avgForce * 4)) + 50); // Higher = more attractive
+    console.log('Forces:', { suppliers, buyers, substitutes, entrants, rivalry });
 
-  const breakdown = `
-    <div class="force-analysis">
-      <div class="force-item">
-        <span>Supplier Power:</span>
-        <div class="force-bar" style="width: ${suppliers * 20}%"></div>
-        <span>${suppliers}/5</span>
-      </div>
-      <div class="force-item">
-        <span>Buyer Power:</span>
-        <div class="force-bar" style="width: ${buyers * 20}%"></div>
-        <span>${buyers}/5</span>
-      </div>
-      <div class="force-item">
-        <span>Threat of Substitutes:</span>
-        <div class="force-bar" style="width: ${substitutes * 20}%"></div>
-        <span>${substitutes}/5</span>
-      </div>
-      <div class="force-item">
-        <span>Threat of New Entrants:</span>
-        <div class="force-bar" style="width: ${entrants * 20}%"></div>
-        <span>${entrants}/5</span>
-      </div>
-      <div class="force-item">
-        <span>Competitive Rivalry:</span>
-        <div class="force-bar" style="width: ${rivalry * 20}%"></div>
-        <span>${rivalry}/5</span>
-      </div>
-    </div>
-  `;
+    const avgForce = (suppliers + buyers + substitutes + entrants + rivalry) / 5;
+    const attractiveness = Math.round((25 - (avgForce * 4)) + 50);
 
-  const recommendation = attractiveness > 60 ? 
-    'Industry is ATTRACTIVE. Consider entry or expansion.' :
-    attractiveness > 40 ?
-    'Industry is MODERATELY ATTRACTIVE. Requires competitive advantage.' :
-    'Industry is CHALLENGING. High competitive intensity, low margins.';
+    console.log('Attractiveness score:', attractiveness);
 
-  document.getElementById('porterScore').innerHTML = `${attractiveness}/100<br><small>${recommendation}</small>`;
-  document.getElementById('porterBreakdown').innerHTML = breakdown;
-  document.getElementById('porterResult').style.display = 'block';
+    const breakdown = `
+      <div class="force-analysis">
+        <div class="force-item">
+          <span>Supplier Power:</span>
+          <div class="force-bar" style="width: ${suppliers * 20}%"></div>
+          <span>${suppliers}/5</span>
+        </div>
+        <div class="force-item">
+          <span>Buyer Power:</span>
+          <div class="force-bar" style="width: ${buyers * 20}%"></div>
+          <span>${buyers}/5</span>
+        </div>
+        <div class="force-item">
+          <span>Threat of Substitutes:</span>
+          <div class="force-bar" style="width: ${substitutes * 20}%"></div>
+          <span>${substitutes}/5</span>
+        </div>
+        <div class="force-item">
+          <span>Threat of New Entrants:</span>
+          <div class="force-bar" style="width: ${entrants * 20}%"></div>
+          <span>${entrants}/5</span>
+        </div>
+        <div class="force-item">
+          <span>Competitive Rivalry:</span>
+          <div class="force-bar" style="width: ${rivalry * 20}%"></div>
+          <span>${rivalry}/5</span>
+        </div>
+      </div>
+    `;
+
+    const recommendation = attractiveness > 60 ? 
+      'Industry is ATTRACTIVE. Consider entry or expansion.' :
+      attractiveness > 40 ?
+      'Industry is MODERATELY ATTRACTIVE. Requires competitive advantage.' :
+      'Industry is CHALLENGING. High competitive intensity, low margins.';
+
+    const porterScoreEl = document.getElementById('porterScore');
+    const porterBreakdownEl = document.getElementById('porterBreakdown');
+    const porterResultEl = document.getElementById('porterResult');
+    
+    if (porterScoreEl && porterBreakdownEl && porterResultEl) {
+      porterScoreEl.innerHTML = `${attractiveness}/100<br><small>${recommendation}</small>`;
+      porterBreakdownEl.innerHTML = breakdown;
+      porterResultEl.style.display = 'block';
+      console.log('✓ Porter analysis displayed');
+    } else {
+      console.error('Missing result elements:', { porterScoreEl, porterBreakdownEl, porterResultEl });
+    }
+  } catch (err) {
+    console.error('Error in analyzePorter:', err);
+  }
 }
 
 // PESTEL ANALYSIS
