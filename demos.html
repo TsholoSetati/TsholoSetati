@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Interactive demos showcasing web applications and prototypes">
+    <title>Demo's — Tsholo Setati</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="ui.js" defer></script>
+</head>
+
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div id="site-header" role="banner"></div>
+
+    <main id="main-content" class="container content-area">
+        <h2>Demo's & Prototypes</h2>
+        <p class="section-subtitle">Interactive demonstrations of web applications and prototypes I've built.</p>
+
+        <!-- Login Gate -->
+        <div id="demo-login" class="demo-login-container">
+            <div class="card demo-login-card">
+                <div class="demo-login-header">
+                    <div class="demo-app-icon">🎁</div>
+                    <h3>GiftlyInvited</h3>
+                    <p class="muted">Private Gift Registry Demo</p>
+                </div>
+                <form id="loginForm" class="demo-login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" placeholder="Enter username" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter password" required
+                            autocomplete="current-password">
+                    </div>
+                    <div id="loginError" class="demo-error" style="display: none;"></div>
+                    <button type="submit" class="btn-primary">Sign In</button>
+                </form>
+                <p class="demo-hint">Hint: Use <code>admin</code> / <code>admin</code></p>
+            </div>
+        </div>
+
+        <!-- Demo App (hidden until login) -->
+        <div id="demo-app" class="demo-app" style="display: none;">
+
+            <!-- Demo Tabs -->
+            <div class="demo-tabs">
+                <button class="demo-tab active" data-tab="dashboard">📋 Dashboard</button>
+                <button class="demo-tab" data-tab="create">➕ Create Registry</button>
+                <button class="demo-tab" data-tab="guest">👤 Guest View</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="tab-dashboard" class="demo-tab-content active">
+                <div class="demo-welcome">
+                    <h3>Welcome back, Admin! 👋</h3>
+                    <p class="muted">Manage your gift registries or create a new one.</p>
+                </div>
+
+                <div class="demo-registries-header">
+                    <h4>Your Registries</h4>
+                    <span id="registryCount" class="demo-count">0</span>
+                </div>
+
+                <div id="registriesList" class="demo-registries-list">
+                    <div class="demo-empty-state">
+                        <span class="demo-empty-icon">📦</span>
+                        <p>No registries yet. Create your first one!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Registry Tab -->
+            <div id="tab-create" class="demo-tab-content">
+                <div class="card">
+                    <h3>Create New Registry</h3>
+                    <p class="muted">Set up a private gift registry for your event.</p>
+                    <form id="createRegistryForm" class="demo-form">
+                        <div class="form-group">
+                            <label for="registryName">Registry Name *</label>
+                            <input type="text" id="registryName" placeholder="e.g., Sarah's Baby Shower" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDate">Event Date</label>
+                            <input type="date" id="eventDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="registryDescription">Description</label>
+                            <textarea id="registryDescription" rows="3"
+                                placeholder="Tell your guests about the event..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Create Registry</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Guest View Tab -->
+            <div id="tab-guest" class="demo-tab-content">
+                <div class="card">
+                    <h3>Guest View Simulation</h3>
+                    <p class="muted">See how your registry appears to invited guests.</p>
+
+                    <div class="demo-guest-code-input">
+                        <div class="form-group">
+                            <label for="inviteCodeInput">Enter Invite Code</label>
+                            <div class="demo-code-row">
+                                <input type="text" id="inviteCodeInput" placeholder="e.g., ABC123">
+                                <button type="button" id="findRegistryBtn" class="btn-primary">Find Registry</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="guestRegistryView" class="demo-guest-registry" style="display: none;">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registry Detail Modal -->
+            <div id="registryModal" class="demo-modal" style="display: none;">
+                <div class="demo-modal-overlay"></div>
+                <div class="demo-modal-content">
+                    <div class="demo-modal-header">
+                        <h3 id="modalRegistryName">Registry Name</h3>
+                        <button type="button" class="demo-modal-close" aria-label="Close">×</button>
+                    </div>
+                    <div class="demo-modal-body">
+                        <div class="demo-invite-code-box">
+                            <span class="demo-invite-label">Invite Code</span>
+                            <span id="modalInviteCode" class="demo-invite-code">ABC123</span>
+                            <button type="button" id="copyCodeBtn" class="demo-copy-btn">📋 Copy</button>
+                        </div>
+
+                        <div class="demo-items-section">
+                            <div class="demo-items-header">
+                                <h4>Gift Items</h4>
+                                <button type="button" id="addItemBtn" class="btn-primary">+ Add Item</button>
+                            </div>
+                            <div id="itemsList" class="demo-items-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Add Item Form (hidden by default) -->
+                        <div id="addItemForm" class="demo-add-item-form" style="display: none;">
+                            <h4>Add New Item</h4>
+                            <form id="itemForm">
+                                <div class="form-group">
+                                    <label for="itemTitle">Item Name *</label>
+                                    <input type="text" id="itemTitle" placeholder="e.g., Baby Monitor" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="itemPrice">Price (R)</label>
+                                        <input type="number" id="itemPrice" placeholder="e.g., 1500">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="itemQuantity">Quantity</label>
+                                        <input type="number" id="itemQuantity" value="1" min="1">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemUrl">Product Link</label>
+                                    <input type="url" id="itemUrl" placeholder="https://...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemDescription">Notes</label>
+                                    <textarea id="itemDescription" rows="2"
+                                        placeholder="Color preference, size, etc."></textarea>
+                                </div>
+                                <div class="demo-form-actions">
+                                    <button type="button" id="cancelAddItem" class="btn-ghost">Cancel</button>
+                                    <button type="submit" class="btn-primary">Add Item</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logout Button -->
+            <div class="demo-logout">
+                <button type="button" id="logoutBtn" class="btn-ghost">🚪 Sign Out</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="site-footer" role="contentinfo"></div>
+    <script src="demos.js"></script>
+</body>
+
+</html>
