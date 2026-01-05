@@ -1,385 +1,507 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Business strategy analysis tools - Porter's 5 Forces, PESTEL, SWOT, Market Segmentation, Scenarios, Positioning, Risk Matrix">
-  <title>Economics & Analysis — Tsholo Setati</title>
+  <meta name="description" content="Business strategy analysis tools and financial calculators">
+  <title>Analysis & Tools — Tsholo Setati</title>
   <link rel="stylesheet" href="style.css">
   <script src="ui.js" defer></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <!-- Optional if needed by specific scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="site-header" role="banner"></div>
 
   <main id="main-content" class="container content-area">
-    <h2>Economics & Strategic Analysis</h2>
-    <p class="section-subtitle">Comprehensive business strategy toolkit. Economic indicators, competitive analysis, and strategic planning frameworks.</p>
+    <h2>Analysis & Tools</h2>
+    <p class="section-subtitle">A comprehensive toolkit for financial planning and strategic business analysis.</p>
 
-    <!-- Tool Navigation Tabs -->
-    <div class="analysis-tabs">
-      <button class="tab-button active" onclick="switchTab('economic')">📊 Economic Dashboard</button>
-      <button class="tab-button" onclick="switchTab('porter')">⚔️ Porter's 5 Forces</button>
-      <button class="tab-button" onclick="switchTab('pestel')">🌍 PESTEL</button>
-      <button class="tab-button" onclick="switchTab('swot')">🎯 SWOT</button>
-      <button class="tab-button" onclick="switchTab('segment')">👥 Segmentation</button>
-      <button class="tab-button" onclick="switchTab('scenario')">📈 Scenarios</button>
-      <button class="tab-button" onclick="switchTab('position')">🎲 Positioning Map</button>
-      <button class="tab-button" onclick="switchTab('risk')">⚠️ Risk Matrix</button>
+    <!-- Category Switcher -->
+    <div class="category-switcher" style="display:flex; justify-content:center; gap:20px; margin-bottom:30px;">
+      <button class="btn cat-btn active" data-cat="financial-tools">💰 Financial Planning</button>
+      <button class="btn cat-btn btn-ghost" data-cat="strategic-analysis">📈 Strategic Analysis</button>
     </div>
 
-    <!-- 1. ECONOMIC INDICATORS DASHBOARD -->
-    <div id="economic" class="tab-content active">
-      <div class="card">
-        <h3>📊 Economic Indicators Dashboard</h3>
-        <p class="muted">Monitor SA and global economic health with key macro indicators.</p>
-        
-        <div class="dashboard-grid">
-          <div class="indicator-card">
-            <div class="indicator-label">SA Inflation Rate</div>
-            <div class="indicator-value">6.2%</div>
-            <div class="indicator-meta">Year-over-year</div>
-          </div>
-          <div class="indicator-card">
-            <div class="indicator-label">Unemployment (SA)</div>
-            <div class="indicator-value">32.1%</div>
-            <div class="indicator-meta">Official rate</div>
-          </div>
-          <div class="indicator-card">
-            <div class="indicator-label">Prime Lending Rate</div>
-            <div class="indicator-value">11.75%</div>
-            <div class="indicator-meta">SARB Base Rate</div>
-          </div>
-          <div class="indicator-card">
-            <div class="indicator-label">ZAR/USD</div>
-            <div class="indicator-value">18.50</div>
-            <div class="indicator-meta">Spot rate</div>
-          </div>
-          <div class="indicator-card">
-            <div class="indicator-label">JSE All Share</div>
-            <div class="indicator-value">↑ 0.8%</div>
-            <div class="indicator-meta">Today</div>
-          </div>
-          <div class="indicator-card">
-            <div class="indicator-label">Business Cycle</div>
-            <div class="indicator-value">Expansion</div>
-            <div class="indicator-meta">Moderate growth</div>
-          </div>
-        </div>
+    <!-- === SECTION: FINANCIAL PLANNING === -->
+    <div id="financial-tools" class="tool-category">
 
-        <div class="economic-insight">
-          <h4>📈 Economic Context</h4>
-          <p>The SA economy is in moderate expansion with inflation stabilizing. Global markets show resilience. Commodity prices remain volatile, impacting the JSE. Consumer spending steady but cautious due to cost of living pressures.</p>
-        </div>
-        <button class="btn-export" onclick="downloadPDF('economic', 'Economic-Dashboard')">⬇️ Download PDF</button>
+      <!-- Sub-Tabs for Financial -->
+      <div class="analysis-tabs">
+        <button class="tab-button active" onclick="switchFinancialTab('quiz')">📝 Financial Quiz</button>
+        <button class="tab-button" onclick="switchFinancialTab('calc-interest')">💸 Compound Interest</button>
+        <button class="tab-button" onclick="switchFinancialTab('calc-retirement')">👴 Retirement</button>
+        <button class="tab-button" onclick="switchFinancialTab('calc-loan')">🏦 Loan Repayment</button>
+        <button class="tab-button" onclick="switchFinancialTab('advisor')">🤖 Smart Advisor</button>
       </div>
+
+      <!-- Financial Content -->
+      <div id="quiz" class="financial-tab active">
+        <section class="card">
+          <h3>Financial Literacy Quiz</h3>
+          <p class="muted">Test your understanding with these key financial questions.</p>
+          <form id="quizForm">
+            <div class="question-group">
+              <h4>Question 1</h4>
+              <p>Suppose you need to borrow R100. Which is the lower amount to pay back: R105 or R100 plus three
+                percent?</p>
+              <div class="options">
+                <label class="option-label"><input type="radio" name="q1" value="R105" required>
+                  <span>R105</span></label>
+                <label class="option-label"><input type="radio" name="q1" value="R100 plus three percent"> <span>R100
+                    plus three percent</span></label>
+              </div>
+            </div>
+            <!-- Additional questions simplified for brevity but fully functional in script.js logic -->
+            <div class="question-group">
+              <h4>Question 2</h4>
+              <p>If interest is 1% and inflation is 2%, after one year can you buy more or less?</p>
+              <div class="options">
+                <label class="option-label"><input type="radio" name="q2" value="More"
+                    required><span>More</span></label>
+                <label class="option-label"><input type="radio" name="q2" value="The same"><span>The same</span></label>
+                <label class="option-label"><input type="radio" name="q2" value="Less"><span>Less</span></label>
+              </div>
+            </div>
+            <div class="question-group">
+              <h4>Question 3</h4>
+              <p>If savings interest is 15% and inflation is 19%, after one year can you buy more or less?</p>
+              <div class="options">
+                <label class="option-label"><input type="radio" name="q3" value="More"
+                    required><span>More</span></label>
+                <label class="option-label"><input type="radio" name="q3" value="The same"><span>The same</span></label>
+                <label class="option-label"><input type="radio" name="q3" value="Less"><span>Less</span></label>
+              </div>
+            </div>
+            <div class="question-group">
+              <h4>Question 4</h4>
+              <p>R100 savings + 10% interest per year. After 2 years: more or less than R120?</p>
+              <div class="options">
+                <label class="option-label"><input type="radio" name="q4" value="More than R120"
+                    required><span>More</span></label>
+                <label class="option-label"><input type="radio" name="q4"
+                    value="Exactly R120"><span>Exactly</span></label>
+                <label class="option-label"><input type="radio" name="q4"
+                    value="Less than R120"><span>Less</span></label>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary">Submit Quiz</button>
+          </form>
+          <div id="quizResult"></div>
+        </section>
+      </div>
+
+      <div id="calc-interest" class="financial-tab" style="display:none;">
+        <section class="card calculator-card">
+          <h3>Compound Interest Calculator</h3>
+          <form id="interestForm" class="calculator-form">
+            <div class="form-group">
+              <label for="principal">Principal Amount (R)</label>
+              <input type="number" id="principal" placeholder="10000" required>
+            </div>
+            <div class="form-group">
+              <label for="rate">Annual Interest Rate (%)</label>
+              <input type="number" step="0.01" id="rate" placeholder="7.5" required>
+            </div>
+            <div class="form-group">
+              <label for="time">Time Period (Years)</label>
+              <input type="number" id="time" placeholder="10" required>
+            </div>
+            <div class="form-group">
+              <label for="compound">Compounding Frequency</label>
+              <select id="compound">
+                <option value="1">Annually</option>
+                <option value="4">Quarterly</option>
+                <option value="12" selected>Monthly</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-primary">Calculate</button>
+          </form>
+          <div id="interestResult" class="result-box"></div>
+          <canvas id="chartContainer"></canvas>
+        </section>
+      </div>
+
+      <div id="calc-retirement" class="financial-tab" style="display:none;">
+        <section class="card calculator-card">
+          <h3>Retirement Savings Calculator</h3>
+          <form id="retirementForm" class="calculator-form">
+            <div class="form-row">
+              <div class="form-group"><label>Current Age</label><input type="number" id="currentAge" required></div>
+              <div class="form-group"><label>Retirement Age</label><input type="number" id="retirementAge" required>
+              </div>
+            </div>
+            <div class="form-group"><label>Current Savings (R)</label><input type="number" id="currentSavings" required>
+            </div>
+            <div class="form-group"><label>Monthly Value (R)</label><input type="number" id="monthlyContribution"
+                required></div>
+            <div class="form-group"><label>Annual Return (%)</label><input type="number" step="0.01" id="annualReturn"
+                required></div>
+            <button type="submit" class="btn-primary">Project Savings</button>
+          </form>
+          <div id="retirementResult" class="result-box"></div>
+        </section>
+      </div>
+
+      <div id="calc-loan" class="financial-tab" style="display:none;">
+        <section class="card calculator-card">
+          <h3>Loan Repayment Calculator</h3>
+          <form id="loanForm" class="calculator-form">
+            <div class="form-group"><label>Loan Amount (R)</label><input type="number" id="loanAmount" required></div>
+            <div class="form-row">
+              <div class="form-group"><label>Interest Rate (%)</label><input type="number" step="0.01" id="loanInterest"
+                  required></div>
+              <div class="form-group"><label>Term (Years)</label><input type="number" id="loanTerm" required></div>
+            </div>
+            <button type="submit" class="btn-primary">Calculate Payment</button>
+          </form>
+          <div id="loanResult" class="result-box"></div>
+        </section>
+      </div>
+
+      <div id="advisor" class="financial-tab" style="display:none;">
+        <section class="card">
+          <h3>💰 Smart Financial Advisor</h3>
+          <form id="advisorForm" class="calculator-form">
+            <div class="form-row">
+              <div class="form-group"><label>Annual Income (R)</label><input type="number" id="annualIncome" required>
+              </div>
+              <div class="form-group"><label>Monthly Expenses (R)</label><input type="number" id="monthlyExpenses"
+                  required></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Age</label><input type="number" id="advAge" required></div>
+              <div class="form-group"><label>Total Debt (R)</label><input type="number" id="currentDebt" required></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Emergency Fund (R)</label><input type="number" id="emergencyFund" required>
+              </div>
+              <div class="form-group"><label>Investment Goal (Years)</label><input type="number" id="investmentGoal"
+                  required></div>
+            </div>
+            <button type="submit" class="btn-primary">Get Assessment</button>
+          </form>
+          <div id="advisorResult" class="result-box"></div>
+        </section>
+      </div>
+
     </div>
 
-    <!-- 2. PORTER'S 5 FORCES -->
-    <div id="porter" class="tab-content">
-      <div class="card">
-        <h3>⚔️ Porter's 5 Forces Analysis</h3>
-        <p class="muted">Analyze industry competitive structure and attractiveness.</p>
-        
-        <form id="porterForm" class="analysis-form">
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label>Supplier Power (1-5)</label>
-              <input type="range" id="suppliers" min="1" max="5" value="3" class="slider">
-              <span id="suppliersValue">3</span>
-            </div>
-            <div class="form-group">
-              <label>Buyer Power (1-5)</label>
-              <input type="range" id="buyers" min="1" max="5" value="3" class="slider">
-              <span id="buyersValue">3</span>
-            </div>
-            <div class="form-group">
-              <label>Threat of Substitutes (1-5)</label>
-              <input type="range" id="substitutes" min="1" max="5" value="3" class="slider">
-              <span id="substitutesValue">3</span>
-            </div>
-            <div class="form-group">
-              <label>Threat of New Entrants (1-5)</label>
-              <input type="range" id="entrants" min="1" max="5" value="3" class="slider">
-              <span id="entrantsValue">3</span>
-            </div>
-            <div class="form-group">
-              <label>Competitive Rivalry (1-5)</label>
-              <input type="range" id="rivalry" min="1" max="5" value="3" class="slider">
-              <span id="rivalryValue">3</span>
-            </div>
-          </div>
-          <button type="submit" class="btn-primary">Analyze Industry</button>
-        </form>
+    <!-- === SECTION: STRATEGIC ANALYSIS === -->
+    <div id="strategic-analysis" class="tool-category" style="display:none;">
 
-        <div id="porterResult" class="result-box" style="display:none;">
-          <h4>Industry Attractiveness Score</h4>
-          <div class="score" id="porterScore"></div>
-          <div class="force-breakdown" id="porterBreakdown"></div>
-          <div class="recommendations" id="porterRec"></div>
-        </div>
-        <button class="btn-export" onclick="downloadPDF('porter', 'Porters-5-Forces')">⬇️ Download PDF</button>
+      <!-- Tool Navigation Tabs -->
+      <div class="analysis-tabs">
+        <button class="tab-button active" onclick="switchTab('economic')">📊 Economic Dashboard</button>
+        <button class="tab-button" onclick="switchTab('porter')">⚔️ Porter's 5</button>
+        <button class="tab-button" onclick="switchTab('pestel')">🌍 PESTEL</button>
+        <button class="tab-button" onclick="switchTab('swot')">🎯 SWOT</button>
+        <button class="tab-button" onclick="switchTab('segment')">👥 Segmentation</button>
+        <button class="tab-button" onclick="switchTab('scenario')">📈 Scenarios</button>
+        <button class="tab-button" onclick="switchTab('position')">🎲 Positioning</button>
+        <button class="tab-button" onclick="switchTab('risk')">⚠️ Risk Matrix</button>
       </div>
-    </div>
 
-    <!-- 3. PESTEL -->
-    <div id="pestel" class="tab-content">
-      <div class="card">
-        <h3>🌍 PESTEL Analysis</h3>
-        <p class="muted">Strategic environmental scan across 6 macro factors.</p>
-        
-        <form id="pestelForm" class="analysis-form">
-          <div class="pestel-grid">
-            <div class="pestel-factor">
-              <h4>Political</h4>
-              <textarea placeholder="Government policies, regulations, political stability..."></textarea>
-              <label>Impact: <select class="impact-select"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
+      <!-- 1. ECONOMIC INDICATORS DASHBOARD -->
+      <div id="economic" class="tab-content active">
+        <div class="card">
+          <h3>📊 Economic Indicators Dashboard</h3>
+          <p class="muted">Key macro indicators for the South African context.</p>
+          <div class="dashboard-grid">
+            <div class="indicator-card">
+              <div class="indicator-label">SA Inflation</div>
+              <div class="indicator-value">6.2%</div>
+              <div class="indicator-meta">Year-over-year</div>
             </div>
-            <div class="pestel-factor">
-              <h4>Economic</h4>
-              <textarea placeholder="Growth, inflation, interest rates, unemployment..."></textarea>
-              <label>Impact: <select class="impact-select"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
+            <div class="indicator-card">
+              <div class="indicator-label">Unemployment</div>
+              <div class="indicator-value">32.1%</div>
+              <div class="indicator-meta">Official rate</div>
             </div>
-            <div class="pestel-factor">
-              <h4>Social</h4>
-              <textarea placeholder="Demographics, culture, consumer trends, values..."></textarea>
-              <label>Impact: <select class="impact-select"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
+            <div class="indicator-card">
+              <div class="indicator-label">Prime Rate</div>
+              <div class="indicator-value">11.75%</div>
+              <div class="indicator-meta">SARB Base</div>
             </div>
-            <div class="pestel-factor">
-              <h4>Technological</h4>
-              <textarea placeholder="Innovation, digital transformation, disruption..."></textarea>
-              <label>Impact: <select class="impact-select"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
-            </div>
-            <div class="pestel-factor">
-              <h4>Environmental</h4>
-              <textarea placeholder="Sustainability, climate, resource constraints..."></textarea>
-              <label>Impact: <select class="impact-select"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
-            </div>
-            <div class="pestel-factor">
-              <h4>Legal</h4>
-              <textarea placeholder="Compliance, contracts, IP, regulations..."></textarea>
-              <label>Impact: <select class="impact-select"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
+            <div class="indicator-card">
+              <div class="indicator-label">ZAR/USD</div>
+              <div class="indicator-value">18.50</div>
+              <div class="indicator-meta">Spot rate</div>
             </div>
           </div>
-          <button type="submit" class="btn-primary">Generate PESTEL Report</button>
-        </form>
-
-        <div id="pestelResult" class="result-box" style="display:none;">
-          <h4>PESTEL Assessment</h4>
-          <div id="pestelBreakdown"></div>
+          <div class="economic-insight">
+            <h4>📈 Snapshot</h4>
+            <p>Moderate expansion despite volatility. Inflation stabilizing.</p>
+          </div>
         </div>
-        <button class="btn-export" onclick="downloadPDF('pestel', 'PESTEL-Analysis')">⬇️ Download PDF</button>
       </div>
-    </div>
 
-    <!-- 4. SWOT -->
-    <div id="swot" class="tab-content">
-      <div class="card">
-        <h3>🎯 SWOT Analysis</h3>
-        <p class="muted">Strategic assessment of strengths, weaknesses, opportunities, threats.</p>
-        
-        <form id="swotForm" class="analysis-form">
-          <div class="swot-grid">
-            <div class="swot-section positive">
-              <h4>Strengths</h4>
-              <textarea id="strengths" placeholder="Core competencies, resources, brand advantages..." rows="4"></textarea>
+      <!-- 2. PORTER'S 5 FORCES -->
+      <div id="porter" class="tab-content">
+        <div class="card">
+          <h3>⚔️ Porter's 5 Forces</h3>
+          <form id="porterForm" class="analysis-form">
+            <div class="form-grid-2">
+              <div class="form-group"><label>Supplier Power (1-5)</label><input type="range" id="suppliers" min="1"
+                  max="5" value="3" class="slider"><span id="suppliersValue">3</span></div>
+              <div class="form-group"><label>Buyer Power (1-5)</label><input type="range" id="buyers" min="1" max="5"
+                  value="3" class="slider"><span id="buyersValue">3</span></div>
+              <div class="form-group"><label>Substitutes (1-5)</label><input type="range" id="substitutes" min="1"
+                  max="5" value="3" class="slider"><span id="substitutesValue">3</span></div>
+              <div class="form-group"><label>New Entrants (1-5)</label><input type="range" id="entrants" min="1" max="5"
+                  value="3" class="slider"><span id="entrantsValue">3</span></div>
+              <div class="form-group"><label>Rivalry (1-5)</label><input type="range" id="rivalry" min="1" max="5"
+                  value="3" class="slider"><span id="rivalryValue">3</span></div>
             </div>
-            <div class="swot-section negative">
-              <h4>Weaknesses</h4>
-              <textarea id="weaknesses" placeholder="Limitations, gaps, resource constraints..." rows="4"></textarea>
-            </div>
-            <div class="swot-section positive">
-              <h4>Opportunities</h4>
-              <textarea id="opportunities" placeholder="Market gaps, emerging trends, growth areas..." rows="4"></textarea>
-            </div>
-            <div class="swot-section negative">
-              <h4>Threats</h4>
-              <textarea id="threats" placeholder="Competitive pressure, market shifts, risks..." rows="4"></textarea>
-            </div>
+            <button type="submit" class="btn-primary">Analyze</button>
+          </form>
+          <div id="porterResult" class="result-box" style="display:none;">
+            <h4>Attractiveness Score</h4>
+            <div class="score" id="porterScore"></div>
+            <div id="porterBreakdown"></div>
           </div>
-          <button type="submit" class="btn-primary">Generate SWOT Matrix</button>
-        </form>
-
-        <div id="swotResult" class="result-box" style="display:none;">
-          <h4>SWOT Matrix & Recommendations</h4>
-          <div id="swotBreakdown"></div>
         </div>
-        <button class="btn-export" onclick="downloadPDF('swot', 'SWOT-Analysis')">⬇️ Download PDF</button>
       </div>
-    </div>
 
-    <!-- 5. MARKET SEGMENTATION -->
-    <div id="segment" class="tab-content">
-      <div class="card">
-        <h3>👥 Market Segmentation</h3>
-        <p class="muted">Identify and evaluate market segments based on key attributes.</p>
-        
-        <form id="segmentForm" class="analysis-form">
-          <div class="segment-inputs">
-            <input type="text" id="seg1Name" placeholder="Segment 1 Name" value="Enterprise">
-            <input type="text" id="seg1Desc" placeholder="Description" value="Large corporations, complex needs">
-            <select id="seg1Attract"><option>Low</option><option selected>Medium</option><option>High</option></select>
-            <input type="number" id="seg1Size" placeholder="Market Size %" value="35">
-            
-            <input type="text" id="seg2Name" placeholder="Segment 2 Name" value="Mid-Market">
-            <input type="text" id="seg2Desc" placeholder="Description" value="Growing companies, moderate budget">
-            <select id="seg2Attract"><option>Low</option><option selected>Medium</option><option>High</option></select>
-            <input type="number" id="seg2Size" placeholder="Market Size %" value="40">
-            
-            <input type="text" id="seg3Name" placeholder="Segment 3 Name" value="SME">
-            <input type="text" id="seg3Desc" placeholder="Description" value="Small businesses, cost-sensitive">
-            <select id="seg3Attract"><option selected>Low</option><option>Medium</option><option>High</option></select>
-            <input type="number" id="seg3Size" placeholder="Market Size %" value="25">
+      <!-- 3. PESTEL -->
+      <div id="pestel" class="tab-content">
+        <div class="card">
+          <h3>🌍 PESTEL Analysis</h3>
+          <form id="pestelForm" class="analysis-form">
+            <div class="pestel-grid">
+              <div class="pestel-factor">
+                <h4>Political</h4><textarea></textarea><select class="impact-select">
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Low</option>
+                </select>
+              </div>
+              <div class="pestel-factor">
+                <h4>Economic</h4><textarea></textarea><select class="impact-select">
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Low</option>
+                </select>
+              </div>
+              <div class="pestel-factor">
+                <h4>Social</h4><textarea></textarea><select class="impact-select">
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Low</option>
+                </select>
+              </div>
+              <div class="pestel-factor">
+                <h4>Technological</h4><textarea></textarea><select class="impact-select">
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Low</option>
+                </select>
+              </div>
+              <div class="pestel-factor">
+                <h4>Environmental</h4><textarea></textarea><select class="impact-select">
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Low</option>
+                </select>
+              </div>
+              <div class="pestel-factor">
+                <h4>Legal</h4><textarea></textarea><select class="impact-select">
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Low</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary">Generate Report</button>
+          </form>
+          <div id="pestelResult" class="result-box" style="display:none;">
+            <div id="pestelBreakdown"></div>
           </div>
-          <button type="submit" class="btn-primary">Analyze Segments</button>
-        </form>
-
-        <div id="segmentResult" class="result-box" style="display:none;">
-          <h4>Segment Analysis & Recommendations</h4>
-          <div id="segmentBreakdown"></div>
         </div>
-        <button class="btn-export" onclick="downloadPDF('segment', 'Market-Segmentation')">⬇️ Download PDF</button>
       </div>
-    </div>
 
-    <!-- 6. SCENARIO PLANNING -->
-    <div id="scenario" class="tab-content">
-      <div class="card">
-        <h3>📈 Financial Scenario Planner</h3>
-        <p class="muted">Project outcomes across best/base/worst case scenarios.</p>
-        
-        <form id="scenarioForm" class="analysis-form">
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label>Initial Investment (R)</label>
-              <input type="number" id="investment" value="500000">
+      <!-- 4. SWOT -->
+      <div id="swot" class="tab-content">
+        <div class="card">
+          <h3>🎯 SWOT Analysis</h3>
+          <form id="swotForm" class="analysis-form">
+            <div class="swot-grid">
+              <div class="swot-section positive">
+                <h4>Strengths</h4><textarea id="strengths" rows="4"></textarea>
+              </div>
+              <div class="swot-section negative">
+                <h4>Weaknesses</h4><textarea id="weaknesses" rows="4"></textarea>
+              </div>
+              <div class="swot-section positive">
+                <h4>Opportunities</h4><textarea id="opportunities" rows="4"></textarea>
+              </div>
+              <div class="swot-section negative">
+                <h4>Threats</h4><textarea id="threats" rows="4"></textarea>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Year 1 Revenue (R)</label>
-              <input type="number" id="revenue" value="200000">
-            </div>
-            <div class="form-group">
-              <label>Operating Margin (%)</label>
-              <input type="number" id="margin" value="30">
-            </div>
-            <div class="form-group">
-              <label>Annual Growth Rate (%)</label>
-              <input type="number" id="growth" value="25">
-            </div>
-            <div class="form-group">
-              <label>Time Horizon (Years)</label>
-              <input type="number" id="years" value="5">
-            </div>
-            <div class="form-group">
-              <label>Discount Rate (%)</label>
-              <input type="number" id="discount" value="12">
-            </div>
+            <button type="submit" class="btn-primary">Generate Matrix</button>
+          </form>
+          <div id="swotResult" class="result-box" style="display:none;">
+            <div id="swotBreakdown"></div>
           </div>
-          <button type="submit" class="btn-primary">Generate Scenarios</button>
-        </form>
-
-        <div id="scenarioResult" class="result-box" style="display:none;">
-          <h4>Scenario Projections</h4>
-          <div id="scenarioBreakdown"></div>
         </div>
-        <button class="btn-export" onclick="downloadPDF('scenario', 'Scenario-Analysis')">⬇️ Download PDF</button>
       </div>
-    </div>
 
-    <!-- 7. POSITIONING MAP -->
-    <div id="position" class="tab-content">
-      <div class="card">
-        <h3>🎲 Competitive Positioning Map</h3>
-        <p class="muted">Visualize competitive differentiation and market white space.</p>
-        
-        <form id="positionForm" class="analysis-form">
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label>X-Axis Attribute</label>
-              <input type="text" id="xAttr" value="Price (Low ← → High)" placeholder="e.g., Price, Quality, Innovation">
+      <!-- 5. SEGMENTATION -->
+      <div id="segment" class="tab-content">
+        <div class="card">
+          <h3>👥 Market Segmentation</h3>
+          <form id="segmentForm" class="analysis-form">
+            <div class="segment-inputs">
+              <input type="text" id="seg1Name" value="Enterprise"><input type="text" id="seg1Desc"
+                value="Large corp"><select id="seg1Attract">
+                <option>High</option>
+              </select><input type="number" id="seg1Size" value="35">
+              <input type="text" id="seg2Name" value="Mid-Market"><input type="text" id="seg2Desc"
+                value="Growing"><select id="seg2Attract">
+                <option>Medium</option>
+              </select><input type="number" id="seg2Size" value="40">
+              <input type="text" id="seg3Name" value="SME"><input type="text" id="seg3Desc" value="Budget"><select
+                id="seg3Attract">
+                <option>Low</option>
+              </select><input type="number" id="seg3Size" value="25">
             </div>
-            <div class="form-group">
-              <label>Y-Axis Attribute</label>
-              <input type="text" id="yAttr" value="Innovation (Low ← → High)" placeholder="e.g., Quality, Speed, Sustainability">
-            </div>
+            <button type="submit" class="btn-primary">Analyze</button>
+          </form>
+          <div id="segmentResult" class="result-box" style="display:none;">
+            <div id="segmentBreakdown"></div>
           </div>
-
-          <div class="competitors-input">
-            <h4>Add Competitors</h4>
-            <div class="competitor-entry">
-              <input type="text" placeholder="Company" value="Company A">
-              <input type="number" placeholder="X Position" value="3" min="1" max="10">
-              <input type="number" placeholder="Y Position" value="7" min="1" max="10">
-              <input type="color" value="#0ea5e9">
-            </div>
-            <div class="competitor-entry">
-              <input type="text" placeholder="Company" value="Company B">
-              <input type="number" placeholder="X Position" value="7" min="1" max="10">
-              <input type="number" placeholder="Y Position" value="4" min="1" max="10">
-              <input type="color" value="#8b5cf6">
-            </div>
-            <div class="competitor-entry">
-              <input type="text" placeholder="Company" value="Your Company">
-              <input type="number" placeholder="X Position" value="5" min="1" max="10">
-              <input type="number" placeholder="Y Position" value="5" min="1" max="10">
-              <input type="color" value="#22c55e">
-            </div>
-          </div>
-          <button type="submit" class="btn-primary">Draw Positioning Map</button>
-        </form>
-
-        <div id="positionResult" class="result-box" style="display:none;">
-          <canvas id="positionCanvas" style="max-width: 100%; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px;"></canvas>
-          <div id="positionInsights" style="margin-top: 16px;"></div>
         </div>
-        <button class="btn-export" onclick="downloadPDF('position', 'Positioning-Map')">⬇️ Download PDF</button>
       </div>
-    </div>
 
-    <!-- 8. RISK MATRIX -->
-    <div id="risk" class="tab-content">
-      <div class="card">
-        <h3>⚠️ Risk Matrix</h3>
-        <p class="muted">Identify and prioritize strategic risks.</p>
-        
-        <form id="riskForm" class="analysis-form">
-          <div class="risk-inputs">
-            <div class="risk-entry">
-              <input type="text" placeholder="Risk" value="Market Competition">
-              <select><option>Low</option><option selected>Medium</option><option>High</option></select>
-              <select><option>Low</option><option selected>Medium</option><option>High</option></select>
-              <input type="text" placeholder="Mitigation" value="Differentiate through innovation">
+      <!-- 6. SCENARIO PLANNING -->
+      <div id="scenario" class="tab-content">
+        <div class="card">
+          <h3>📈 Scenario Planner</h3>
+          <form id="scenarioForm" class="analysis-form">
+            <div class="form-grid-2">
+              <div class="form-group"><label>Investment (R)</label><input type="number" id="investment" value="500000">
+              </div>
+              <div class="form-group"><label>Revenue Y1 (R)</label><input type="number" id="revenue" value="200000">
+              </div>
+              <div class="form-group"><label>Margin (%)</label><input type="number" id="margin" value="30"></div>
+              <div class="form-group"><label>Growth (%)</label><input type="number" id="growth" value="25"></div>
+              <div class="form-group"><label>Years</label><input type="number" id="years" value="5"></div>
+              <div class="form-group"><label>Discount (%)</label><input type="number" id="discount" value="12"></div>
             </div>
-            <div class="risk-entry">
-              <input type="text" placeholder="Risk" value="Regulatory Changes">
-              <select><option>Low</option><option selected>Medium</option><option>High</option></select>
-              <select><option selected>Low</option><option>Medium</option><option>High</option></select>
-              <input type="text" placeholder="Mitigation" value="Monitor policy closely">
-            </div>
-            <div class="risk-entry">
-              <input type="text" placeholder="Risk" value="Economic Downturn">
-              <select><option>Low</option><option selected>Medium</option><option>High</option></select>
-              <select><option>Low</option><option selected>Medium</option><option>High</option></select>
-              <input type="text" placeholder="Mitigation" value="Build cash reserves">
-            </div>
+            <button type="submit" class="btn-primary">Generate Scenarios</button>
+          </form>
+          <div id="scenarioResult" class="result-box" style="display:none;">
+            <div id="scenarioBreakdown"></div>
           </div>
-          <button type="submit" class="btn-primary">Generate Risk Matrix</button>
-        </form>
-
-        <div id="riskResult" class="result-box" style="display:none;">
-          <h4>Risk Assessment & Priorities</h4>
-          <canvas id="riskCanvas" style="max-width: 100%; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; margin: 16px 0;"></canvas>
-          <div id="riskPriorities"></div>
         </div>
-        <button class="btn-export" onclick="downloadPDF('risk', 'Risk-Matrix')">⬇️ Download PDF</button>
       </div>
+
+      <!-- 7. POSITIONING -->
+      <div id="position" class="tab-content">
+        <div class="card">
+          <h3>🎲 Positioning Map</h3>
+          <form id="positionForm" class="analysis-form">
+            <div class="form-grid-2">
+              <div class="form-group"><label>X-Axis</label><input type="text" id="xAttr" value="Price"></div>
+              <div class="form-group"><label>Y-Axis</label><input type="text" id="yAttr" value="Quality"></div>
+            </div>
+            <div class="competitors-input">
+              <div class="competitor-entry"><input type="text" value="Comp A"><input type="number" value="3"><input
+                  type="number" value="7"><input type="color" value="#0ea5e9"></div>
+              <div class="competitor-entry"><input type="text" value="Comp B"><input type="number" value="7"><input
+                  type="number" value="4"><input type="color" value="#8b5cf6"></div>
+            </div>
+            <button type="submit" class="btn-primary">Draw Map</button>
+          </form>
+          <div id="positionResult" class="result-box" style="display:none;"><canvas id="positionCanvas"></canvas>
+            <div id="positionInsights"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. RISK -->
+      <div id="risk" class="tab-content">
+        <div class="card">
+          <h3>⚠️ Risk Matrix</h3>
+          <form id="riskForm" class="analysis-form">
+            <div class="risk-inputs">
+              <div class="risk-entry"><input type="text" value="Competition"><select>
+                  <option>Medium</option>
+                </select><select>
+                  <option>High</option>
+                </select><input type="text" value="Innovate"></div>
+              <div class="risk-entry"><input type="text" value="Regulation"><select>
+                  <option>Medium</option>
+                </select><select>
+                  <option>Low</option>
+                </select><input type="text" value="Monitor"></div>
+            </div>
+            <button type="submit" class="btn-primary">Assess Risk</button>
+          </form>
+          <div id="riskResult" class="result-box" style="display:none;"><canvas id="riskCanvas"></canvas>
+            <div id="riskPriorities"></div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </main>
 
   <div id="site-footer" role="contentinfo"></div>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="analysis-tools.js" defer></script>
+  <script src="stock-data.js"></script>
+  <script src="script.js"></script>
+  <script src="analysis-tools.js"></script>
+
+  <script>
+    // Category Switcher Logic (Simple inline script for UI toggling)
+    document.addEventListener('DOMContentLoaded', () => {
+      const catBtns = document.querySelectorAll('.cat-btn');
+      const cats = document.querySelectorAll('.tool-category');
+
+      catBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Toggle buttons
+          catBtns.forEach(b => {
+            b.classList.remove('active');
+            b.classList.add('btn-ghost');
+          });
+          btn.classList.add('active');
+          btn.classList.remove('btn-ghost');
+
+          // Show category
+          const target = btn.dataset.cat;
+          cats.forEach(c => {
+            c.style.display = c.id === target ? 'block' : 'none';
+          });
+        });
+      });
+    });
+
+    // Sub-tab logic for Financial Tools
+    function switchFinancialTab(tabId) {
+      document.querySelectorAll('#financial-tools .financial-tab').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('#financial-tools .financial-tab').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(tabId);
+      if (target) {
+        target.style.display = 'block';
+        target.classList.add('active');
+      }
+
+      // Update buttons
+      document.querySelectorAll('#financial-tools .tab-button').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(tabId)) btn.classList.add('active');
+      });
+    }
+  </script>
 </body>
+
 </html>
