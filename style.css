@@ -2762,3 +2762,36 @@ input:checked+.slider::before {
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   padding-top: 20px;
 }
+
+/* GiftlyInvited Purple Theme */
+#demo-login,
+#demo-app {
+  --accent: #8b5cf6;
+  --accent-600: #7c3aed;
+}
+
+#demo-login .btn-primary,
+#demo-app .btn-primary {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+}
+
+#demo-login .form-group input:focus,
+#demo-app .form-group input:focus,
+#demo-login .form-group select:focus,
+#demo-app .form-group select:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+#demo-app .demo-tab.active {
+  background: #8b5cf6;
+}
+
+#demo-app .stat-value {
+  color: #8b5cf6;
+}
+
+#demo-app .category-tag {
+  background: #8b5cf6;
+}
