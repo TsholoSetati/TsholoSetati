@@ -21,6 +21,9 @@
                 storage.</small>
         </p>
 
+        <!-- Toast Container -->
+        <div id="toast-container" class="toast-container"></div>
+
         <!-- Login Gate -->
         <div id="demo-login" class="demo-login-container">
             <div class="card demo-login-card">
@@ -42,7 +45,6 @@
                     <div id="loginError" class="demo-error" style="display: none;"></div>
                     <button type="submit" class="btn-primary">Sign In</button>
                 </form>
-                <!-- Hint removed as requested -->
             </div>
         </div>
 
@@ -61,6 +63,21 @@
                 <div class="demo-welcome">
                     <h3>Welcome back, Admin! 👋</h3>
                     <p class="muted">Manage your gift registries.</p>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="dashboard-stats" id="dashboardStats" style="display: none;">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Value</span>
+                        <span class="stat-value" id="statsTotalValue">R0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Completion</span>
+                        <div class="stat-progress-bar">
+                            <div class="stat-progress-fill" id="statsProgress" style="width: 0%"></div>
+                        </div>
+                        <span class="stat-text" id="statsText">0% Fulfilled</span>
+                    </div>
                 </div>
 
                 <div class="demo-registries-header">
@@ -105,7 +122,18 @@
                     <h3>Guest View Simulation</h3>
                     <p class="muted">Enter invite code to view registry as a guest.</p>
 
-                    <div class="demo-guest-code-input">
+                    <!-- Guest Identity Form (Hidden initially) -->
+                    <div id="guestIdentityForm" class="demo-guest-code-input" style="display: none;">
+                        <div class="form-group">
+                            <label for="guestNameInput">What is your name?</label>
+                            <div class="demo-code-row">
+                                <input type="text" id="guestNameInput" placeholder="e.g., John Doe" required>
+                                <button type="button" id="confirmGuestNameBtn" class="btn-primary">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="demo-guest-code-input" id="guestCodeSection">
                         <div class="form-group">
                             <label for="inviteCodeInput">Enter Invite Code</label>
                             <div class="demo-code-row">
@@ -116,7 +144,7 @@
                     </div>
 
                     <div id="guestRegistryView" class="demo-guest-registry" style="display: none;">
-                        <!-- Populated by JS -->
+                        <!-- Updated by JS with filters -->
                     </div>
                 </div>
             </div>
@@ -136,11 +164,31 @@
                             <button type="button" id="copyCodeBtn" class="demo-copy-btn">📋 Copy</button>
                         </div>
 
+                        <!-- Creator vs Admin Toggle (Demo Only) -->
+                        <div class="role-toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="adminModeToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="toggle-label">Reveal Claimers (Admin Mode)</span>
+                        </div>
+
                         <div class="demo-items-section">
                             <div class="demo-items-header">
                                 <h4>Gift Items</h4>
                                 <button type="button" id="addItemBtn" class="btn-primary">+ Add Item</button>
                             </div>
+
+                            <!-- Filter Controls -->
+                            <div class="filter-controls">
+                                <select id="creatorFilterSort" class="form-control-sm">
+                                    <option value="newest">Sort: Newest</option>
+                                    <option value="price-asc">Price: Low to High</option>
+                                    <option value="price-desc">Price: High to Low</option>
+                                    <option value="status">Status: Claimed First</option>
+                                </select>
+                            </div>
+
                             <div id="itemsList" class="demo-items-list">
                                 <!-- Populated by JS -->
                             </div>
@@ -168,6 +216,16 @@
                                         <label for="itemQuantity">Quantity</label>
                                         <input type="number" id="itemQuantity" value="1" min="1">
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemCategory">Category</label>
+                                    <select id="itemCategory">
+                                        <option value="General">General</option>
+                                        <option value="Kitchen">Kitchen</option>
+                                        <option value="Home">Home Decor</option>
+                                        <option value="Baby">Baby</option>
+                                        <option value="Cash Fund">Cash Fund</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="itemUrl">Product Link</label>

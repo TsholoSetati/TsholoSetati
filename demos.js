@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     let currentUser = null;
     let registries = JSON.parse(localStorage.getItem('demo_registries') || '[]');
+    let currentGuestName = localStorage.getItem('demo_guest_name') || null;
+    let isAdminRevealMode = false;
 
     // DOM Elements
     const loginContainer = document.getElementById('demo-login');
@@ -18,6 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const createRegistryForm = document.getElementById('createRegistryForm');
     const registriesList = document.getElementById('registriesList');
     const registryCount = document.getElementById('registryCount');
+    const toastContainer = document.getElementById('toast-container');
+
+    // Stats Elements
+    const dashboardStats = document.getElementById('dashboardStats');
+    const statsTotalValue = document.getElementById('statsTotalValue');
+    const statsProgress = document.getElementById('statsProgress');
+    const statsText = document.getElementById('statsText');
 
     // Modal Elements
     const modal = document.getElementById('registryModal');
@@ -28,9 +37,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const itemForm = document.getElementById('itemForm');
     const cancelAddItem = document.getElementById('cancelAddItem');
     const copyCodeBtn = document.getElementById('copyCodeBtn');
+    const adminModeToggle = document.getElementById('adminModeToggle');
+    const creatorFilterSort = document.getElementById('creatorFilterSort');
+
+    // Guest Elements
+    const guestIdentityForm = document.getElementById('guestIdentityForm');
+    const guestCodeSection = document.getElementById('guestCodeSection');
+    const guestNameInput = document.getElementById('guestNameInput');
+    const confirmGuestNameBtn = document.getElementById('confirmGuestNameBtn');
 
     // Initialization
     checkSession();
+    updateGuestState();
 
     // Event Listeners
     loginForm?.addEventListener('submit', handleLogin);
@@ -48,14 +66,41 @@ document.addEventListener('DOMContentLoaded', () => {
     addItemBtn?.addEventListener('click', () => {
         addItemForm.style.display = 'block';
         addItemBtn.style.display = 'none';
+        // Hide sort controls when adding item
+        if (creatorFilterSort) creatorFilterSort.parentElement.style.display = 'none';
     });
     cancelAddItem?.addEventListener('click', () => {
         addItemForm.style.display = 'none';
         addItemBtn.style.display = 'block';
+        if (creatorFilterSort) creatorFilterSort.parentElement.style.display = 'block';
         itemForm.reset();
     });
     itemForm?.addEventListener('submit', handleAddItem);
     copyCodeBtn?.addEventListener('click', handleCopyCode);
+
+    adminModeToggle?.addEventListener('change', (e) => {
+        isAdminRevealMode = e.target.checked;
+        const registryId = modal.dataset.currentId;
+        const registry = registries.find(r => r.id === registryId);
+        if (registry) renderItems(registry);
+    });
+
+    creatorFilterSort?.addEventListener('change', () => {
+        const registryId = modal.dataset.currentId;
+        const registry = registries.find(r => r.id === registryId);
+        if (registry) renderItems(registry);
+    });
+
+    confirmGuestNameBtn?.addEventListener('click', () => {
+        const name = guestNameInput.value.trim();
+        if (name) {
+            currentGuestName = name;
+            localStorage.setItem('demo_guest_name', name);
+            updateGuestState();
+        } else {
+            showToast('Please enter your name to continue', 'error');
+        }
+    });
 
     // --- Authentication ---
 
@@ -113,6 +158,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function updateGuestState() {
+        if (currentGuestName) {
+            guestIdentityForm.style.display = 'none';
+            guestCodeSection.style.display = 'block';
+        } else {
+            guestIdentityForm.style.display = 'block';
+            guestCodeSection.style.display = 'none';
+        }
+    }
+
     // --- Registry Management ---
 
     function handleCreateRegistry(e) {
@@ -134,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         registries.unshift(newRegistry); // Add to top
         saveRegistries();
+        showToast('Registry created successfully!', 'success');
 
         // Switch to dashboard
         switchTab('dashboard');
@@ -157,6 +213,27 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateDashboard() {
         registryCount.textContent = registries.length;
         registriesList.innerHTML = '';
+
+        // Update Stats
+        let totalVal = 0;
+        let totalItems = 0;
+        let claimedItems = 0;
+
+        registries.forEach(r => {
+            r.items.forEach(i => {
+                totalVal += (Number(i.price) || 0) * (Number(i.quantity) || 1);
+                totalItems += Number(i.quantity) || 1;
+                claimedItems += Number(i.claimed) || 0;
+            });
+        });
+
+        statsTotalValue.textContent = `R${totalVal.toLocaleString()}`;
+        const percent = totalItems > 0 ? Math.round((claimedItems / totalItems) * 100) : 0;
+        statsProgress.style.width = `${percent}%`;
+        statsText.textContent = `${percent}% Fulfilled (${claimedItems}/${totalItems} gifts)`;
+        if (registries.length > 0) {
+            dashboardStats.style.display = 'flex';
+        }
 
         if (registries.length === 0) {
             registriesList.innerHTML = `
@@ -194,6 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
             registries = registries.filter(r => r.id !== id);
             saveRegistries();
             updateDashboard();
+            showToast('Registry deleted', 'success');
         }
     };
 
@@ -205,9 +283,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modalInviteCode').textContent = registry.inviteCode;
         modal.dataset.currentId = id; // Store ID on modal
 
-        renderItems(registry);
+        // Reset Admin Toggle
+        adminModeToggle.checked = false;
+        isAdminRevealMode = false;
 
+        renderItems(registry);
         modal.style.display = 'flex';
+        if (creatorFilterSort) creatorFilterSort.parentElement.style.display = 'block';
     };
 
     function closeModal() {
@@ -218,8 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Items Management ---
 
-    // --- Items Management ---
-
     function handleAddItem(e) {
         e.preventDefault();
         const registryId = modal.dataset.currentId;
@@ -227,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!registry) return;
 
         const fileInput = document.getElementById('itemImage');
-        let imageSrc = null;
 
         const processItem = (imgData) => {
             const newItem = {
@@ -235,10 +314,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: document.getElementById('itemTitle').value,
                 price: document.getElementById('itemPrice').value,
                 quantity: parseInt(document.getElementById('itemQuantity').value) || 1,
+                category: document.getElementById('itemCategory').value,
                 url: document.getElementById('itemUrl').value,
                 description: document.getElementById('itemDescription').value,
                 image: imgData,
-                claimed: 0
+                claimed: 0,
+                claims: [], // Array of { name: 'John', date: ... }
+                thankYouSent: false
             };
 
             registry.items.push(newItem);
@@ -247,7 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
             itemForm.reset();
             addItemForm.style.display = 'none';
             addItemBtn.style.display = 'block';
+            if (creatorFilterSort) creatorFilterSort.parentElement.style.display = 'block';
             updateDashboard();
+            showToast('Item added successfully!', 'success');
         };
 
         if (fileInput.files && fileInput.files[0]) {
@@ -261,6 +345,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Helper to sort items
+    function sortItems(items, sortMode) {
+        let sorted = [...items];
+        switch (sortMode) {
+            case 'price-asc': return sorted.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
+            case 'price-desc': return sorted.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
+            case 'status': return sorted.sort((a, b) => (b.claimed - a.claimed)); // Claimed items first
+            case 'newest':
+            default: return sorted.reverse(); // Default is newest first (based on push order)
+        }
+    }
+
     function renderItems(registry) {
         const list = document.getElementById('itemsList');
         list.innerHTML = '';
@@ -270,21 +366,49 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        registry.items.forEach(item => {
+        const sortMode = creatorFilterSort ? creatorFilterSort.value : 'newest';
+        const sortedItems = sortItems(registry.items, sortMode);
+
+        sortedItems.forEach(item => {
+            const isFulfilled = item.claimed >= item.quantity;
+
+            // Logic for showing claimers
+            let claimerDisplay = '';
+            if (item.claimed > 0) {
+                if (isAdminRevealMode) {
+                    // Admin sees names
+                    const names = item.claims ? item.claims.map(c => c.name).join(', ') : 'Unknown';
+                    claimerDisplay = `<div class="claimer-info admin-reveal">🎁 Claimed by: <strong>${names}</strong></div>`;
+                } else {
+                    // Creator sees only status
+                    claimerDisplay = `<div class="claimer-info creator-view">🎁 ${item.claimed} purchased (Names hidden until Reveal)</div>`;
+                }
+            }
+
             const el = document.createElement('div');
-            el.className = 'demo-item-card';
+            el.className = `demo-item-card ${isFulfilled ? 'fulfilled' : ''}`;
             el.innerHTML = `
         <div class="item-info">
-          ${item.image ? `<img src="${item.image}" alt="${item.title}" style="max-width: 50px; height: auto; border-radius: 4px; margin-right: 10px;">` : ''}
+          ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; margin-right: 15px;">` : ''}
           <div style="flex:1;">
-            <h5>${item.title}</h5>
-            <div class="item-meta">
-                <span>R${item.price || '0'}</span>
-                <span>Req: ${item.quantity}</span>
-                <span>Claimed: ${item.claimed}</span>
+            <div style="display:flex; justify-content:space-between;">
+                <h5>${item.title} <span class="category-tag">${item.category || 'General'}</span></h5>
+                <span class="muted">R${item.price || '0'}</span>
             </div>
-            ${item.description ? `<p class="muted small">${item.description}</p>` : ''}
-            ${item.url ? `<a href="${item.url}" target="_blank" class="small">View Link</a>` : ''}
+            
+            <div class="item-meta">
+                 <span>Req: ${item.quantity}</span>
+                 <span>Has: <strong>${item.claimed}</strong></span>
+            </div>
+            
+            ${claimerDisplay}
+
+            <div class="item-admin-controls" style="margin-top:8px; border-top:1px solid #eee; padding-top:8px;">
+                 <label class="thank-you-label">
+                    <input type="checkbox" onchange="toggleThankYou('${registry.id}', '${item.id}', this)" ${item.thankYouSent ? 'checked' : ''}> 
+                    💌 Thank You Sent?
+                 </label>
+            </div>
           </div>
         </div>
       `;
@@ -292,11 +416,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    window.toggleThankYou = (regId, itemId, checkbox) => {
+        const registry = registries.find(r => r.id === regId);
+        const item = registry?.items.find(i => i.id === itemId);
+        if (item) {
+            item.thankYouSent = checkbox.checked;
+            saveRegistries();
+            showToast(item.thankYouSent ? 'Marked as Sent!' : 'Marked as Not Sent');
+        }
+    };
+
     function handleCopyCode() {
         const code = document.getElementById('modalInviteCode').textContent;
         navigator.clipboard.writeText(code);
         copyCodeBtn.textContent = 'Copied!';
         setTimeout(() => copyCodeBtn.textContent = '📋 Copy', 2000);
+        showToast('Invite code copied to clipboard');
     }
 
     // --- Guest Simulation ---
@@ -310,53 +445,133 @@ document.addEventListener('DOMContentLoaded', () => {
         if (registry) {
             renderGuestView(registry);
             guestView.style.display = 'grid';
+            showToast(`Found registry: ${registry.name}`, 'success');
         } else {
-            alert('Registry not found. Check the invite code.');
+            showToast('Registry not found. Check the invite code.', 'error');
             guestView.style.display = 'none';
         }
     });
 
     function renderGuestView(registry) {
+        // Guest Filter Controls
+        const filterHtml = `
+            <div class="guest-filters" style="margin-bottom: 20px; grid-column: 1/-1;">
+                 <input type="text" id="guestSearch" placeholder="Search gifts..." class="form-control" style="max-width:300px; display:inline-block; margin-right:10px;">
+                 <select id="guestSort" class="form-control" style="max-width:200px; display:inline-block;">
+                    <option value="default">Sort: Default</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                 </select>
+            </div>
+        `;
+
         guestView.innerHTML = `
-      <div class="guest-header">
+      <div class="guest-header" style="grid-column: 1/-1;">
         <h4>${registry.name}</h4>
         <p>${registry.description || ''}</p>
         <span class="muted date">📅 ${registry.formattedDate}</span>
       </div>
-      <div class="guest-items-grid">
-        ${registry.items.map(item => `
-          <div class="guest-item-card">
+      ${filterHtml}
+      <div class="guest-items-grid" id="guestGridContainer" style="grid-column: 1/-1; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+        <!-- Items Injected Here -->
+      </div>
+    `;
+
+        renderGuestGrid(registry, registry.items);
+
+        // Attach listeners for guest search/sort
+        document.getElementById('guestSearch')?.addEventListener('keyup', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = registry.items.filter(i => i.title.toLowerCase().includes(term));
+            renderGuestGrid(registry, filtered);
+        });
+
+        document.getElementById('guestSort')?.addEventListener('change', (e) => {
+            const sorted = sortItems(registry.items, e.target.value);
+            renderGuestGrid(registry, sorted);
+        });
+    }
+
+    function renderGuestGrid(registry, items) {
+        const container = document.getElementById('guestGridContainer');
+        container.innerHTML = items.map(item => `
+          <div class="guest-item-card" style="display:flex; flex-direction:column;">
             ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;">` : ''}
-            <h5>${item.title}</h5>
-            <p>R${item.price}</p>
-            <p>Wanted: ${item.quantity} | Claimed: ${item.claimed}</p>
-            <div class="guest-actions">
-              <button class="btn-primary btn-sm" onclick="toggleClaimItem('${registry.id}', '${item.id}')">
-                ${item.claimed >= item.quantity ? 'Un-claim Gift' : 'Claim Gift'}
+            <div class="guest-item-content" style="flex:1;">
+                <span class="category-tag-small">${item.category || 'General'}</span>
+                <h5>${item.title}</h5>
+                <p>R${item.price}</p>
+                <div class="progress-bar-sm">
+                    <div class="fill" style="width: ${(item.claimed / item.quantity) * 100}%"></div>
+                </div>
+                <p><small>${item.claimed} / ${item.quantity} claimed</small></p>
+            </div>
+            <div class="guest-actions" style="margin-top:10px;">
+              <button class="btn-primary btn-sm" style="width:100%" onclick="toggleClaimItem('${registry.id}', '${item.id}')">
+                ${isClaimedByMe(item) ? 'Un-claim Gift' : (item.claimed >= item.quantity ? 'Fulfilled' : 'Claim Gift')}
               </button>
             </div>
           </div>
-        `).join('')}
-      </div>
-    `;
+        `).join('')
+    }
+
+    function isClaimedByMe(item) {
+        if (!item.claims) return false;
+        return item.claims.some(c => c.name === currentGuestName);
     }
 
     window.toggleClaimItem = (regId, itemId) => {
+        if (!currentGuestName) {
+            showToast('Please enter your name first', 'error');
+            // Scroll to name input?
+            return;
+        }
+
         const registry = registries.find(r => r.id === regId);
         const item = registry?.items.find(i => i.id === itemId);
 
         if (item) {
-            if (item.claimed >= item.quantity) {
-                // Unclaim logic: reduce claimed count, but not below 0
+            // Ensure claims array exists
+            if (!item.claims) item.claims = [];
+
+            const myClaimIndex = item.claims.findIndex(c => c.name === currentGuestName);
+
+            if (myClaimIndex >= 0) {
+                // UNCLAIM
+                item.claims.splice(myClaimIndex, 1);
                 item.claimed = Math.max(0, item.claimed - 1);
-                alert(`You have un-claimed: ${item.title}`);
+                showToast(`You have un-claimed: ${item.title}`);
             } else {
-                // Claim logic
+                // CLAIM
+                if (item.claimed >= item.quantity) {
+                    showToast('This item is already fully claimed!', 'error');
+                    return;
+                }
+                item.claims.push({ name: currentGuestName, date: new Date().toISOString() });
                 item.claimed++;
-                alert(`You have claimed: ${item.title}`);
+                showToast(`You have claimed: ${item.title}`, 'success');
             }
             saveRegistries();
-            renderGuestView(registry);
+            // Re-render only grid to keep filters
+            renderGuestGrid(registry, registry.items);
         }
     };
+
+    // --- Toast Notification System ---
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+
+        toastContainer.appendChild(toast);
+
+        // Trigger reflow
+        void toast.offsetWidth;
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
 });
