@@ -1449,8 +1449,42 @@ input:checked+.slider::before {
   color: var(--muted);
 }
 
-.thank-you-label input {
-  margin: 0;
+margin: 0;
+}
+
+/* Landing Page Split */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.divider span {
+  padding: 0 10px;
+}
+
+.guest-entry-section h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  color: var(--text);
+  text-align: center;
+}
+
+.login-toggle {
+  text-align: center;
 }
 
 /* Responsive */

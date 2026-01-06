@@ -32,19 +32,43 @@
                     <h3>GiftlyInvited</h3>
                     <p class="muted">Private Gift Registry Demo</p>
                 </div>
-                <form id="loginForm" class="demo-login-form">
+
+                <!-- Guest Entry -->
+                <div class="guest-entry-section">
+                    <h4>Have an invite code?</h4>
                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" placeholder="Enter username" required autocomplete="username">
+                        <div class="demo-code-row">
+                            <input type="text" id="landingInviteCode" placeholder="Enter Invite Code">
+                            <button type="button" id="landingFindBtn" class="btn-primary">View Registry</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" placeholder="Enter password" required
-                            autocomplete="current-password">
-                    </div>
-                    <div id="loginError" class="demo-error" style="display: none;"></div>
-                    <button type="submit" class="btn-primary">Sign In</button>
-                </form>
+                </div>
+
+                <div class="divider"><span>OR</span></div>
+
+                <!-- Admin/Creator Login -->
+                <div class="login-toggle">
+                    <button type="button" class="btn-ghost btn-sm"
+                        onclick="document.getElementById('loginFormSection').style.display = 'block'; this.style.display='none';">Login
+                        as Creator/Admin</button>
+                </div>
+
+                <div id="loginFormSection" style="display: none;">
+                    <form id="loginForm" class="demo-login-form">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" placeholder="Enter username" required
+                                autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="Enter password" required
+                                autocomplete="current-password">
+                        </div>
+                        <div id="loginError" class="demo-error" style="display: none;"></div>
+                        <button type="submit" class="btn-primary">Sign In</button>
+                    </form>
+                </div>
             </div>
         </div>
 

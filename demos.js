@@ -54,6 +54,16 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm?.addEventListener('submit', handleLogin);
     logoutBtn?.addEventListener('click', handleLogout);
 
+    // Landing Page Listeners
+    document.getElementById('landingFindBtn')?.addEventListener('click', () => {
+        const code = document.getElementById('landingInviteCode').value.trim().toUpperCase();
+        if (code) {
+            handleGuestEntry(code);
+        } else {
+            showToast('Please enter an invite code', 'error');
+        }
+    });
+
     tabButtons.forEach(btn => {
         btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
@@ -110,21 +120,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const pass = document.getElementById('password').value;
         const errorMsg = document.getElementById('loginError');
 
+        // Admin Login
         if (user.toLowerCase() === 'admin' && pass === 'admin') {
-            currentUser = { name: 'Admin', username: 'admin' };
+            currentUser = { name: 'Admin', role: 'admin' };
             localStorage.setItem('demo_user', JSON.stringify(currentUser));
             errorMsg.style.display = 'none';
             renderApp();
-        } else {
-            errorMsg.textContent = 'Invalid credentials. Try admin / admin';
+        }
+        // Rebone Login
+        else if (user.toLowerCase() === 'rebone' && pass === 'babyshower') {
+            currentUser = { name: 'Rebone', role: 'creator' };
+            localStorage.setItem('demo_user', JSON.stringify(currentUser));
+            errorMsg.style.display = 'none';
+            renderApp();
+        }
+        else {
+            errorMsg.textContent = 'Invalid credentials.';
             errorMsg.style.display = 'block';
+        }
+    }
+
+    function handleGuestEntry(code) {
+        const registry = registries.find(r => r.inviteCode === code);
+        if (registry) {
+            currentUser = { name: 'Guest', role: 'guest', activeRegistryCode: code };
+            localStorage.setItem('demo_user', JSON.stringify(currentUser));
+            renderApp();
+            // Pre-fill guest view
+            setTimeout(() => {
+                renderGuestView(registry);
+                guestView.style.display = 'grid';
+            }, 100);
+        } else {
+            showToast('Registry not found.', 'error');
         }
     }
 
     function handleLogout() {
         currentUser = null;
         localStorage.removeItem('demo_user');
-        renderApp();
+        // Reset view state
+        window.location.reload();
     }
 
     function checkSession() {
@@ -139,7 +175,42 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentUser) {
             loginContainer.style.display = 'none';
             appContainer.style.display = 'block';
-            updateDashboard();
+
+            // Role-Based UI
+            if (currentUser.role === 'guest') {
+                // Hide Dashboard/Create tabs
+                document.querySelectorAll('.demo-tab[data-tab="dashboard"], .demo-tab[data-tab="create"]').forEach(el => el.style.display = 'none');
+                // Auto switch to guest
+                switchTab('guest');
+                // Hide search box in guest tab since they already entered code
+                document.getElementById('guestCodeSection').style.display = 'none';
+                logoutBtn.textContent = '👋 Exit Guest View';
+
+                // If we have a code, load it
+                if (currentUser.activeRegistryCode) {
+                    const reg = registries.find(r => r.inviteCode === currentUser.activeRegistryCode);
+                    if (reg) renderGuestView(reg);
+                }
+
+            } else {
+                // Admin/Creator View
+                document.querySelectorAll('.demo-tab').forEach(el => el.style.display = 'inline-block');
+                logoutBtn.textContent = '🚪 Sign Out';
+
+                // Update specific UI for Rebone vs Admin
+                const welcomeMsg = document.querySelector('.demo-welcome h3');
+                if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${currentUser.name}! 👋`;
+
+                // Hide Admin Toggle for Rebone
+                if (currentUser.role === 'creator') {
+                    document.querySelector('.role-toggle-container').style.display = 'none';
+                } else {
+                    document.querySelector('.role-toggle-container').style.display = 'flex';
+                }
+
+                updateDashboard();
+            }
+
         } else {
             loginContainer.style.display = 'flex';
             appContainer.style.display = 'none';
