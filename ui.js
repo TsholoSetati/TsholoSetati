@@ -10,13 +10,13 @@
       </div>
     </div>
     <nav class="site-links" aria-label="Main navigation">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="experience.html">Experience</a>
-      <a href="economics.html">Analysis & Tools</a>
-      <a href="demos.html">Demo's</a>
-      <a href="contact.html">Contact</a>
-      <button id="themeToggle" aria-label="Toggle theme" title="Toggle dark mode">Theme</button>
+      <a href="index.html"><i data-lucide="home" class="nav-icon"></i> Home</a>
+      <a href="about.html"><i data-lucide="user" class="nav-icon"></i> About</a>
+      <a href="experience.html"><i data-lucide="briefcase" class="nav-icon"></i> Experience</a>
+      <a href="economics.html"><i data-lucide="bar-chart-3" class="nav-icon"></i> Analysis & Tools</a>
+      <a href="demos.html"><i data-lucide="layers" class="nav-icon"></i> Demo's</a>
+      <a href="contact.html"><i data-lucide="mail" class="nav-icon"></i> Contact</a>
+      <button id="themeToggle" aria-label="Toggle theme" title="Toggle dark mode"><i data-lucide="moon" id="themeIcon"></i></button>
     </nav>
   </div>`;
 
@@ -52,16 +52,23 @@
     document.documentElement.setAttribute('data-theme', saved);
 
     const tBtn = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
     if (!tBtn) return;
 
-    tBtn.textContent = saved === 'dark' ? '☀️' : '🌙';
+    // Update icon based on theme
+    if (themeIcon) {
+      themeIcon.setAttribute('data-lucide', saved === 'dark' ? 'sun' : 'moon');
+    }
 
     tBtn.addEventListener('click', () => {
       const cur = document.documentElement.getAttribute('data-theme') || 'light';
       const next = cur === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
-      tBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+      if (themeIcon) {
+        themeIcon.setAttribute('data-lucide', next === 'dark' ? 'sun' : 'moon');
+        if (window.lucide) window.lucide.createIcons();
+      }
     });
   }
 
@@ -75,6 +82,11 @@
     const brand = document.querySelector('.brand');
     if (brand) {
       brand.addEventListener('click', () => location.href = 'index.html');
+    }
+
+    // Initialize Lucide icons
+    if (window.lucide) {
+      window.lucide.createIcons();
     }
   });
 })();
