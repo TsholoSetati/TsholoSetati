@@ -13,7 +13,6 @@
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="experience.html">Experience</a>
-      <a href="projects.html">Projects</a>
       <a href="economics.html">Analysis & Tools</a>
       <a href="demos.html">Demo's</a>
       <a href="contact.html">Contact</a>

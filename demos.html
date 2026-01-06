@@ -16,7 +16,10 @@
 
     <main id="main-content" class="container content-area">
         <h2>Demo's & Prototypes</h2>
-        <p class="section-subtitle">Interactive demonstrations of web applications and prototypes I've built.</p>
+        <p class="section-subtitle">Interactive demonstrations of web applications and prototypes I've built. <br>
+            <small class="muted">Note: This is a client-side simulation. Data is stored in your browser's local
+                storage.</small>
+        </p>
 
         <!-- Login Gate -->
         <div id="demo-login" class="demo-login-container">
@@ -39,7 +42,7 @@
                     <div id="loginError" class="demo-error" style="display: none;"></div>
                     <button type="submit" class="btn-primary">Sign In</button>
                 </form>
-                <p class="demo-hint">Hint: Use <code>admin</code> / <code>admin</code></p>
+                <!-- Hint removed as requested -->
             </div>
         </div>
 
@@ -57,7 +60,7 @@
             <div id="tab-dashboard" class="demo-tab-content active">
                 <div class="demo-welcome">
                     <h3>Welcome back, Admin! 👋</h3>
-                    <p class="muted">Manage your gift registries or create a new one.</p>
+                    <p class="muted">Manage your gift registries.</p>
                 </div>
 
                 <div class="demo-registries-header">
@@ -77,7 +80,6 @@
             <div id="tab-create" class="demo-tab-content">
                 <div class="card">
                     <h3>Create New Registry</h3>
-                    <p class="muted">Set up a private gift registry for your event.</p>
                     <form id="createRegistryForm" class="demo-form">
                         <div class="form-group">
                             <label for="registryName">Registry Name *</label>
@@ -101,7 +103,7 @@
             <div id="tab-guest" class="demo-tab-content">
                 <div class="card">
                     <h3>Guest View Simulation</h3>
-                    <p class="muted">See how your registry appears to invited guests.</p>
+                    <p class="muted">Enter invite code to view registry as a guest.</p>
 
                     <div class="demo-guest-code-input">
                         <div class="form-group">
@@ -148,6 +150,11 @@
                         <div id="addItemForm" class="demo-add-item-form" style="display: none;">
                             <h4>Add New Item</h4>
                             <form id="itemForm">
+                                <div class="form-group">
+                                    <label for="itemImage">Item Image</label>
+                                    <input type="file" id="itemImage" accept="image/*">
+                                    <small class="muted">Upload an image (max 2MB)</small>
+                                </div>
                                 <div class="form-group">
                                     <label for="itemTitle">Item Name *</label>
                                     <input type="text" id="itemTitle" placeholder="e.g., Baby Monitor" required>

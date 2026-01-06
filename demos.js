@@ -218,32 +218,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Items Management ---
 
+    // --- Items Management ---
+
     function handleAddItem(e) {
         e.preventDefault();
         const registryId = modal.dataset.currentId;
         const registry = registries.find(r => r.id === registryId);
         if (!registry) return;
 
-        const newItem = {
-            id: Date.now().toString(),
-            title: document.getElementById('itemTitle').value,
-            price: document.getElementById('itemPrice').value,
-            quantity: document.getElementById('itemQuantity').value,
-            url: document.getElementById('itemUrl').value,
-            description: document.getElementById('itemDescription').value,
-            claimed: 0
+        const fileInput = document.getElementById('itemImage');
+        let imageSrc = null;
+
+        const processItem = (imgData) => {
+            const newItem = {
+                id: Date.now().toString(),
+                title: document.getElementById('itemTitle').value,
+                price: document.getElementById('itemPrice').value,
+                quantity: parseInt(document.getElementById('itemQuantity').value) || 1,
+                url: document.getElementById('itemUrl').value,
+                description: document.getElementById('itemDescription').value,
+                image: imgData,
+                claimed: 0
+            };
+
+            registry.items.push(newItem);
+            saveRegistries();
+            renderItems(registry);
+            itemForm.reset();
+            addItemForm.style.display = 'none';
+            addItemBtn.style.display = 'block';
+            updateDashboard();
         };
 
-        registry.items.push(newItem);
-        saveRegistries();
-
-        renderItems(registry);
-
-        itemForm.reset();
-        addItemForm.style.display = 'none';
-        addItemBtn.style.display = 'block';
-
-        updateDashboard(); // Update item count on dashboard
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                processItem(e.target.result);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            processItem(null);
+        }
     }
 
     function renderItems(registry) {
@@ -260,14 +275,17 @@ document.addEventListener('DOMContentLoaded', () => {
             el.className = 'demo-item-card';
             el.innerHTML = `
         <div class="item-info">
-          <h5>${item.title}</h5>
-          <div class="item-meta">
-            <span>R${item.price || '0'}</span>
-            <span>Req: ${item.quantity}</span>
-            <span>Claimed: ${item.claimed}</span>
+          ${item.image ? `<img src="${item.image}" alt="${item.title}" style="max-width: 50px; height: auto; border-radius: 4px; margin-right: 10px;">` : ''}
+          <div style="flex:1;">
+            <h5>${item.title}</h5>
+            <div class="item-meta">
+                <span>R${item.price || '0'}</span>
+                <span>Req: ${item.quantity}</span>
+                <span>Claimed: ${item.claimed}</span>
+            </div>
+            ${item.description ? `<p class="muted small">${item.description}</p>` : ''}
+            ${item.url ? `<a href="${item.url}" target="_blank" class="small">View Link</a>` : ''}
           </div>
-          ${item.description ? `<p class="muted small">${item.description}</p>` : ''}
-          ${item.url ? `<a href="${item.url}" target="_blank" class="small">View Link</a>` : ''}
         </div>
       `;
             list.appendChild(el);
@@ -308,12 +326,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="guest-items-grid">
         ${registry.items.map(item => `
           <div class="guest-item-card">
+            ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;">` : ''}
             <h5>${item.title}</h5>
             <p>R${item.price}</p>
+            <p>Wanted: ${item.quantity} | Claimed: ${item.claimed}</p>
             <div class="guest-actions">
-              <button class="btn-primary btn-sm" onclick="claimItem('${registry.id}', '${item.id}')" 
-                ${item.claimed >= item.quantity ? 'disabled' : ''}>
-                ${item.claimed >= item.quantity ? 'Fulfilled' : 'Claim Gift'}
+              <button class="btn-primary btn-sm" onclick="toggleClaimItem('${registry.id}', '${item.id}')">
+                ${item.claimed >= item.quantity ? 'Un-claim Gift' : 'Claim Gift'}
               </button>
             </div>
           </div>
@@ -322,16 +341,22 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     }
 
-    window.claimItem = (regId, itemId) => {
+    window.toggleClaimItem = (regId, itemId) => {
         const registry = registries.find(r => r.id === regId);
         const item = registry?.items.find(i => i.id === itemId);
 
-        if (item && item.claimed < item.quantity) {
-            item.claimed++;
+        if (item) {
+            if (item.claimed >= item.quantity) {
+                // Unclaim logic: reduce claimed count, but not below 0
+                item.claimed = Math.max(0, item.claimed - 1);
+                alert(`You have un-claimed: ${item.title}`);
+            } else {
+                // Claim logic
+                item.claimed++;
+                alert(`You have claimed: ${item.title}`);
+            }
             saveRegistries();
-            renderGuestView(registry); // Re-render to update button state
-            alert(`You have claimed: ${item.title}`);
+            renderGuestView(registry);
         }
     };
-
 });
