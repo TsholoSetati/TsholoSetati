@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PayPer - Negotiation & Payment Platform Demo</title>
+    <title>Sharp-Sharp - Shared Expense Tracker Demo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -22,6 +22,8 @@
             --text: #1f2937;
             --muted: #6b7280;
             --card: #ffffff;
+            --success: #10b981;
+            --warning: #f59e0b;
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -199,18 +201,6 @@
             margin: 8px 0;
         }
 
-        .status-active {
-            background: #10b981;
-        }
-
-        .status-pending {
-            background: #f59e0b;
-        }
-
-        .status-completed {
-            background: #6366f1;
-        }
-
         .section {
             background: var(--card);
             padding: 32px;
@@ -227,6 +217,12 @@
             font-size: 1.75rem;
             margin-bottom: 20px;
             font-family: 'Clash Display', sans-serif;
+        }
+
+        .section h3 {
+            font-size: 1.25rem;
+            margin-top: 24px;
+            margin-bottom: 12px;
         }
 
         .btn {
@@ -264,41 +260,31 @@
             font-size: 1.5rem;
         }
 
-        .flow-chart {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .feature-list {
+            list-style: none;
         }
 
-        .flow-step {
+        .feature-list li {
+            padding: 12px 0;
             display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            background: rgba(14, 165, 233, 0.05);
-            border-left: 4px solid var(--accent);
-            border-radius: 8px;
+            gap: 12px;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        [data-theme="dark"] .flow-step {
-            background: rgba(14, 165, 233, 0.1);
+        [data-theme="dark"] .feature-list li {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
         }
 
-        .flow-step-number {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            font-weight: 700;
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            color: var(--accent);
+            font-size: 1.25rem;
             flex-shrink: 0;
-        }
-
-        .flow-step-content h4 {
-            margin-bottom: 4px;
+            margin-top: 2px;
         }
 
         .demo-form {
@@ -347,71 +333,85 @@
             box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
         }
 
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            border: none;
-            font-size: 2rem;
-            cursor: pointer;
-            color: var(--muted);
-            transition: all 0.3s ease;
-        }
-
-        .close-btn:hover {
-            color: var(--text);
-            transform: rotate(90deg);
-        }
-
-        .feature-list {
-            list-style: none;
-        }
-
-        .feature-list li {
-            padding: 12px 0;
+        .flow-chart {
             display: flex;
-            gap: 12px;
-            align-items: flex-start;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            flex-direction: column;
+            gap: 16px;
         }
 
-        [data-theme="dark"] .feature-list li {
-            border-bottom-color: rgba(255, 255, 255, 0.1);
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(14, 165, 233, 0.05);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
         }
 
-        .feature-list li:last-child {
-            border-bottom: none;
-        }
-
-        .feature-icon {
-            color: var(--accent);
-            font-size: 1.25rem;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        .comparison-table th,
-        .comparison-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        [data-theme="dark"] .comparison-table th,
-        [data-theme="dark"] .comparison-table td {
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .comparison-table th {
+        [data-theme="dark"] .flow-step {
             background: rgba(14, 165, 233, 0.1);
+        }
+
+        .flow-step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
             font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .flow-step-content h4 {
+            margin-bottom: 4px;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        [data-theme="dark"] .expense-item {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .expense-info h4 {
+            margin-bottom: 4px;
+        }
+
+        .expense-info p {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .expense-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .settlement-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(16, 185, 129, 0.05);
+            border-left: 4px solid var(--success);
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        [data-theme="dark"] .settlement-item {
+            background: rgba(16, 185, 129, 0.1);
         }
 
         .stat-number {
@@ -426,21 +426,57 @@
             color: var(--muted);
             margin-top: 8px;
         }
+
+        .group-card {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.05));
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .group-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .member-list {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .member-badge {
+            padding: 4px 12px;
+            background: var(--accent);
+            color: white;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="demo-header">
-            <h1>PayPer Platform</h1>
-            <p>Intelligent negotiation and payment management system</p>
+            <h1>Sharp-Sharp</h1>
+            <p>Split bills, track expenses, and settle up with friends</p>
         </div>
 
         <div class="tabs">
             <button class="tab-btn active" data-tab="overview">
                 <i class="ph ph-chart-line icon"></i> Overview
             </button>
-            <button class="tab-btn" data-tab="workflow">
-                <i class="ph ph-flow-arrow icon"></i> Workflow
+            <button class="tab-btn" data-tab="how-it-works">
+                <i class="ph ph-flow-arrow icon"></i> How It Works
             </button>
             <button class="tab-btn" data-tab="features">
                 <i class="ph ph-star icon"></i> Features
@@ -454,106 +490,106 @@
         <div id="overview" class="tab-content active">
             <div class="grid">
                 <div class="card">
-                    <h3><i class="ph ph-handshake icon"></i> Smart Negotiation</h3>
-                    <p>AI-powered negotiation suggestions that help both parties reach optimal agreements faster.</p>
+                    <h3><i class="ph ph-users icon"></i> Smart Splitting</h3>
+                    <p>Automatically calculate who owes whom, even with complex group expenses and different contribution amounts.</p>
                     <div class="metric">
-                        <span class="metric-label">Success Rate</span>
-                        <span class="metric-value">94%</span>
+                        <span class="metric-label">Calculation Accuracy</span>
+                        <span class="metric-value">100%</span>
                     </div>
                     <div class="metric">
-                        <span class="metric-label">Avg. Time</span>
-                        <span class="metric-value">3.2 hrs</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="ph ph-lightning icon"></i> Automated Workflows</h3>
-                    <p>Self-service workflows guide users through negotiation stages automatically.</p>
-                    <div class="metric">
-                        <span class="metric-label">Automation</span>
-                        <span class="metric-value">87%</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-label">Errors Reduced</span>
-                        <span class="metric-value">92%</span>
+                        <span class="metric-label">Settlement Efficiency</span>
+                        <span class="metric-value">95%</span>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3><i class="ph ph-shield-check icon"></i> Secure Settlement</h3>
-                    <p>End-to-end encrypted transactions with complete audit trails and compliance.</p>
+                    <h3><i class="ph ph-lightning icon"></i> Instant Tracking</h3>
+                    <p>Real-time expense tracking across multiple groups with automatic balance calculations and notifications.</p>
                     <div class="metric">
-                        <span class="metric-label">Security Level</span>
-                        <span class="metric-value">A+</span>
+                        <span class="metric-label">Update Speed</span>
+                        <span class="metric-value">Real-time</span>
                     </div>
                     <div class="metric">
-                        <span class="metric-label">Compliance</span>
-                        <span class="metric-value">SOC 2</span>
+                        <span class="metric-label">Groups Supported</span>
+                        <span class="metric-value">Unlimited</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="ph ph-handshake icon"></i> Easy Settlement</h3>
+                    <p>Generate settlement recommendations that minimize transactions and simplify who pays whom.</p>
+                    <div class="metric">
+                        <span class="metric-label">Transactions Reduced</span>
+                        <span class="metric-value">~70%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Settlement Success</span>
+                        <span class="metric-value">99.8%</span>
                     </div>
                 </div>
             </div>
 
             <div class="section">
-                <h2>Platform Statistics</h2>
+                <h2>Platform Reach</h2>
                 <div class="grid">
                     <div style="text-align: center;">
-                        <div class="stat-number">2.4M</div>
-                        <div class="stat-label">Transactions Processed</div>
+                        <div class="stat-number">500K+</div>
+                        <div class="stat-label">Total Users</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="stat-number">$847B</div>
-                        <div class="stat-label">Total Payment Volume</div>
+                        <div class="stat-number">1.2M</div>
+                        <div class="stat-label">Groups Created</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="stat-number">45K+</div>
-                        <div class="stat-label">Active Users</div>
+                        <div class="stat-number">R 4.2B</div>
+                        <div class="stat-label">Expenses Tracked</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="stat-number">150+</div>
-                        <div class="stat-label">Countries Supported</div>
+                        <div class="stat-number">R 2.8B</div>
+                        <div class="stat-label">Settled</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Workflow Tab -->
-        <div id="workflow" class="tab-content">
+        <!-- How It Works Tab -->
+        <div id="how-it-works" class="tab-content">
             <div class="section">
-                <h2>Negotiation Workflow</h2>
+                <h2>The Sharp-Sharp Process</h2>
                 <div class="flow-chart">
                     <div class="flow-step">
                         <div class="flow-step-number">1</div>
                         <div class="flow-step-content">
-                            <h4>Initiate Negotiation</h4>
-                            <p>User creates a new negotiation session with parties and sets initial parameters</p>
+                            <h4>Create a Group</h4>
+                            <p>Start a new group and invite friends who share expenses (dinner, trip, apartment, etc.)</p>
                         </div>
                     </div>
                     <div class="flow-step">
                         <div class="flow-step-number">2</div>
                         <div class="flow-step-content">
-                            <h4>Exchange Proposals</h4>
-                            <p>Parties submit counter-proposals while AI analyzes gaps and suggests compromises</p>
+                            <h4>Add Expenses</h4>
+                            <p>Record any expense one person pays for, specifying who was involved and how much each person owes</p>
                         </div>
                     </div>
                     <div class="flow-step">
                         <div class="flow-step-number">3</div>
                         <div class="flow-step-content">
-                            <h4>AI Analysis</h4>
-                            <p>System evaluates proposals for feasibility, fairness, and compliance requirements</p>
+                            <h4>Automatic Calculation</h4>
+                            <p>Sharp-Sharp analyzes all expenses and calculates exactly who owes whom in the group</p>
                         </div>
                     </div>
                     <div class="flow-step">
                         <div class="flow-step-number">4</div>
                         <div class="flow-step-content">
-                            <h4>Agreement Reached</h4>
-                            <p>Both parties accept terms and agreement is finalized with digital signatures</p>
+                            <h4>View Balances</h4>
+                            <p>See your total balance and individual debts at a glance with clear expense breakdowns</p>
                         </div>
                     </div>
                     <div class="flow-step">
                         <div class="flow-step-number">5</div>
                         <div class="flow-step-content">
-                            <h4>Secure Settlement</h4>
-                            <p>Payment processed through encrypted channels with full audit trail recorded</p>
+                            <h4>Settle Up</h4>
+                            <p>Get settlement recommendations that minimize the number of payments needed to balance everything out</p>
                         </div>
                     </div>
                 </div>
@@ -564,81 +600,81 @@
         <div id="features" class="tab-content">
             <div class="grid">
                 <div class="section">
-                    <h3><i class="ph ph-brain icon"></i> AI-Powered Negotiation</h3>
+                    <h3><i class="ph ph-calculator icon"></i> Smart Calculations</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Flexible Splitting</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Split equally, by percentage, or by custom amounts</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Multi-Currency Support</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Work with ZAR, USD, EUR, and more currencies</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Instant Recalculation</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Balances update automatically when expenses change</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3><i class="ph ph-users-three icon"></i> Group Management</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Unlimited Groups</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Create groups for different purposes - trips, housing, activities</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Easy Invitations</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Share links to invite friends instantly to groups</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Activity History</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">See complete history of all expenses and changes in a group</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3><i class="ph ph-peace icon"></i> Hassle-Free Settlement</h3>
                     <ul class="feature-list">
                         <li>
                             <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
                             <div>
                                 <strong>Smart Recommendations</strong>
-                                <p style="color: var(--muted); font-size: 0.9rem;">AI analyzes negotiation patterns and suggests optimal terms</p>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Algorithm minimizes payments needed to settle all debts</p>
                             </div>
                         </li>
                         <li>
                             <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
                             <div>
-                                <strong>Real-time Analysis</strong>
-                                <p style="color: var(--muted); font-size: 0.9rem;">Instant feedback on proposal viability and fairness</p>
+                                <strong>Payment Reminders</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Automatic reminders for outstanding payments</p>
                             </div>
                         </li>
                         <li>
                             <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
                             <div>
-                                <strong>Bias Detection</strong>
-                                <p style="color: var(--muted); font-size: 0.9rem;">Identifies and prevents unfair or skewed proposals</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="section">
-                    <h3><i class="ph ph-gear icon"></i> Workflow Automation</h3>
-                    <ul class="feature-list">
-                        <li>
-                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
-                            <div>
-                                <strong>Self-Service Portal</strong>
-                                <p style="color: var(--muted); font-size: 0.9rem;">Users guide themselves through structured negotiation process</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
-                            <div>
-                                <strong>Auto-Escalation</strong>
-                                <p style="color: var(--muted); font-size: 0.9rem;">Deadlocked negotiations escalate to specialists automatically</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
-                            <div>
-                                <strong>Notification System</strong>
-                                <p style="color: var(--muted); font-size: 0.9rem;">Real-time alerts keep all parties informed of progress</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="section">
-                    <h3><i class="ph ph-lock icon"></i> Security & Compliance</h3>
-                    <ul class="feature-list">
-                        <li>
-                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
-                            <div>
-                                <strong>End-to-End Encryption</strong>
-                                <p style="color: var(--muted); font-size: 0.9rem;">All communications and transactions fully encrypted</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
-                            <div>
-                                <strong>Audit Trails</strong>
-                                <p style="color: var(--muted); font-size: 0.9rem;">Complete immutable record of all negotiation steps</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
-                            <div>
-                                <strong>Compliance Ready</strong>
-                                <p style="color: var(--muted); font-size: 0.9rem;">SOC 2 Type II, GDPR, and HIPAA compliant</p>
+                                <strong>Settlement Tracking</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Mark payments as complete and track settlement progress</p>
                             </div>
                         </li>
                     </ul>
@@ -649,53 +685,37 @@
         <!-- Demo Tab -->
         <div id="demo" class="tab-content">
             <div class="section">
-                <h2>Start a Negotiation</h2>
+                <h2>Create a Group & Add Expenses</h2>
                 <form class="demo-form">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                        <div class="form-group">
-                            <label for="initiator">Your Name</label>
-                            <input type="text" id="initiator" placeholder="e.g., Sarah Johnson" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="counterparty">Counterparty Name</label>
-                            <input type="text" id="counterparty" placeholder="e.g., Acme Corp" required>
-                        </div>
+                    <div class="form-group">
+                        <label for="group-name">Group Name</label>
+                        <input type="text" id="group-name" placeholder="e.g., Weekend Trip to Cape Town" required>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="form-group">
-                            <label for="amount">Negotiation Amount</label>
-                            <input type="number" id="amount" placeholder="$50,000" min="0" step="1000" required>
+                            <label for="group-members">Members (comma-separated)</label>
+                            <input type="text" id="group-members" placeholder="e.g., You, Sarah, James" required>
                         </div>
                         <div class="form-group">
-                            <label for="currency">Currency</label>
-                            <select id="currency" required>
-                                <option value="ZAR" selected>ZAR (R)</option>
-                                <option value="USD">USD ($)</option>
-                                <option value="EUR">EUR (€)</option>
-                                <option value="GBP">GBP (£)</option>
-                            </select>
+                            <label for="total-amount">Total Amount Spent</label>
+                            <input type="number" id="total-amount" placeholder="R 5,000" min="0" step="50" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="type">Negotiation Type</label>
-                        <select id="type" required>
-                            <option value="payment">Payment Terms</option>
-                            <option value="contract">Contract Amendment</option>
-                            <option value="dispute">Dispute Resolution</option>
-                            <option value="merger">M&A Terms</option>
-                        </select>
+                        <label for="expense-description">What was it for?</label>
+                        <input type="text" id="expense-description" placeholder="e.g., Hotel accommodation and meals" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" placeholder="Describe the negotiation context..." rows="4"></textarea>
+                        <label for="paid-by">Who paid?</label>
+                        <input type="text" id="paid-by" placeholder="e.g., Sarah" required>
                     </div>
 
                     <div style="display: flex; gap: 12px;">
                         <button type="submit" class="btn">
-                            <i class="ph ph-play icon"></i> Start Negotiation
+                            <i class="ph ph-plus icon"></i> Create Group & Add Expense
                         </button>
                         <button type="reset" class="btn btn-secondary">
                             <i class="ph ph-x icon"></i> Clear
@@ -705,9 +725,9 @@
             </div>
 
             <div class="section" style="margin-top: 32px;">
-                <h3>Demo Response</h3>
+                <h3>Demo Result</h3>
                 <div id="demo-response" style="padding: 20px; background: rgba(14, 165, 233, 0.05); border-radius: 8px; border-left: 4px solid var(--accent);">
-                    <p style="color: var(--muted); text-align: center;">Fill out the form above and submit to see a sample negotiation analysis</p>
+                    <p style="color: var(--muted); text-align: center;">Fill out the form above to see how Sharp-Sharp calculates balances</p>
                 </div>
             </div>
         </div>
@@ -739,53 +759,84 @@
         document.querySelector('.demo-form').addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const initiator = document.getElementById('initiator').value;
-            const counterparty = document.getElementById('counterparty').value;
-            const amount = document.getElementById('amount').value;
-            const currency = document.getElementById('currency').value;
-            const type = document.getElementById('type').value;
-            const description = document.getElementById('description').value;
+            const groupName = document.getElementById('group-name').value;
+            const members = document.getElementById('group-members').value.split(',').map(m => m.trim());
+            const totalAmount = parseFloat(document.getElementById('total-amount').value);
+            const description = document.getElementById('expense-description').value;
+            const paidBy = document.getElementById('paid-by').value;
 
-            const response = `
-                <div style="margin-bottom: 16px;">
-                    <h4 style="margin-bottom: 12px;">✓ Negotiation Session Created</h4>
-                    <table class="comparison-table">
-                        <tr>
-                            <td><strong>Session ID</strong></td>
-                            <td>NEG-${Math.random().toString(36).substr(2, 9).toUpperCase()}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Initiator</strong></td>
-                            <td>${initiator}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Counterparty</strong></td>
-                            <td>${counterparty}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Amount</strong></td>
-                            <td>${currency} ${amount}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Type</strong></td>
-                            <td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>
-                        </tr>
-                    </table>
+            const splitAmount = (totalAmount / members.length).toFixed(2);
+            
+            let settlementHTML = `
+                <div style="margin-bottom: 24px;">
+                    <h4 style="margin-bottom: 12px;">✓ Group Created & Expense Recorded</h4>
+                    <div class="group-card">
+                        <div class="group-header">
+                            <div class="group-name">${groupName}</div>
+                            <span class="badge">R ${totalAmount.toFixed(2)}</span>
+                        </div>
+                        <p style="color: var(--muted); margin-bottom: 12px;">${description}</p>
+                        <div class="member-list">
+            `;
+
+            members.forEach(member => {
+                settlementHTML += `<span class="member-badge">${member}</span>`;
+            });
+
+            settlementHTML += `
+                        </div>
+                    </div>
                 </div>
-                <div style="padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid #10b981;">
-                    <h4 style="margin-bottom: 8px; color: #10b981;">AI Analysis Ready</h4>
-                    <p style="color: var(--muted); margin: 0;">PayPer's AI engine is analyzing the negotiation context and will provide:
-                    </p>
-                    <ul style="margin-top: 12px; padding-left: 20px; color: var(--muted);">
-                        <li>Optimal opening position recommendations</li>
-                        <li>Historical benchmark analysis</li>
-                        <li>Risk assessment and mitigation strategies</li>
-                        <li>Fair value estimates for this negotiation type</li>
-                    </ul>
+
+                <div style="margin-bottom: 24px;">
+                    <h4 style="margin-bottom: 12px;">Expense Breakdown</h4>
+                    <div class="expense-item">
+                        <div class="expense-info">
+                            <h4>${paidBy} paid for everyone</h4>
+                            <p>Full expense amount</p>
+                        </div>
+                        <div class="expense-amount">R ${totalAmount.toFixed(2)}</div>
+                    </div>
+            `;
+
+            members.forEach(member => {
+                if (member !== paidBy) {
+                    settlementHTML += `
+                        <div class="expense-item">
+                            <div class="expense-info">
+                                <h4>${member} owes</h4>
+                                <p>Their share of the expense</p>
+                            </div>
+                            <div class="expense-amount">R ${splitAmount}</div>
+                        </div>
+                    `;
+                }
+            });
+
+            settlementHTML += `
+                </div>
+
+                <div style="padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid var(--success); margin-top: 24px;">
+                    <h4 style="margin-bottom: 8px; color: var(--success);">Settlement Recommendations</h4>
+                    <p style="color: var(--muted); margin-bottom: 12px;">Sharp-Sharp has calculated who needs to pay whom to settle all debts:</p>
+            `;
+
+            members.forEach(member => {
+                if (member !== paidBy) {
+                    settlementHTML += `
+                        <div class="settlement-item">
+                            <span><strong>${member}</strong> → <strong>${paidBy}</strong></span>
+                            <span style="color: var(--success); font-weight: 700;">R ${splitAmount}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            settlementHTML += `
                 </div>
             `;
 
-            document.getElementById('demo-response').innerHTML = response;
+            document.getElementById('demo-response').innerHTML = settlementHTML;
         });
     </script>
 </body>
