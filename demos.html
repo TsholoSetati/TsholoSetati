@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="ui.js" defer></script>
 </head>
 
@@ -33,7 +33,7 @@
         <div id="demo-login" class="demo-login-container">
             <div class="card demo-login-card">
                 <div class="demo-login-header">
-                    <div class="demo-app-icon">🎁</div>
+                    <i class="ph ph-gift icon-button demo-app-icon"></i>
                     <h3>GiftlyInvited</h3>
                     <p class="muted">Private Gift Registry Demo</p>
                 </div>
@@ -75,6 +75,48 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Sharp-Sharp Card -->
+            <div class="card demo-login-card" style="margin-top: 2rem;">
+                <div class="demo-login-header">
+                    <i class="ph ph-currency-dollar icon-button demo-app-icon"></i>
+                    <h3>Sharp-Sharp</h3>
+                    <p class="muted">Shared Expense Tracker</p>
+                </div>
+                <div class="guest-entry-section">
+                    <p class="muted" style="margin-bottom: 1rem;">Split bills, track expenses, and settle up with
+                        friends.</p>
+                    <a href="sharp-sharp/index.html" class="btn-primary"
+                        style="display:block; text-align:center; text-decoration: none;">Launch App</a>
+                </div>
+            </div>
+
+            <!-- PayPer Card -->
+            <div class="card demo-login-card" style="margin-top: 2rem;">
+                <div class="demo-login-header">
+                    <i class="ph ph-credit-card icon-button demo-app-icon"></i>
+                    <h3>PayPer</h3>
+                    <p class="muted">Negotiation & Payment Platform</p>
+                </div>
+                <div class="guest-entry-section">
+                    <p class="muted" style="margin-bottom: 1rem;">Fintech prototype for managing payments and negotiation workflows.</p>
+                    <button id="launchPayPer" class="btn-primary"
+                        style="display:block; text-align:center; width: 100%; text-decoration: none; cursor: pointer; border: none;">
+                        <i class="ph ph-play icon-inline"></i> Launch Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- PayPer Demo Container (hidden initially) -->
+            <div id="payper-demo-container" style="display: none; margin-top: 2rem;">
+                <div style="position: relative; width: 100%; padding-bottom: 75%; height: 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg);">
+                    <iframe id="payper-iframe" src="payper/index.html" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+                <button id="closePayPer" class="btn btn-ghost" style="margin-top: 1rem; width: 100%;">
+                    <i class="ph ph-x icon-inline"></i> Close Demo
+                </button>
+            </div>
+
         </div>
 
         <!-- Demo App (hidden until login) -->
@@ -82,15 +124,15 @@
 
             <!-- Demo Tabs -->
             <div class="demo-tabs">
-                <button class="demo-tab active" data-tab="dashboard">📋 Dashboard</button>
-                <button class="demo-tab" data-tab="create">➕ Create Registry</button>
-                <button class="demo-tab" data-tab="guest">👤 Guest View</button>
+                <button class="demo-tab active" data-tab="dashboard"><i class="ph ph-list icon-inline"></i> Dashboard</button>
+                <button class="demo-tab" data-tab="create"><i class="ph ph-plus icon-inline"></i> Create Registry</button>
+                <button class="demo-tab" data-tab="guest"><i class="ph ph-user icon-inline"></i> Guest View</button>
             </div>
 
             <!-- Dashboard Tab -->
             <div id="tab-dashboard" class="demo-tab-content active">
                 <div class="demo-welcome">
-                    <h3>Welcome back, Admin! 👋</h3>
+                    <h3>Welcome back, Admin! <i class="ph ph-hand-waving icon-inline"></i></h3>
                     <p class="muted">Manage your gift registries.</p>
                 </div>
 
@@ -116,7 +158,7 @@
 
                 <div id="registriesList" class="demo-registries-list">
                     <div class="demo-empty-state">
-                        <span class="demo-empty-icon">📦</span>
+                        <i class="ph ph-package icon-button demo-empty-icon"></i>
                         <p>No registries yet. Create your first one!</p>
                     </div>
                 </div>
@@ -190,7 +232,7 @@
                         <div class="demo-invite-code-box">
                             <span class="demo-invite-label">Invite Code</span>
                             <span id="modalInviteCode" class="demo-invite-code">ABC123</span>
-                            <button type="button" id="copyCodeBtn" class="demo-copy-btn">📋 Copy</button>
+                            <button type="button" id="copyCodeBtn" class="demo-copy-btn"><i class="ph ph-copy icon-inline"></i> Copy</button>
                         </div>
 
                         <!-- Creator vs Admin Toggle (Demo Only) -->
@@ -277,12 +319,38 @@
 
             <!-- Logout Button -->
             <div class="demo-logout">
-                <button type="button" id="logoutBtn" class="btn-ghost">🚪 Sign Out</button>
+                <button type="button" id="logoutBtn" class="btn-ghost"><i class="ph ph-sign-out icon-inline"></i> Sign Out</button>
             </div>
         </div>
     </main>
 
     <div id="site-footer" role="contentinfo"></div>
+    
+    <script>
+        // PayPer Demo Launch Handler
+        document.addEventListener('DOMContentLoaded', () => {
+            const launchPayPerBtn = document.getElementById('launchPayPer');
+            const closePayPerBtn = document.getElementById('closePayPer');
+            const payperContainer = document.getElementById('payper-demo-container');
+            const demoLoginContainer = document.getElementById('demo-login');
+
+            if (launchPayPerBtn) {
+                launchPayPerBtn.addEventListener('click', () => {
+                    demoLoginContainer.style.display = 'none';
+                    payperContainer.style.display = 'block';
+                    window.scrollTo(0, 0);
+                });
+            }
+
+            if (closePayPerBtn) {
+                closePayPerBtn.addEventListener('click', () => {
+                    payperContainer.style.display = 'none';
+                    demoLoginContainer.style.display = 'flex';
+                });
+            }
+        });
+    </script>
+    
     <script src="demos.js"></script>
 </body>
 

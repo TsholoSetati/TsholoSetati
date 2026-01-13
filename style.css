@@ -269,6 +269,151 @@ button {
   border-color: var(--accent)
 }
 
+/* Hamburger Menu Button (Mobile) */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.hamburger-btn:hover {
+  background: var(--card);
+}
+
+.hamburger-line {
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+.hamburger-btn[aria-expanded="true"] .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger-btn[aria-expanded="true"] .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-btn[aria-expanded="true"] .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Mobile Navigation Drawer */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.nav-drawer[aria-hidden="false"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav-drawer-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+.nav-drawer-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100%;
+  background: var(--bg);
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 70px;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-drawer[aria-hidden="false"] .nav-drawer-content {
+  transform: translateX(0);
+}
+
+.nav-drawer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  list-style: none;
+  margin: 0;
+}
+
+.nav-drawer-links a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  border-left: 3px solid transparent;
+  transition: var(--transition);
+}
+
+.nav-drawer-links a:hover {
+  background: var(--card);
+  border-left-color: var(--accent);
+}
+
+.nav-drawer-links a.active {
+  background: rgba(14, 165, 233, 0.1);
+  border-left-color: var(--accent);
+  color: var(--accent);
+}
+
+.nav-drawer-links i {
+  font-size: 1.25rem;
+  width: 20px;
+}
+
+.nav-drawer-theme {
+  padding: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: auto;
+}
+
+.nav-drawer-theme button {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Icon Sizing Classes */
+.icon-inline {
+  font-size: 1.25rem;
+}
+
+.icon-button {
+  font-size: 1.5rem;
+}
+
 /* Hero */
 .hero {
   display: grid;
@@ -295,6 +440,28 @@ button {
 
 .hero-inner {
   z-index: 1
+}
+
+.profile-image {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--card);
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(14, 165, 233, 0.1);
+  margin-bottom: 24px;
+  display: block;
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-inner h1 {
+  margin-top: 16px;
 }
 
 .hero h1 {
@@ -2794,4 +2961,62 @@ input:checked+.slider::before {
 
 #demo-app .category-tag {
   background: #8b5cf6;
+}
+
+/* Mobile Responsive - Show Hamburger Menu */
+@media (max-width: 768px) {
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .site-links {
+    display: none;
+  }
+
+  .site-nav {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .brand-text {
+    display: none;
+  }
+
+  .brand .logo {
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+  }
+
+  #themeToggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nav-drawer-content {
+    width: 280px;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-drawer-content {
+    width: 75vw;
+    max-width: 280px;
+  }
+
+  .site-nav {
+    padding: 12px 14px;
+  }
+
+  .brand .logo {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+
+  #themeToggle {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+  }
 }

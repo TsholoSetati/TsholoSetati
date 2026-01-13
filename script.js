@@ -40,7 +40,7 @@ document.getElementById("quizForm").addEventListener("submit", (e) => {
     <h4>Quiz Results</h4>
     <div class="score">${score} out of 4 (${percentage}%)</div>
     <ul>${results.join('')}</ul>
-    <p class="muted">${percentage >= 75 ? '🎉 Great job!' : 'Keep learning about financial literacy!'}</p>
+    <p class="muted">${percentage >= 75 ? '<i class="ph ph-party-popper icon-inline"></i> Great job!' : 'Keep learning about financial literacy!'}</p>
   `;
   resultContainer.style.display = 'block';
 });

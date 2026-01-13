@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 switchTab('guest');
                 // Hide search box in guest tab since they already entered code
                 document.getElementById('guestCodeSection').style.display = 'none';
-                logoutBtn.textContent = '👋 Exit Guest View';
+                logoutBtn.innerHTML = '<i class="ph ph-hand-waving icon-inline"></i> Exit Guest View';
 
                 // If we have a code, load it
                 if (currentUser.activeRegistryCode) {
@@ -195,11 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Admin/Creator View
                 document.querySelectorAll('.demo-tab').forEach(el => el.style.display = 'inline-block');
-                logoutBtn.textContent = '🚪 Sign Out';
+                logoutBtn.innerHTML = '<i class="ph ph-sign-out icon-inline"></i> Sign Out';
 
                 // Update specific UI for Rebone vs Admin
                 const welcomeMsg = document.querySelector('.demo-welcome h3');
-                if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${currentUser.name}! 👋`;
+                if (welcomeMsg) welcomeMsg.innerHTML = `Welcome back, ${currentUser.name}! <i class="ph ph-hand-waving icon-inline"></i>`;
 
                 // Hide Admin Toggle for Rebone
                 if (currentUser.role === 'creator') {
@@ -449,10 +449,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isAdminRevealMode) {
                     // Admin sees names
                     const names = item.claims ? item.claims.map(c => c.name).join(', ') : 'Unknown';
-                    claimerDisplay = `<div class="claimer-info admin-reveal">🎁 Claimed by: <strong>${names}</strong></div>`;
+                    claimerDisplay = `<div class="claimer-info admin-reveal"><i class="ph ph-gift icon-inline"></i> Claimed by: <strong>${names}</strong></div>`;
                 } else {
                     // Creator sees only status
-                    claimerDisplay = `<div class="claimer-info creator-view">🎁 ${item.claimed} purchased (Names hidden until Reveal)</div>`;
+                    claimerDisplay = `<div class="claimer-info creator-view"><i class="ph ph-gift icon-inline"></i> ${item.claimed} purchased (Names hidden until Reveal)</div>`;
                 }
             }
 
@@ -500,8 +500,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleCopyCode() {
         const code = document.getElementById('modalInviteCode').textContent;
         navigator.clipboard.writeText(code);
-        copyCodeBtn.textContent = 'Copied!';
-        setTimeout(() => copyCodeBtn.textContent = '📋 Copy', 2000);
+        copyCodeBtn.innerHTML = '<i class="ph ph-check icon-inline"></i> Copied!';
+        setTimeout(() => copyCodeBtn.innerHTML = '<i class="ph ph-copy icon-inline"></i> Copy', 2000);
         showToast('Invite code copied to clipboard');
     }
 
