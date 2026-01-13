@@ -409,6 +409,7 @@ button {
   border-right: 1px solid rgba(0, 0, 0, 0.05);
   padding-top: 70px;
   overflow-y: auto;
+  overflow-x: hidden;
   transform: translateX(-100%);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 62;
