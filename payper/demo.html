@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPer - Negotiation & Payment Platform Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --accent: #0ea5e9;
+            --accent-600: #0284c7;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --card: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --text: #e6eef6;
+            --muted: #9ca3af;
+            --card: #1a2a4e;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        [data-theme="dark"] body {
+            background: #0b1220;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-600));
+            border-radius: 16px;
+            color: white;
+        }
+
+        .demo-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            font-family: 'Clash Display', sans-serif;
+        }
+
+        .demo-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+        }
+
+        [data-theme="dark"] .tabs {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--muted);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .card {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .card p {
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .metric {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--accent);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+
+        .status-active {
+            background: #10b981;
+        }
+
+        .status-pending {
+            background: #f59e0b;
+        }
+
+        .status-completed {
+            background: #6366f1;
+        }
+
+        .section {
+            background: var(--card);
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .section {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 20px;
+            font-family: 'Clash Display', sans-serif;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-600));
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--card);
+            color: var(--text);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+        }
+
+        .flow-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(14, 165, 233, 0.05);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+        }
+
+        [data-theme="dark"] .flow-step {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .flow-step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .flow-step-content h4 {
+            margin-bottom: 4px;
+        }
+
+        .demo-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 14px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .form-group input,
+        [data-theme="dark"] .form-group select,
+        [data-theme="dark"] .form-group textarea {
+            background: #1a2a4e;
+            border-color: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--muted);
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--text);
+            transform: rotate(90deg);
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .feature-list li {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            color: var(--accent);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .comparison-table th,
+        [data-theme="dark"] .comparison-table td {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-table th {
+            background: rgba(14, 165, 233, 0.1);
+            font-weight: 700;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-header">
+            <h1>PayPer Platform</h1>
+            <p>Intelligent negotiation and payment management system</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="overview">
+                <i class="ph ph-chart-line icon"></i> Overview
+            </button>
+            <button class="tab-btn" data-tab="workflow">
+                <i class="ph ph-flow-arrow icon"></i> Workflow
+            </button>
+            <button class="tab-btn" data-tab="features">
+                <i class="ph ph-star icon"></i> Features
+            </button>
+            <button class="tab-btn" data-tab="demo">
+                <i class="ph ph-play icon"></i> Try Demo
+            </button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="ph ph-handshake icon"></i> Smart Negotiation</h3>
+                    <p>AI-powered negotiation suggestions that help both parties reach optimal agreements faster.</p>
+                    <div class="metric">
+                        <span class="metric-label">Success Rate</span>
+                        <span class="metric-value">94%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Avg. Time</span>
+                        <span class="metric-value">3.2 hrs</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="ph ph-lightning icon"></i> Automated Workflows</h3>
+                    <p>Self-service workflows guide users through negotiation stages automatically.</p>
+                    <div class="metric">
+                        <span class="metric-label">Automation</span>
+                        <span class="metric-value">87%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Errors Reduced</span>
+                        <span class="metric-value">92%</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="ph ph-shield-check icon"></i> Secure Settlement</h3>
+                    <p>End-to-end encrypted transactions with complete audit trails and compliance.</p>
+                    <div class="metric">
+                        <span class="metric-label">Security Level</span>
+                        <span class="metric-value">A+</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Compliance</span>
+                        <span class="metric-value">SOC 2</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Platform Statistics</h2>
+                <div class="grid">
+                    <div style="text-align: center;">
+                        <div class="stat-number">2.4M</div>
+                        <div class="stat-label">Transactions Processed</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="stat-number">$847B</div>
+                        <div class="stat-label">Total Payment Volume</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="stat-number">45K+</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="stat-number">150+</div>
+                        <div class="stat-label">Countries Supported</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow Tab -->
+        <div id="workflow" class="tab-content">
+            <div class="section">
+                <h2>Negotiation Workflow</h2>
+                <div class="flow-chart">
+                    <div class="flow-step">
+                        <div class="flow-step-number">1</div>
+                        <div class="flow-step-content">
+                            <h4>Initiate Negotiation</h4>
+                            <p>User creates a new negotiation session with parties and sets initial parameters</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">2</div>
+                        <div class="flow-step-content">
+                            <h4>Exchange Proposals</h4>
+                            <p>Parties submit counter-proposals while AI analyzes gaps and suggests compromises</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">3</div>
+                        <div class="flow-step-content">
+                            <h4>AI Analysis</h4>
+                            <p>System evaluates proposals for feasibility, fairness, and compliance requirements</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">4</div>
+                        <div class="flow-step-content">
+                            <h4>Agreement Reached</h4>
+                            <p>Both parties accept terms and agreement is finalized with digital signatures</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">5</div>
+                        <div class="flow-step-content">
+                            <h4>Secure Settlement</h4>
+                            <p>Payment processed through encrypted channels with full audit trail recorded</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Tab -->
+        <div id="features" class="tab-content">
+            <div class="grid">
+                <div class="section">
+                    <h3><i class="ph ph-brain icon"></i> AI-Powered Negotiation</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Smart Recommendations</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">AI analyzes negotiation patterns and suggests optimal terms</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Real-time Analysis</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Instant feedback on proposal viability and fairness</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Bias Detection</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Identifies and prevents unfair or skewed proposals</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3><i class="ph ph-gear icon"></i> Workflow Automation</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Self-Service Portal</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Users guide themselves through structured negotiation process</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Auto-Escalation</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Deadlocked negotiations escalate to specialists automatically</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Notification System</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Real-time alerts keep all parties informed of progress</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3><i class="ph ph-lock icon"></i> Security & Compliance</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>End-to-End Encryption</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">All communications and transactions fully encrypted</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Audit Trails</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">Complete immutable record of all negotiation steps</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon"><i class="ph ph-check-circle icon"></i></div>
+                            <div>
+                                <strong>Compliance Ready</strong>
+                                <p style="color: var(--muted); font-size: 0.9rem;">SOC 2 Type II, GDPR, and HIPAA compliant</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Tab -->
+        <div id="demo" class="tab-content">
+            <div class="section">
+                <h2>Start a Negotiation</h2>
+                <form class="demo-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label for="initiator">Your Name</label>
+                            <input type="text" id="initiator" placeholder="e.g., Sarah Johnson" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="counterparty">Counterparty Name</label>
+                            <input type="text" id="counterparty" placeholder="e.g., Acme Corp" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label for="amount">Negotiation Amount</label>
+                            <input type="number" id="amount" placeholder="$50,000" min="0" step="1000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="currency">Currency</label>
+                            <select id="currency" required>
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                                <option value="ZAR">ZAR (R)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type">Negotiation Type</label>
+                        <select id="type" required>
+                            <option value="payment">Payment Terms</option>
+                            <option value="contract">Contract Amendment</option>
+                            <option value="dispute">Dispute Resolution</option>
+                            <option value="merger">M&A Terms</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" placeholder="Describe the negotiation context..." rows="4"></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 12px;">
+                        <button type="submit" class="btn">
+                            <i class="ph ph-play icon"></i> Start Negotiation
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="ph ph-x icon"></i> Clear
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section" style="margin-top: 32px;">
+                <h3>Demo Response</h3>
+                <div id="demo-response" style="padding: 20px; background: rgba(14, 165, 233, 0.05); border-radius: 8px; border-left: 4px solid var(--accent);">
+                    <p style="color: var(--muted); text-align: center;">Fill out the form above and submit to see a sample negotiation analysis</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabName = btn.dataset.tab;
+                
+                // Hide all tabs
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Remove active from all buttons
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                // Show selected tab
+                document.getElementById(tabName).classList.add('active');
+                btn.classList.add('active');
+            });
+        });
+
+        // Demo form submission
+        document.querySelector('.demo-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const initiator = document.getElementById('initiator').value;
+            const counterparty = document.getElementById('counterparty').value;
+            const amount = document.getElementById('amount').value;
+            const currency = document.getElementById('currency').value;
+            const type = document.getElementById('type').value;
+            const description = document.getElementById('description').value;
+
+            const response = `
+                <div style="margin-bottom: 16px;">
+                    <h4 style="margin-bottom: 12px;">✓ Negotiation Session Created</h4>
+                    <table class="comparison-table">
+                        <tr>
+                            <td><strong>Session ID</strong></td>
+                            <td>NEG-${Math.random().toString(36).substr(2, 9).toUpperCase()}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Initiator</strong></td>
+                            <td>${initiator}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Counterparty</strong></td>
+                            <td>${counterparty}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Amount</strong></td>
+                            <td>${currency} ${amount}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Type</strong></td>
+                            <td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid #10b981;">
+                    <h4 style="margin-bottom: 8px; color: #10b981;">AI Analysis Ready</h4>
+                    <p style="color: var(--muted); margin: 0;">PayPer's AI engine is analyzing the negotiation context and will provide:
+                    </p>
+                    <ul style="margin-top: 12px; padding-left: 20px; color: var(--muted);">
+                        <li>Optimal opening position recommendations</li>
+                        <li>Historical benchmark analysis</li>
+                        <li>Risk assessment and mitigation strategies</li>
+                        <li>Fair value estimates for this negotiation type</li>
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('demo-response').innerHTML = response;
+        });
+    </script>
+</body>
+</html>
