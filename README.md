@@ -48,7 +48,7 @@ npm install
 ├── index.html              # Home page (hero, features, navigation)
 ├── about.html              # About & professional summary
 ├── experience.html         # Detailed experience timeline (12+ roles)
-├── projects.html           # Portfolio & case studies
+
 ├── tools.html              # Calculators & financial quiz
 ├── contact.html            # Contact information & social links
 ├── style.css               # Modern responsive styling (CSS variables, dark mode)
@@ -66,7 +66,7 @@ npm install
 | **index.html** | Landing page with hero section, feature highlights, and CTAs |
 | **about.html** | Professional background, expertise, and key achievements |
 | **experience.html** | Complete professional timeline (Microsoft, EY, research, etc.) |
-| **projects.html** | Portfolio of selected projects and case studies |
+
 | **tools.html** | Interactive calculators (retirement, loans, compound interest) + financial quiz |
 | **contact.html** | Contact methods (email, LinkedIn) and social links |
 
