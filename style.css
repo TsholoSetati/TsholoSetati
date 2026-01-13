@@ -2890,6 +2890,23 @@ input:checked+.slider::before {
   animation: scaleIn 0.5s ease-out, float 3s ease-in-out infinite 0.2s;
 }
 
+/* Demo Color Themes */
+.demo-login-card:has(.ph-gift) .demo-app-icon {
+  color: #8b5cf6;
+}
+
+.demo-login-card:has(.ph-currency-dollar) .demo-app-icon {
+  color: #3b82f6;
+}
+
+.demo-login-card:has(.ph-credit-card) .demo-app-icon {
+  color: #22c55e;
+}
+
+.demo-login-card:has(.ph-brain) .demo-app-icon {
+  color: #2563eb;
+}
+
 .demo-login-header h3 {
   margin: 0;
   font-size: 1.5rem;

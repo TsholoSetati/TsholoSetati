@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID8 - AI Use Case Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --accent: #2563eb;
+            --accent-600: #1d4ed8;
+            --bg: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --card: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.6);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-heading: "Clash Display", system-ui, sans-serif;
+            --font-body: "Inter", system-ui, sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0b1220;
+            --text: #e6eef6;
+            --muted: #9aa8bd;
+            --card: #071225;
+            --glass: rgba(10, 16, 24, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        body {
+            padding: 0;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .demo-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .demo-header {
+            background: linear-gradient(135deg, var(--accent), var(--accent-600));
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .demo-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+        }
+
+        .demo-header p {
+            margin: 0;
+            opacity: 0.95;
+        }
+
+        /* Tabs */
+        .demo-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+            padding-bottom: 0;
+        }
+
+        .demo-tab {
+            padding: 1rem;
+            border: none;
+            background: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .demo-tab:hover {
+            color: var(--text);
+        }
+
+        .demo-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .demo-tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .demo-tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Card */
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(29, 78, 216, 0.05));
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-subtext {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-600));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .icon-inline {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Process Steps */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .step {
+            text-align: center;
+            padding: 1rem;
+            border-radius: var(--radius);
+            background: var(--card);
+            position: relative;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-600));
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .step-description {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Features List */
+        .features-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--card);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--accent);
+        }
+
+        .feature-icon {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 1.5rem;
+            color: var(--accent);
+        }
+
+        .feature-text h4 {
+            margin: 0 0 0.25rem 0;
+            color: var(--text);
+        }
+
+        .feature-text p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        /* Result Display */
+        .result-box {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(29, 78, 216, 0.02));
+            border: 1px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .result-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .icon-button {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .divider {
+            text-align: center;
+            color: var(--muted);
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+
+        .divider span {
+            position: relative;
+            background: var(--bg);
+            padding: 0 1rem;
+            z-index: 2;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.05));
+            border: 1px solid #22c55e;
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .success-icon {
+            flex-shrink: 0;
+            color: #22c55e;
+        }
+
+        .success-text {
+            color: var(--text);
+        }
+
+        .success-text strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .success-text small {
+            color: var(--muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .demo-container {
+                padding: 1rem;
+            }
+
+            .demo-header {
+                padding: 1.5rem 1rem;
+            }
+
+            .demo-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="demo-container">
+    <div class="demo-header">
+        <h1><i class="ph ph-brain icon-button"></i> ID8</h1>
+        <p>AI Use Case Assessment & Prioritization Framework</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="demo-tabs">
+        <button class="demo-tab active" data-tab="overview">
+            <i class="ph ph-info icon-inline"></i> Overview
+        </button>
+        <button class="demo-tab" data-tab="process">
+            <i class="ph ph-list-numbers icon-inline"></i> Process
+        </button>
+        <button class="demo-tab" data-tab="features">
+            <i class="ph ph-star icon-inline"></i> Features
+        </button>
+        <button class="demo-tab" data-tab="assess">
+            <i class="ph ph-play icon-inline"></i> Try Demo
+        </button>
+    </div>
+
+    <!-- Tab 1: Overview -->
+    <div id="overview" class="demo-tab-content active">
+        <div class="card">
+            <h3>Assessment Framework</h3>
+            <p>ID8 helps organizations systematically identify, evaluate, and prioritize AI use cases using the AI-RICE framework combined with financial quantification from MBB consulting methodologies.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-label">Framework</span>
+                <span class="stat-value">AI-RICE</span>
+                <span class="stat-subtext">+ Financial Analysis</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Dimensions</span>
+                <span class="stat-value">7</span>
+                <span class="stat-subtext">Scoring Criteria</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Outputs</span>
+                <span class="stat-value">Portfolio</span>
+                <span class="stat-subtext">Strategic Roadmap</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Insights</span>
+                <span class="stat-value">Executive</span>
+                <span class="stat-subtext">Summary Reports</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>What Gets Assessed?</h3>
+            <div class="features-list">
+                <div class="feature-item">
+                    <i class="ph ph-target icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Use Case Identification</h4>
+                        <p>Discover AI opportunities across operations, finance, sales, and customer experience</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-chart-line icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Scoring & Prioritization</h4>
+                        <p>Rate reach, impact, confidence, effort, and strategic fit on 1-5 scale</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-currency-dollar icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Financial Quantification</h4>
+                        <p>Calculate ROI, payback period, and 3-year NPV for each use case</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-checklist icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Feasibility Analysis</h4>
+                        <p>Evaluate data readiness, technical capability, and change management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Process -->
+    <div id="process" class="demo-tab-content">
+        <div class="card">
+            <h3>Assessment Process</h3>
+            <p>A structured 4-phase approach to identify and prioritize AI opportunities:</p>
+
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Context</div>
+                    <div class="step-description">Strategic backdrop & maturity assessment</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Use Cases</div>
+                    <div class="step-description">Identify opportunities across areas</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Scoring</div>
+                    <div class="step-description">AI-RICE + Feasibility evaluation</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Recommend</div>
+                    <div class="step-description">Phase roadmap & portfolio summary</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>AI-RICE Dimensions</h3>
+            <p>Each use case is scored on 5 key dimensions (1-5 scale):</p>
+            <div class="features-list">
+                <div class="feature-item">
+                    <i class="ph ph-users icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Reach (20%)</h4>
+                        <p>How many people/transactions does this affect annually?</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-lightning icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Impact (25%)</h4>
+                        <p>What's the annual value created per affected unit?</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-handshake icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Confidence (20%)</h4>
+                        <p>How confident are we in the estimated impact?</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-hourglass icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Effort (20%)</h4>
+                        <p>How much effort to build/deploy? (5=easy, 1=hard)</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-map-pin icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Strategic Fit (15%)</h4>
+                        <p>Alignment with company priorities & strategy</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Features -->
+    <div id="features" class="demo-tab-content">
+        <div class="card">
+            <h3>Key Features</h3>
+
+            <div class="features-list">
+                <div class="feature-item">
+                    <i class="ph ph-chart-bar icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Quadrant Mapping</h4>
+                        <p>Visualize use cases in 2x2 matrix: Impact vs. Feasibility</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-path icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Phased Roadmap</h4>
+                        <p>Automatic sequencing into Phase 1 (Quick Wins), Phase 2 (Strategic Bets), Phase 3 (Future)</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-money icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Financial Modeling</h4>
+                        <p>Cost of inaction, value creation, ROI, NPV, and payback analysis</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-notification icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Risk Assessment</h4>
+                        <p>Identify key blockers and mitigation strategies for each initiative</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-file-text icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>Executive Summary</h4>
+                        <p>Auto-generated SCQ narrative + portfolio overview</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="ph ph-database icon-inline feature-icon"></i>
+                    <div class="feature-text">
+                        <h4>External Intelligence</h4>
+                        <p>Competitive benchmarking, news analysis, and industry insights</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 4: Try Demo -->
+    <div id="assess" class="demo-tab-content">
+        <div class="card">
+            <h3>Quick Assessment</h3>
+            <p>Score a sample use case using the AI-RICE framework:</p>
+
+            <form id="assessmentForm" style="margin-top: 1.5rem;">
+                <div class="form-group">
+                    <label for="useCaseName">Use Case Name *</label>
+                    <input type="text" id="useCaseName" placeholder="e.g., Automated Invoice Processing" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="affectedArea">Affected Business Area *</label>
+                    <select id="affectedArea" required>
+                        <option value="">Select area...</option>
+                        <option value="Operations">Operations</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Service">Customer Service</option>
+                        <option value="HR">Human Resources</option>
+                        <option value="IT">IT Infrastructure</option>
+                        <option value="Multiple">Multiple Areas</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="problemStatement">Problem Statement *</label>
+                    <textarea id="problemStatement" placeholder="Describe the current problem and opportunity..." required></textarea>
+                </div>
+
+                <div class="divider"><span>AI-RICE Scoring (1-5)</span></div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div class="form-group">
+                        <label for="reach">Reach <small>(people/volume affected)</small></label>
+                        <select id="reach" required>
+                            <option value="">Select...</option>
+                            <option value="1">1 - Minimal</option>
+                            <option value="2">2 - Low</option>
+                            <option value="3">3 - Medium</option>
+                            <option value="4">4 - High</option>
+                            <option value="5">5 - Very High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="impact">Impact <small>(value per unit)</small></label>
+                        <select id="impact" required>
+                            <option value="">Select...</option>
+                            <option value="1">1 - Minimal</option>
+                            <option value="2">2 - Low</option>
+                            <option value="3">3 - Medium</option>
+                            <option value="4">4 - High</option>
+                            <option value="5">5 - Very High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confidence">Confidence <small>(certainty of impact)</small></label>
+                        <select id="confidence" required>
+                            <option value="">Select...</option>
+                            <option value="1">1 - Very Uncertain</option>
+                            <option value="2">2 - Uncertain</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="4">4 - Confident</option>
+                            <option value="5">5 - Very Confident</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="effort">Effort <small>(5=easy, 1=hard)</small></label>
+                        <select id="effort" required>
+                            <option value="">Select...</option>
+                            <option value="5">5 - Very Easy</option>
+                            <option value="4">4 - Easy</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="2">2 - Hard</option>
+                            <option value="1">1 - Very Hard</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="strategicFit">Strategic Fit <small>(alignment)</small></label>
+                        <select id="strategicFit" required>
+                            <option value="">Select...</option>
+                            <option value="1">1 - Poor Fit</option>
+                            <option value="2">2 - Low Fit</option>
+                            <option value="3">3 - Moderate Fit</option>
+                            <option value="4">4 - Good Fit</option>
+                            <option value="5">5 - Perfect Fit</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+                    <i class="ph ph-play icon-inline"></i> Calculate Score
+                </button>
+            </form>
+
+            <div id="resultContainer" style="display: none;">
+                <div class="success-message">
+                    <i class="ph ph-check-circle icon-inline success-icon"></i>
+                    <div class="success-text">
+                        <strong>Assessment Complete!</strong>
+                        <small>Use case evaluated and scored</small>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-title"><i class="ph ph-chart-line icon-inline"></i> Scoring Results</div>
+                    <div class="result-item">
+                        <span class="result-label">Use Case</span>
+                        <span class="result-value" id="resultName">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Business Area</span>
+                        <span class="result-value" id="resultArea">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Reach Score</span>
+                        <span class="result-value" id="resultReach">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Impact Score</span>
+                        <span class="result-value" id="resultImpact">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Confidence Score</span>
+                        <span class="result-value" id="resultConfidence">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Effort Score</span>
+                        <span class="result-value" id="resultEffort">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Strategic Fit</span>
+                        <span class="result-value" id="resultFit">—</span>
+                    </div>
+                    <div class="result-item" style="border-bottom: 2px solid var(--accent); padding-top: 1rem; padding-bottom: 1rem;">
+                        <span class="result-label" style="font-weight: 700; color: var(--accent);">Weighted AI-RICE Score</span>
+                        <span class="result-value" id="resultScore" style="font-size: 1.5rem;">—</span>
+                    </div>
+                    <div class="result-item" style="padding-top: 1rem;">
+                        <span class="result-label">Recommendation</span>
+                        <span class="result-value" id="resultPhase">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching
+    document.querySelectorAll('.demo-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.getAttribute('data-tab');
+            
+            document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.demo-tab-content').forEach(c => c.classList.remove('active'));
+            
+            tab.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        });
+    });
+
+    // Assessment form handler
+    document.getElementById('assessmentForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const reach = parseInt(document.getElementById('reach').value);
+        const impact = parseInt(document.getElementById('impact').value);
+        const confidence = parseInt(document.getElementById('confidence').value);
+        const effort = parseInt(document.getElementById('effort').value);
+        const strategicFit = parseInt(document.getElementById('strategicFit').value);
+
+        // AI-RICE calculation with weights
+        const weights = {
+            reach: 0.20,
+            impact: 0.25,
+            confidence: 0.20,
+            effort: 0.20,
+            strategicFit: 0.15
+        };
+
+        const score = (reach * weights.reach) + 
+                     (impact * weights.impact) + 
+                     (confidence * weights.confidence) + 
+                     (effort * weights.effort) + 
+                     (strategicFit * weights.strategicFit);
+
+        // Determine phase recommendation
+        let phase = 'Defer';
+        if (score >= 4.2 && effort >= 4) {
+            phase = 'Phase 1 - Quick Win';
+        } else if (score >= 4.0 && impact >= 4) {
+            phase = 'Phase 2 - Strategic Bet';
+        } else if (score >= 3.5) {
+            phase = 'Phase 2 - Strategic Bet';
+        } else if (score >= 3.0) {
+            phase = 'Phase 3 - Future';
+        }
+
+        // Display results
+        document.getElementById('resultName').textContent = document.getElementById('useCaseName').value;
+        document.getElementById('resultArea').textContent = document.getElementById('affectedArea').value;
+        document.getElementById('resultReach').textContent = reach;
+        document.getElementById('resultImpact').textContent = impact;
+        document.getElementById('resultConfidence').textContent = confidence;
+        document.getElementById('resultEffort').textContent = effort;
+        document.getElementById('resultFit').textContent = strategicFit;
+        document.getElementById('resultScore').textContent = score.toFixed(2);
+        document.getElementById('resultPhase').textContent = phase;
+
+        document.getElementById('resultContainer').style.display = 'block';
+        setTimeout(() => document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' }), 100);
+    });
+
+    // Dark mode detection
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+</script>
+</body>
+</html>
