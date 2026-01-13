@@ -161,6 +161,7 @@
     activateNav();
     initTheme();
     initMobileMenu();
+    initScrollAnimations();
 
     // Make brand clickable to home
     const brand = document.querySelector('.brand');
@@ -173,4 +174,69 @@
       window.phosphor.renderSVG();
     }
   });
+
+  // Scroll Animation Handler
+  function initScrollAnimations() {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements with animation classes
+    const animatedElements = document.querySelectorAll(
+      '[data-animate], .feature, .card, .section, h2, h3, section > p:not(.section-subtitle)'
+    );
+
+    animatedElements.forEach((el, index) => {
+      // Add stagger delay if not already set
+      if (!el.style.animationDelay && el.classList.length === 0) {
+        el.classList.add('animate-fade-in-up');
+        if (index < 5) {
+          el.classList.add(`stagger-${index + 1}`);
+        }
+      }
+      observer.observe(el);
+    });
+
+    // Add CSS for in-view state
+    const style = document.createElement('style');
+    style.textContent = `
+      .animate-fade-in-up.in-view,
+      .animate-slide-in-right.in-view,
+      .animate-scale-in.in-view,
+      .animate-slide-up.in-view,
+      .animate-rotate-in.in-view {
+        animation-play-state: running !important;
+        opacity: 1 !important;
+      }
+
+      .feature, .card {
+        opacity: 0;
+        animation: fadeInUp 0.6s ease-out forwards;
+      }
+
+      .feature.in-view, .card.in-view {
+        opacity: 1;
+      }
+
+      section > h2, section > h3 {
+        opacity: 0;
+        animation: slideInRight 0.6s ease-out forwards;
+      }
+
+      section > h2.in-view, section > h3.in-view {
+        opacity: 1;
+      }
+    `;
+    document.head.appendChild(style);
+  }
 })();
