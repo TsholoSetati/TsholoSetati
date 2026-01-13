@@ -836,66 +836,147 @@
     document.querySelectorAll('.demo-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             const tabName = tab.getAttribute('data-tab');
-            
+
             document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.demo-tab-content').forEach(c => c.classList.remove('active'));
-            
+
             tab.classList.add('active');
             document.getElementById(tabName).classList.add('active');
         });
     });
 
-    // Assessment form handler
+    // Scoring utilities (client-side port of scoring.ts essentials)
+    const AI_RICE_WEIGHTS = { reach: 0.20, impact: 0.25, confidence: 0.20, effort: 0.20, strategic_fit: 0.15 };
+
+    function calculateAIRiceScore(scores) {
+        const { reach_score, impact_score, confidence_score, effort_score, strategic_fit_score } = scores;
+        if ([reach_score, impact_score, confidence_score, effort_score, strategic_fit_score].some(v => v === undefined || v === null)) {
+            return null;
+        }
+        return (
+            (reach_score * AI_RICE_WEIGHTS.reach) +
+            (impact_score * AI_RICE_WEIGHTS.impact) +
+            (confidence_score * AI_RICE_WEIGHTS.confidence) +
+            (effort_score * AI_RICE_WEIGHTS.effort) +
+            (strategic_fit_score * AI_RICE_WEIGHTS.strategic_fit)
+        );
+    }
+
+    function assignQuadrant(aiRiceScore, feasibilityScore, threshold = 3.5) {
+        if (aiRiceScore === null || feasibilityScore === null) return 'Defer';
+        const highImpact = aiRiceScore >= threshold;
+        const highFeas = feasibilityScore >= threshold;
+        if (highImpact && highFeas) return 'Quick Win';
+        if (highImpact && !highFeas) return 'Big Bet';
+        if (!highImpact && highFeas) return 'Fill-in';
+        return 'Defer';
+    }
+
+    function recommendPhase(quadrant, priorityScore) {
+        if (quadrant === 'Quick Win') return 'Phase 1 - Quick Wins';
+        if (quadrant === 'Big Bet') return (priorityScore && priorityScore >= 4) ? 'Phase 2 - Strategic Bets' : 'Phase 3 - Future';
+        if (quadrant === 'Fill-in') return (priorityScore && priorityScore >= 3.5) ? 'Phase 2 - Strategic Bets' : 'Phase 3 - Future';
+        return 'Defer';
+    }
+
+    // Very small local financial estimator (conservative, best-effort)
+    function estimateFinancials(impactScore) {
+        // Map impact score (1-5) to a rough annual value
+        const mapping = { 1: 10000, 2: 50000, 3: 150000, 4: 400000, 5: 1200000 };
+        const annual = mapping[Math.round(impactScore)] || 0;
+        return { value_revenue_annual: annual, total_annual_benefit: annual };
+    }
+
+    // Save simple assessments to localStorage for demo persistence
+    function saveAssessment(record) {
+        const key = 'id8_assessments';
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        existing.unshift(record);
+        localStorage.setItem(key, JSON.stringify(existing.slice(0, 20)));
+    }
+
+    function loadAssessmentsList() {
+        const key = 'id8_assessments';
+        const list = JSON.parse(localStorage.getItem(key) || '[]');
+        return list;
+    }
+
+    function renderAssessments() {
+        let container = document.getElementById('assessmentsList');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'assessmentsList';
+            container.style.marginTop = '1rem';
+            document.querySelector('#assess .card').appendChild(container);
+        }
+        const items = loadAssessmentsList();
+        container.innerHTML = '<h4>Recent Assessments</h4>' + (items.length ? items.map(it => `\n      <div style="padding:8px;border-radius:8px;background:var(--card);margin-bottom:8px;border:1px solid rgba(0,0,0,0.06)">\n        <strong>${escapeHtml(it.name)}</strong> — <small class="muted">${it.area}</small><br/>\n        Score: <strong>${it.score.toFixed(2)}</strong> • Phase: <em>${it.phase}</em>\n      </div>`).join('') : '<p class="muted">No assessments yet.</p>');
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":"&#39;"}[c]));
+    }
+
+    // Wire form submission to scoring functions
     document.getElementById('assessmentForm').addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const reach = parseInt(document.getElementById('reach').value);
-        const impact = parseInt(document.getElementById('impact').value);
-        const confidence = parseInt(document.getElementById('confidence').value);
-        const effort = parseInt(document.getElementById('effort').value);
-        const strategicFit = parseInt(document.getElementById('strategicFit').value);
+        const name = document.getElementById('useCaseName').value.trim();
+        const area = document.getElementById('affectedArea').value;
+        const problem = document.getElementById('problemStatement').value.trim();
+        const reach = parseInt(document.getElementById('reach').value, 10);
+        const impact = parseInt(document.getElementById('impact').value, 10);
+        const confidence = parseInt(document.getElementById('confidence').value, 10);
+        const effort = parseInt(document.getElementById('effort').value, 10);
+        const strategicFit = parseInt(document.getElementById('strategicFit').value, 10);
 
-        // AI-RICE calculation with weights
-        const weights = {
-            reach: 0.20,
-            impact: 0.25,
-            confidence: 0.20,
-            effort: 0.20,
-            strategicFit: 0.15
-        };
+        const aiRice = calculateAIRiceScore({ reach_score: reach, impact_score: impact, confidence_score: confidence, effort_score: effort, strategic_fit_score: strategicFit });
+        // For demo, assume feasibility equals average of confidence and effort (scaled)
+        const feasibility = ((confidence + effort) / 2);
+        const quadrant = assignQuadrant(aiRice, feasibility);
+        // Simple priority is aiRice rounded
+        const priorityScore = aiRice;
+        const phase = recommendPhase(quadrant, priorityScore);
 
-        const score = (reach * weights.reach) + 
-                     (impact * weights.impact) + 
-                     (confidence * weights.confidence) + 
-                     (effort * weights.effort) + 
-                     (strategicFit * weights.strategicFit);
-
-        // Determine phase recommendation
-        let phase = 'Defer';
-        if (score >= 4.2 && effort >= 4) {
-            phase = 'Phase 1 - Quick Win';
-        } else if (score >= 4.0 && impact >= 4) {
-            phase = 'Phase 2 - Strategic Bet';
-        } else if (score >= 3.5) {
-            phase = 'Phase 2 - Strategic Bet';
-        } else if (score >= 3.0) {
-            phase = 'Phase 3 - Future';
-        }
+        // Estimate simple financials
+        const financials = estimateFinancials(impact);
 
         // Display results
-        document.getElementById('resultName').textContent = document.getElementById('useCaseName').value;
-        document.getElementById('resultArea').textContent = document.getElementById('affectedArea').value;
+        document.getElementById('resultName').textContent = name || '—';
+        document.getElementById('resultArea').textContent = area || '—';
         document.getElementById('resultReach').textContent = reach;
         document.getElementById('resultImpact').textContent = impact;
         document.getElementById('resultConfidence').textContent = confidence;
         document.getElementById('resultEffort').textContent = effort;
         document.getElementById('resultFit').textContent = strategicFit;
-        document.getElementById('resultScore').textContent = score.toFixed(2);
+        document.getElementById('resultScore').textContent = aiRice ? aiRice.toFixed(2) : '—';
         document.getElementById('resultPhase').textContent = phase;
+
+        const record = {
+            id: Date.now(),
+            name,
+            area,
+            problem,
+            reach,
+            impact,
+            confidence,
+            effort,
+            strategicFit,
+            score: aiRice || 0,
+            phase,
+            financials,
+            created_at: new Date().toISOString()
+        };
+
+        saveAssessment(record);
+        renderAssessments();
 
         document.getElementById('resultContainer').style.display = 'block';
         setTimeout(() => document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' }), 100);
     });
+
+    // Initial render
+    renderAssessments();
 
     // Dark mode detection
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
