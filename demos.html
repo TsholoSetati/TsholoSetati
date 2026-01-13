@@ -433,7 +433,7 @@
             if (sharpsharpIframe) {
                 sharpsharpIframe.addEventListener('load', () => {
                     if (sharpsharpPreloader) {
-                        sharpsharpPreloader.style.display = 'none';
+                        sharpsharpPreloader.classList.remove('visible');
                         sharpsharpPreloader.setAttribute('aria-hidden', 'true');
                     }
                 });
@@ -443,7 +443,7 @@
                 launchSharpSharpBtn.addEventListener('click', () => {
                     // show preloader and set iframe src from data-src to lazy-load the SPA only when launched
                     if (sharpsharpPreloader) {
-                        sharpsharpPreloader.style.display = 'flex';
+                        sharpsharpPreloader.classList.add('visible');
                         sharpsharpPreloader.setAttribute('aria-hidden', 'false');
                     }
                     if (sharpsharpIframe && !sharpsharpIframe.src) {
@@ -462,12 +462,16 @@
                         sharpsharpPreloader.style.display = 'none';
                         sharpsharpPreloader.setAttribute('aria-hidden', 'true');
                     }
-                    if (sharpsharpIframe) {
-                        sharpsharpIframe.src = '';
-                    }
-                    sharpsharpContainer.style.display = 'none';
-                    demoLoginContainer.style.display = 'grid';
-                    window.scrollTo(0, 0);
+                        if (sharpsharpPreloader) {
+                            sharpsharpPreloader.classList.remove('visible');
+                            sharpsharpPreloader.setAttribute('aria-hidden', 'true');
+                        }
+                        if (sharpsharpIframe) {
+                            sharpsharpIframe.src = '';
+                        }
+                        sharpsharpContainer.style.display = 'none';
+                        demoLoginContainer.style.display = 'grid';
+                        window.scrollTo(0, 0);
                 });
             }
 

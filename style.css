@@ -466,6 +466,13 @@ button {
   justify-content: center;
   background: linear-gradient(0deg, rgba(2,6,23,0.65), rgba(2,6,23,0.45));
   z-index: 70;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 220ms ease, visibility 220ms ease;
+}
+.iframe-preloader.visible {
+  opacity: 1;
+  visibility: visible;
 }
 .iframe-preloader .preloader-inner {
   display: flex;
