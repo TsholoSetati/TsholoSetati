@@ -457,6 +457,39 @@ button {
   width: 20px;
 }
 
+/* Iframe preloader overlay (used by demos iframe loaders) */
+.iframe-preloader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(0deg, rgba(2,6,23,0.65), rgba(2,6,23,0.45));
+  z-index: 70;
+}
+.iframe-preloader .preloader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+}
+.iframe-preloader .spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 5px solid rgba(255,255,255,0.12);
+  border-top-color: var(--accent-600);
+  animation: spin 1s linear infinite;
+}
+.iframe-preloader .preloader-text {
+  font-weight: 600;
+  color: var(--text);
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .nav-drawer-theme {
   padding: 20px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
