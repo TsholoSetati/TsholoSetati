@@ -14,7 +14,6 @@
       <a href="about.html"><i class="ph ph-user icon-inline"></i> About</a>
       <a href="experience.html"><i class="ph ph-briefcase icon-inline"></i> Experience</a>
       <a href="demos.html"><i class="ph ph-layers icon-inline"></i> Demo's</a>
-      <a href="contact.html"><i class="ph ph-envelope icon-inline"></i> Contact</a>
     </nav>
     <button class="hamburger-btn" id="hamburgerBtn" aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="navDrawer">
       <span class="hamburger-line"></span>
@@ -30,7 +29,6 @@
         <a href="about.html"><i class="ph ph-user icon-inline"></i> About</a>
         <a href="experience.html"><i class="ph ph-briefcase icon-inline"></i> Experience</a>
         <a href="demos.html"><i class="ph ph-layers icon-inline"></i> Demo's</a>
-        <a href="contact.html"><i class="ph ph-envelope icon-inline"></i> Contact</a>
       </nav>
     </div>
   </div>`;
