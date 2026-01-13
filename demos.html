@@ -129,6 +129,31 @@
                 </button>
             </div>
 
+            <!-- Financial Planning Card -->
+            <div class="card demo-login-card" style="margin-top: 2rem;">
+                <div class="demo-login-header">
+                    <i class="ph ph-currency-circle-dollar icon-button demo-app-icon"></i>
+                    <h3>Financial Planning</h3>
+                    <p class="muted">Smart Advisor & Retirement Calculators</p>
+                </div>
+                <div class="guest-entry-section">
+                    <p class="muted" style="margin-bottom: 1rem;">Personal financial planning tools.</p>
+                    <button id="launchFinancial" class="btn-primary" style="display:block; text-align:center; width: 100%; cursor: pointer;">
+                        <i class="ph ph-play icon-inline"></i> Launch Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Financial Planning Demo Container (hidden initially) -->
+            <div id="financial-demo-container" style="display: none; margin-top: 2rem;">
+                <div style="position: relative; width: 100%; height: 1000px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg);">
+                    <iframe id="financial-iframe" src="financial-planning/demo.html" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" loading="lazy"></iframe>
+                </div>
+                <button id="closeFinancial" class="btn btn-ghost" style="margin-top: 1rem; width: 100%;">
+                    <i class="ph ph-x icon-inline"></i> Close Demo
+                </button>
+            </div>
+
             <!-- ID8 Card -->
             <div class="card demo-login-card" style="margin-top: 2rem;">
                 <div class="demo-login-header">
@@ -425,6 +450,26 @@
             if (closeID8Btn) {
                 closeID8Btn.addEventListener('click', () => {
                     id8Container.style.display = 'none';
+                    demoLoginContainer.style.display = 'grid';
+                });
+            }
+
+            // Financial Planning Demo Handler
+            const launchFinancialBtn = document.getElementById('launchFinancial');
+            const closeFinancialBtn = document.getElementById('closeFinancial');
+            const financialContainer = document.getElementById('financial-demo-container');
+
+            if (launchFinancialBtn) {
+                launchFinancialBtn.addEventListener('click', () => {
+                    demoLoginContainer.style.display = 'none';
+                    financialContainer.style.display = 'block';
+                    window.scrollTo(0, 0);
+                });
+            }
+
+            if (closeFinancialBtn) {
+                closeFinancialBtn.addEventListener('click', () => {
+                    financialContainer.style.display = 'none';
                     demoLoginContainer.style.display = 'grid';
                 });
             }

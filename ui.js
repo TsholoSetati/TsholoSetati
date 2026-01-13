@@ -9,14 +9,12 @@
         <div class="tag">Innovation Economics · AI & Digital</div>
       </div>
     </div>
-    <nav class="site-links" aria-label="Main navigation">
+      <nav class="site-links" aria-label="Main navigation">
       <a href="index.html"><i class="ph ph-house icon-inline"></i> Home</a>
       <a href="about.html"><i class="ph ph-user icon-inline"></i> About</a>
       <a href="experience.html"><i class="ph ph-briefcase icon-inline"></i> Experience</a>
-      <a href="economics.html"><i class="ph ph-chart-line icon-inline"></i> Analysis & Tools</a>
       <a href="demos.html"><i class="ph ph-layers icon-inline"></i> Demo's</a>
       <a href="contact.html"><i class="ph ph-envelope icon-inline"></i> Contact</a>
-      <button id="themeToggle" aria-label="Toggle theme" title="Toggle dark mode"><i class="ph ph-moon icon-inline" id="themeIcon"></i></button>
     </nav>
     <button class="hamburger-btn" id="hamburgerBtn" aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="navDrawer">
       <span class="hamburger-line"></span>
@@ -31,16 +29,9 @@
         <a href="index.html"><i class="ph ph-house icon-inline"></i> Home</a>
         <a href="about.html"><i class="ph ph-user icon-inline"></i> About</a>
         <a href="experience.html"><i class="ph ph-briefcase icon-inline"></i> Experience</a>
-        <a href="economics.html"><i class="ph ph-chart-line icon-inline"></i> Analysis & Tools</a>
         <a href="demos.html"><i class="ph ph-layers icon-inline"></i> Demo's</a>
         <a href="contact.html"><i class="ph ph-envelope icon-inline"></i> Contact</a>
       </nav>
-      <div class="nav-drawer-theme">
-        <button id="drawerThemeToggle" class="btn btn-ghost" aria-label="Toggle theme">
-          <i class="ph ph-moon icon-button" id="drawerThemeIcon"></i>
-          <span>Theme</span>
-        </button>
-      </div>
     </div>
   </div>`;
 
@@ -72,41 +63,8 @@
   }
 
   function initTheme() {
-    const saved = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', saved);
-
-    const tBtn = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const drawerThemeBtn = document.getElementById('drawerThemeToggle');
-    const drawerThemeIcon = document.getElementById('drawerThemeIcon');
-    
-    if (!tBtn) return;
-
-    // Update icon based on theme
-    const updateThemeIcons = () => {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (themeIcon) {
-        themeIcon.setAttribute('class', isDark ? 'ph ph-sun icon-inline' : 'ph ph-moon icon-inline');
-      }
-      if (drawerThemeIcon) {
-        drawerThemeIcon.setAttribute('class', isDark ? 'ph ph-sun icon-button' : 'ph ph-moon icon-button');
-      }
-    };
-
-    updateThemeIcons();
-
-    const handleThemeToggle = () => {
-      const cur = document.documentElement.getAttribute('data-theme') || 'light';
-      const next = cur === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-      updateThemeIcons();
-    };
-
-    tBtn.addEventListener('click', handleThemeToggle);
-    if (drawerThemeBtn) {
-      drawerThemeBtn.addEventListener('click', handleThemeToggle);
-    }
+    // Force dark-only theme (no toggles)
+    document.documentElement.setAttribute('data-theme', 'dark');
   }
 
   function initMobileMenu() {

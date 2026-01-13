@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Financial Planning — Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    :root{--accent:#22c55e;--accent-600:#16a34a}
+    [data-theme="dark"]{--accent:#22c55e;--accent-600:#16a34a}
+    body{background:var(--bg);color:var(--text);font-family:Inter, system-ui, sans-serif}
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-theme="dark">
+  <div class="container">
+    <div class="card" style="margin-top:12px;">
+      <h2>💰 Financial Planning — Smart Advisor & Retirement</h2>
+      <p class="muted">Standalone demo of the financial planning calculators.</p>
+
+      <div class="analysis-tabs" style="margin-top:18px;">
+        <button class="tab-button active" onclick="switchFinancialTab('advisor')">🤖 Smart Advisor</button>
+        <button class="tab-button" onclick="switchFinancialTab('calc-retirement')">👴 Retirement</button>
+      </div>
+
+      <div id="financial-tools">
+        <div id="advisor" class="financial-tab active" style="margin-top:16px;">
+          <section class="card">
+            <h3>Smart Financial Advisor</h3>
+            <p class="muted">Get a personalized financial health assessment and investment strategy.</p>
+            <form id="advisorForm" class="calculator-form">
+              <div class="form-row">
+                <div class="form-group"><label>Annual Income (R)</label><input type="number" id="annualIncome" required></div>
+                <div class="form-group"><label>Monthly Expenses (R)</label><input type="number" id="monthlyExpenses" required></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Age</label><input type="number" id="advAge" required></div>
+                <div class="form-group"><label>Total Debt (R)</label><input type="number" id="currentDebt" required></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Emergency Fund (R)</label><input type="number" id="emergencyFund" required></div>
+                <div class="form-group"><label>Investment Goal (Years)</label><input type="number" id="investmentGoal" required></div>
+              </div>
+              <button type="submit" class="btn-primary">Get Assessment</button>
+            </form>
+            <div id="advisorResult" class="result-box"></div>
+          </section>
+        </div>
+
+        <div id="calc-retirement" class="financial-tab" style="display:none; margin-top:16px;">
+          <section class="card calculator-card">
+            <h3>Retirement Savings Calculator</h3>
+            <p class="muted">Project your savings growth over time.</p>
+            <form id="retirementForm" class="calculator-form">
+              <div class="form-row">
+                <div class="form-group"><label>Current Age</label><input type="number" id="currentAge" required></div>
+                <div class="form-group"><label>Retirement Age</label><input type="number" id="retirementAge" required></div>
+              </div>
+              <div class="form-group"><label>Current Savings (R)</label><input type="number" id="currentSavings" required></div>
+              <div class="form-group"><label>Monthly Contribution (R)</label><input type="number" id="monthlyContribution" required></div>
+              <div class="form-group"><label>Annual Return (%)</label><input type="number" step="0.01" id="annualReturn" required></div>
+              <button type="submit" class="btn-primary">Project Savings</button>
+            </form>
+            <div id="retirementResult" class="result-box"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../stock-data.js"></script>
+  <script src="../script.js"></script>
+  <script src="../analysis-tools.js"></script>
+
+  <script>
+    // Ensure tabs work inside demo
+    function switchFinancialTab(tabId){
+      document.querySelectorAll('.financial-tab').forEach(el=>el.style.display='none');
+      document.querySelectorAll('.financial-tab').forEach(el=>el.classList.remove('active'));
+      const t = document.getElementById(tabId);
+      if(t){ t.style.display='block'; t.classList.add('active'); }
+      document.querySelectorAll('.analysis-tabs .tab-button').forEach(btn=>{
+        btn.classList.remove('active'); if(btn.getAttribute('onclick')?.includes(tabId)) btn.classList.add('active');
+      });
+    }
+  </script>
+</body>
+</html>
