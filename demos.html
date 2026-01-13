@@ -95,8 +95,8 @@
 
             <!-- Sharp-Sharp Demo Container (hidden initially) -->
             <div id="sharpsharp-demo-container" style="display: none; margin-top: 2rem;">
-                <div style="position: relative; width: 100%; height: 1000px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg);">
-                    <iframe id="sharpsharp-iframe" src="sharp-sharp/demo.html" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" loading="lazy"></iframe>
+                <div style="position: relative; width: 100%; height: min(80vh, 900px); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg);">
+                    <iframe id="sharpsharp-iframe" src="" data-src="sharp-sharp/index.html" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" loading="lazy" title="Sharp-Sharp demo"></iframe>
                 </div>
                 <button id="closeSharpSharp" class="btn btn-ghost" style="margin-top: 1rem; width: 100%;">
                     <i class="ph ph-x icon-inline"></i> Close Demo
@@ -414,13 +414,18 @@
                 });
             }
 
-            // Sharp-Sharp Demo Handler
+            // Sharp-Sharp Demo Handler (lazy-load SPA into iframe)
             const launchSharpSharpBtn = document.getElementById('launchSharpSharp');
             const closeSharpSharpBtn = document.getElementById('closeSharpSharp');
             const sharpsharpContainer = document.getElementById('sharpsharp-demo-container');
+            const sharpsharpIframe = document.getElementById('sharpsharp-iframe');
 
             if (launchSharpSharpBtn) {
                 launchSharpSharpBtn.addEventListener('click', () => {
+                    // set iframe src from data-src to lazy-load the SPA only when launched
+                    if (sharpsharpIframe && !sharpsharpIframe.src) {
+                        sharpsharpIframe.src = sharpsharpIframe.dataset.src || 'sharp-sharp/index.html';
+                    }
                     demoLoginContainer.style.display = 'none';
                     sharpsharpContainer.style.display = 'block';
                     window.scrollTo(0, 0);
@@ -429,8 +434,13 @@
 
             if (closeSharpSharpBtn) {
                 closeSharpSharpBtn.addEventListener('click', () => {
+                    // unload iframe to free resources
+                    if (sharpsharpIframe) {
+                        sharpsharpIframe.src = '';
+                    }
                     sharpsharpContainer.style.display = 'none';
                     demoLoginContainer.style.display = 'grid';
+                    window.scrollTo(0, 0);
                 });
             }
 
