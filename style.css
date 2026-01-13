@@ -423,21 +423,27 @@ button {
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 0;
+  padding: 8px 0;
   list-style: none;
   margin: 0;
+  width: 100%;
 }
 
 .nav-drawer-links a {
-  display: block;
-  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 20px;
   color: var(--text);
   text-decoration: none;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.95rem;
   border-left: 3px solid transparent;
   transition: var(--transition);
   cursor: pointer;
+  box-sizing: border-box;
+  min-height: 48px;
 }
 
 .nav-drawer-links a:hover {
@@ -453,7 +459,8 @@ button {
 
 .nav-drawer-links i {
   font-size: 1.25rem;
-  width: 20px;
+  width: 24px;
+  flex-shrink: 0;
 }
 
 /* Iframe preloader overlay (used by demos iframe loaders) */
