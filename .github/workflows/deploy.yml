@@ -29,10 +29,16 @@ jobs:
         with:
           node-version: '20'
           cache: npm
-          cache-dependency-path: apps/web/package-lock.json
+          cache-dependency-path: |
+            apps/web/package-lock.json
+            apps/web/demos-src/sharp-sharp/package-lock.json
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Install demo (sharp-sharp) dependencies
+        run: npm ci
+        working-directory: apps/web/demos-src/sharp-sharp
 
       - name: Build site
         run: npm run build
