@@ -1,283 +1,924 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Interactive demos showcasing web applications and prototypes">
-    <title>Demo's — Tsholo Setati</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiftlyInvited — Private Gift Registry</title>
+  <meta name="description" content="A private, invite-gated gift registry. Item claims, group chip-ins, RSVP, and calendar export. No accounts, no tracking." />
+  <style>
+    /* === Design tokens (brand parity with parent site) === */
+    :root {
+      --color-bg: #ffffff;
+      --color-surface-base: #ffffff;
+      --color-surface-raised: #ffffff;
+      --color-surface-sunken: #faf5f7;
+      --color-border: #ecdce3;
+      --color-border-strong: #d9bcc7;
+      --color-ink-primary: #1a1014;
+      --color-ink-secondary: #5b4a52;
+      --color-ink-tertiary: #8b7480;
+      --color-accent: #be185d;
+      --color-accent-2: #db2777;
+      --color-success: #047857;
+      --color-warning: #d97706;
+      --color-danger:  #dc2626;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 999px;
+      --shadow-sm: 0 1px 2px rgba(26,16,20,0.05);
+      --shadow-md: 0 4px 12px rgba(26,16,20,0.08);
+      --shadow-lg: 0 12px 32px rgba(26,16,20,0.12);
+      --font-display: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+      --font-xs: 0.75rem; --font-sm: 0.875rem; --font-base: 1rem; --font-lg: 1.125rem; --font-xl: 1.5rem; --font-2xl: 2rem;
+      --motion-fast: 150ms; --motion-base: 240ms;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    html[data-theme='dark'] {
+      --color-bg: #1a0f14;
+      --color-surface-base: #1f1218;
+      --color-surface-raised: #2a1820;
+      --color-surface-sunken: #15090d;
+      --color-border: #3d2530;
+      --color-border-strong: #543545;
+      --color-ink-primary: #fde7ef;
+      --color-ink-secondary: #e0c2cf;
+      --color-ink-tertiary: #b59aa6;
+      --color-accent: #f472b6;
+      --color-accent-2: #fb7185;
+      --color-success: #34d399;
+      --color-warning: #fbbf24;
+      --color-danger:  #f87171;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.45);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-ink-primary);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color var(--motion-base) var(--ease), color var(--motion-base) var(--ease);
+    }
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; line-height: 1.2; }
+    h1 { font-size: clamp(1.6rem, 3.2vw, 2.25rem); }
+    h2 { font-size: var(--font-xl); }
+    h3 { font-size: var(--font-lg); }
+    p { margin: 0; }
+    code, .mono { font-family: var(--font-mono); }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+
+    /* Header */
+    .head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .brand { display: flex; align-items: center; gap: 0.55rem; }
+    .brand-mark { width: 32px; height: 32px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2)); display: grid; place-items: center; color: white; font-weight: 700; font-family: var(--font-display); }
+    .brand-name { font-family: var(--font-display); font-weight: 600; font-size: var(--font-lg); }
+    .brand-name span { color: var(--color-accent); }
+    .head .right { margin-left: auto; display: flex; gap: 0.4rem; }
+    .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+    .lead { color: var(--color-ink-secondary); max-width: 64ch; margin-top: 0.5rem; }
+
+    /* Buttons */
+    .btn {
+      font: inherit; font-size: var(--font-sm); font-weight: 500;
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-raised); color: var(--color-ink-primary);
+      padding: 0.5rem 0.9rem; border-radius: var(--radius-md); cursor: pointer;
+      transition: all var(--motion-fast) var(--ease);
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      text-decoration: none;
+    }
+    .btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+    .btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+    .btn-primary { background: var(--color-accent); color: white; border-color: var(--color-accent); }
+    .btn-primary:hover { background: color-mix(in oklab, var(--color-accent) 88%, black); color: white; border-color: transparent; }
+    .btn-ghost { background: transparent; border-color: transparent; color: var(--color-ink-secondary); }
+    .btn-ghost:hover { background: var(--color-surface-sunken); color: var(--color-ink-primary); }
+    .btn-success { background: var(--color-success); color: white; border-color: var(--color-success); }
+    .btn-danger { color: var(--color-danger); border-color: transparent; background: transparent; }
+    .btn-danger:hover { background: color-mix(in oklab, var(--color-danger) 12%, transparent); }
+    .btn-sm { padding: 0.32rem 0.6rem; font-size: var(--font-xs); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+    /* Card */
+    .card {
+      background: var(--color-surface-raised);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .card + .card { margin-top: 1rem; }
+
+    /* Inputs */
+    .field { margin-bottom: 0.85rem; }
+    .field label { display: block; font-weight: 500; font-size: var(--font-sm); margin-bottom: 0.35rem; color: var(--color-ink-primary); }
+    .field input[type='text'], .field input[type='number'], .field input[type='tel'], .field input[type='email'], .field textarea, .field select {
+      width: 100%; font: inherit; font-size: var(--font-sm);
+      padding: 0.55rem 0.75rem; border-radius: var(--radius-md);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-base); color: var(--color-ink-primary);
+      transition: border-color var(--motion-fast) var(--ease);
+    }
+    .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--color-accent); }
+    .field textarea { min-height: 70px; resize: vertical; }
+    .hint { font-size: var(--font-xs); color: var(--color-ink-tertiary); margin-top: 0.3rem; }
+
+    /* Invite gate */
+    .gate { max-width: 480px; margin: 3rem auto; text-align: center; }
+    .gate .card { padding: 2rem 1.75rem; }
+    .gate .brand { justify-content: center; margin-bottom: 1.25rem; }
+    .gate .brand-mark { width: 56px; height: 56px; font-size: 1.4rem; border-radius: var(--radius-lg); }
+    .gate p { color: var(--color-ink-secondary); margin-top: 0.5rem; }
+    .gate .demo-code-tip { margin-top: 1.25rem; padding: 0.75rem; background: var(--color-surface-sunken); border-radius: var(--radius-md); font-size: var(--font-xs); color: var(--color-ink-secondary); }
+    .gate .demo-code-tip code { background: var(--color-surface-base); padding: 0.15rem 0.45rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border); color: var(--color-accent); font-weight: 600; letter-spacing: 0.06em; }
+    .gate-form { margin-top: 1.5rem; display: flex; gap: 0.5rem; }
+    .gate-form input { flex: 1; }
+
+    /* Hero (registry header) */
+    .hero {
+      display: grid; gap: 1.25rem; grid-template-columns: 1fr;
+      padding: 1.75rem; border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, color-mix(in oklab, var(--color-accent) 10%, var(--color-surface-base)), color-mix(in oklab, var(--color-accent-2) 6%, var(--color-surface-base)));
+      border: 1px solid var(--color-border);
+      margin-bottom: 1.25rem;
+    }
+    @media (min-width: 760px) { .hero { grid-template-columns: 1fr auto; align-items: center; } }
+    .hero h1 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.7rem; }
+    .hero-chip { font-family: var(--font-mono); font-size: var(--font-xs); padding: 0.28rem 0.65rem; border-radius: var(--radius-full); background: rgba(255,255,255,0.6); color: var(--color-ink-primary); border: 1px solid var(--color-border); }
+    html[data-theme='dark'] .hero-chip { background: rgba(255,255,255,0.05); }
+    .hero-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 0.25rem; border-bottom: 1px solid var(--color-border); margin-bottom: 1rem; overflow-x: auto; }
+    .tab-btn {
+      font: inherit; font-size: var(--font-sm); font-weight: 500;
+      background: transparent; border: 0; border-bottom: 2px solid transparent;
+      padding: 0.7rem 1rem; color: var(--color-ink-tertiary);
+      cursor: pointer; transition: all var(--motion-fast) var(--ease);
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--color-ink-primary); }
+    .tab-btn[aria-selected='true'] { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+
+    /* Items grid */
+    .items { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+    @media (min-width: 600px) { .items { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 920px) { .items { grid-template-columns: 1fr 1fr 1fr; } }
+
+    .item {
+      display: flex; flex-direction: column;
+      background: var(--color-surface-raised);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      transition: border-color var(--motion-fast) var(--ease);
+    }
+    .item:hover { border-color: var(--color-accent); }
+    .item-art { aspect-ratio: 4/3; display: grid; place-items: center; font-size: 3rem; background: var(--color-surface-sunken); }
+    .item-body { padding: 1rem; display: flex; flex-direction: column; flex: 1; gap: 0.55rem; }
+    .item-title { font-family: var(--font-display); font-weight: 600; font-size: 1rem; }
+    .item-desc { font-size: var(--font-xs); color: var(--color-ink-tertiary); flex: 1; }
+    .item-price { font-family: var(--font-mono); font-size: var(--font-sm); color: var(--color-accent); font-weight: 600; }
+    .item-foot { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
+
+    /* Status pills */
+    .pill { font-family: var(--font-mono); font-size: 0.65rem; padding: 0.18rem 0.55rem; border-radius: var(--radius-full); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.3rem; }
+    .pill-available { background: color-mix(in oklab, var(--color-success) 15%, transparent); color: var(--color-success); }
+    .pill-partial   { background: color-mix(in oklab, var(--color-warning) 18%, transparent); color: var(--color-warning); }
+    .pill-claimed   { background: color-mix(in oklab, var(--color-ink-tertiary) 18%, transparent); color: var(--color-ink-secondary); }
+    .pill-group     { background: color-mix(in oklab, var(--color-accent) 15%, transparent); color: var(--color-accent); }
+
+    /* Progress bar (chip-in) */
+    .prog-wrap { display: flex; flex-direction: column; gap: 0.3rem; }
+    .prog-bar { height: 8px; background: var(--color-surface-sunken); border-radius: var(--radius-full); overflow: hidden; }
+    .prog-fill { height: 100%; background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2)); transition: width var(--motion-base) var(--ease); }
+    .prog-meta { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: var(--font-xs); color: var(--color-ink-tertiary); }
+    .prog-meta strong { color: var(--color-ink-primary); font-weight: 600; }
+
+    /* Stats tiles */
+    .stats { display: grid; gap: 0.75rem; grid-template-columns: repeat(2, 1fr); margin-bottom: 1rem; }
+    @media (min-width: 760px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+    .tile {
+      padding: 0.85rem 1rem; border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); background: var(--color-surface-raised);
+    }
+    .tile-label { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-ink-tertiary); }
+    .tile-value { font-family: var(--font-display); font-size: var(--font-xl); font-weight: 600; margin-top: 0.3rem; color: var(--color-ink-primary); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(26,16,20,0.55); backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center; z-index: 100; padding: 1rem;
+    }
+    .modal-overlay[data-open='true'] { display: flex; }
+    .modal {
+      background: var(--color-surface-raised); border-radius: var(--radius-lg);
+      max-width: 540px; width: 100%; max-height: 90vh; overflow-y: auto;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--color-border);
+    }
+    .modal-head { padding: 1.25rem 1.25rem 0.5rem; display: flex; align-items: center; }
+    .modal-head h2 { flex: 1; font-size: var(--font-lg); }
+    .modal-body { padding: 0.75rem 1.25rem 1.25rem; }
+
+    /* Mode selector (claim type) */
+    .mode-grid { display: grid; gap: 0.5rem; grid-template-columns: 1fr 1fr; margin-bottom: 1rem; }
+    .mode-btn {
+      font: inherit; cursor: pointer; padding: 0.85rem; border-radius: var(--radius-md);
+      border: 1px solid var(--color-border-strong); background: var(--color-surface-base);
+      color: var(--color-ink-primary); text-align: left;
+      transition: all var(--motion-fast) var(--ease);
+    }
+    .mode-btn:hover { border-color: var(--color-accent); }
+    .mode-btn[aria-pressed='true'] { border-color: var(--color-accent); background: color-mix(in oklab, var(--color-accent) 8%, transparent); color: var(--color-accent); }
+    .mode-btn .mode-title { font-weight: 600; font-size: var(--font-sm); }
+    .mode-btn .mode-desc { font-size: var(--font-xs); color: var(--color-ink-tertiary); margin-top: 0.2rem; }
+    .mode-btn[aria-pressed='true'] .mode-desc { color: var(--color-accent); }
+
+    /* Toast */
+    .toast {
+      position: fixed; left: 50%; bottom: 1.5rem; transform: translate(-50%, 1rem);
+      background: var(--color-ink-primary); color: var(--color-bg);
+      padding: 0.65rem 1.1rem; border-radius: var(--radius-full); font-size: var(--font-sm);
+      box-shadow: var(--shadow-lg); z-index: 200;
+      opacity: 0; pointer-events: none; transition: all var(--motion-base) var(--ease);
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* Misc */
+    .row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .grow { flex: 1; }
+    .empty { padding: 2rem 1rem; text-align: center; color: var(--color-ink-tertiary); border: 1px dashed var(--color-border-strong); border-radius: var(--radius-md); }
+    .divider { height: 1px; background: var(--color-border); margin: 1rem 0; }
+
+    .rsvp-confirmed { padding: 1.25rem; background: color-mix(in oklab, var(--color-success) 10%, var(--color-surface-base)); border: 1px solid color-mix(in oklab, var(--color-success) 30%, transparent); border-radius: var(--radius-lg); }
+
+    .trust { display: flex; align-items: center; gap: 0.5rem; padding: 0.65rem 0.85rem; background: var(--color-surface-sunken); border-radius: var(--radius-md); font-size: var(--font-xs); color: var(--color-ink-secondary); margin-top: 1.5rem; }
+    .trust-dot { width: 8px; height: 8px; background: var(--color-success); border-radius: 50%; flex-shrink: 0; }
+
+    .owner-list { display: grid; gap: 0.5rem; }
+    .owner-row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.6rem; align-items: center; padding: 0.55rem 0.7rem; background: var(--color-surface-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .owner-row .who { font-size: var(--font-sm); }
+    .owner-row .amt { font-family: var(--font-mono); font-size: var(--font-sm); color: var(--color-accent); font-weight: 600; }
+  </style>
+  <script>
+    (function () {
+      try {
+        var qs = new URLSearchParams(location.search).get('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = qs === 'dark' || qs === 'light' ? qs : (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) { /* default light */ }
+    })();
+  </script>
 </head>
-
 <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="wrap">
 
-    <main id="main-content" class="container content-area">
-        <h2>Demo's & Prototypes</h2>
-        <p class="section-subtitle">Interactive demonstrations of web applications and prototypes I've built. <br>
-            <small class="muted">Note: This is a client-side simulation. Data is stored in your browser's local
-                storage.</small>
-        </p>
-
-        <!-- Toast Container -->
-        <div id="toast-container" class="toast-container"></div>
-
-        <!-- Login Gate -->
-        <div id="demo-login" class="demo-login-container">
-            <div class="card demo-login-card">
-                <div class="demo-login-header">
-                    <i class="ph ph-gift icon-button demo-app-icon"></i>
-                    <h3>GiftlyInvited</h3>
-                    <p class="muted">Private Gift Registry Demo</p>
-                </div>
-
-                <!-- Guest Entry -->
-                <div class="guest-entry-section">
-                    <h4>Have an invite code?</h4>
-                    <div class="form-group">
-                        <div class="demo-code-row">
-                            <input type="text" id="landingInviteCode" placeholder="Enter Invite Code">
-                            <button type="button" id="landingFindBtn" class="btn-primary">View Registry</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="divider"><span>OR</span></div>
-
-                <!-- Admin/Creator Login -->
-                <div class="login-toggle">
-                    <button type="button" class="btn-ghost btn-sm"
-                        onclick="document.getElementById('loginFormSection').style.display = 'block'; this.style.display='none';">Login
-                        as Creator/Admin</button>
-                </div>
-
-                <div id="loginFormSection" style="display: none;">
-                    <form id="loginForm" class="demo-login-form">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" id="username" placeholder="Enter username" required
-                                autocomplete="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" placeholder="Enter password" required
-                                autocomplete="current-password">
-                        </div>
-                        <div id="loginError" class="demo-error" style="display: none;"></div>
-                        <button type="submit" class="btn-primary">Sign In</button>
-                    </form>
-                </div>
-            </div>
-
+    <!-- Invite gate -->
+    <section id="gate" class="gate" aria-label="Invite gate">
+      <div class="card">
+        <div class="brand">
+          <div class="brand-mark">G</div>
         </div>
+        <h1 style="font-size: 1.75rem;">Welcome to <span style="color: var(--color-accent);">GiftlyInvited</span></h1>
+        <p>Private, invite-gated gift registries. No accounts, no tracking, no vendor lock-in.</p>
 
-        <!-- Demo App (hidden until login) -->
-        <div id="demo-app" class="demo-app" style="display: none;">
-
-            <!-- Demo Tabs -->
-            <div class="demo-tabs">
-                <button class="demo-tab active" data-tab="dashboard"><i class="ph ph-list icon-inline"></i> Dashboard</button>
-                <button class="demo-tab" data-tab="create"><i class="ph ph-plus icon-inline"></i> Create Registry</button>
-                <button class="demo-tab" data-tab="guest"><i class="ph ph-user icon-inline"></i> Guest View</button>
-            </div>
-
-            <!-- Dashboard Tab -->
-            <div id="tab-dashboard" class="demo-tab-content active">
-                <div class="demo-welcome">
-                    <h3>Welcome back, Admin! <i class="ph ph-hand-waving icon-inline"></i></h3>
-                    <p class="muted">Manage your gift registries.</p>
-                </div>
-
-                <!-- Stats Section -->
-                <div class="dashboard-stats" id="dashboardStats" style="display: none;">
-                    <div class="stat-card">
-                        <span class="stat-label">Total Value</span>
-                        <span class="stat-value" id="statsTotalValue">R0</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Completion</span>
-                        <div class="stat-progress-bar">
-                            <div class="stat-progress-fill" id="statsProgress" style="width: 0%"></div>
-                        </div>
-                        <span class="stat-text" id="statsText">0% Fulfilled</span>
-                    </div>
-                </div>
-
-                <div class="demo-registries-header">
-                    <h4>Your Registries</h4>
-                    <span id="registryCount" class="demo-count">0</span>
-                </div>
-
-                <div id="registriesList" class="demo-registries-list">
-                    <div class="demo-empty-state">
-                        <i class="ph ph-package icon-button demo-empty-icon"></i>
-                        <p>No registries yet. Create your first one!</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Create Registry Tab -->
-            <div id="tab-create" class="demo-tab-content">
-                <div class="card">
-                    <h3>Create New Registry</h3>
-                    <form id="createRegistryForm" class="demo-form">
-                        <div class="form-group">
-                            <label for="registryName">Registry Name *</label>
-                            <input type="text" id="registryName" placeholder="e.g., Sarah's Baby Shower" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventDate">Event Date</label>
-                            <input type="date" id="eventDate">
-                        </div>
-                        <div class="form-group">
-                            <label for="registryDescription">Description</label>
-                            <textarea id="registryDescription" rows="3"
-                                placeholder="Tell your guests about the event..."></textarea>
-                        </div>
-                        <button type="submit" class="btn-primary">Create Registry</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Guest View Tab -->
-            <div id="tab-guest" class="demo-tab-content">
-                <div class="card">
-                    <h3>Guest View Simulation</h3>
-                    <p class="muted">Enter invite code to view registry as a guest.</p>
-
-                    <!-- Guest Identity Form (Hidden initially) -->
-                    <div id="guestIdentityForm" class="demo-guest-code-input" style="display: none;">
-                        <div class="form-group">
-                            <label for="guestNameInput">What is your name?</label>
-                            <div class="demo-code-row">
-                                <input type="text" id="guestNameInput" placeholder="e.g., John Doe" required>
-                                <button type="button" id="confirmGuestNameBtn" class="btn-primary">Continue</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="demo-guest-code-input" id="guestCodeSection">
-                        <div class="form-group">
-                            <label for="inviteCodeInput">Enter Invite Code</label>
-                            <div class="demo-code-row">
-                                <input type="text" id="inviteCodeInput" placeholder="e.g., ABC123">
-                                <button type="button" id="findRegistryBtn" class="btn-primary">Find Registry</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="guestRegistryView" class="demo-guest-registry" style="display: none;">
-                        <!-- Updated by JS with filters -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Registry Detail Modal -->
-            <div id="registryModal" class="demo-modal" style="display: none;">
-                <div class="demo-modal-overlay"></div>
-                <div class="demo-modal-content">
-                    <div class="demo-modal-header">
-                        <h3 id="modalRegistryName">Registry Name</h3>
-                        <button type="button" class="demo-modal-close" aria-label="Close">×</button>
-                    </div>
-                    <div class="demo-modal-body">
-                        <div class="demo-invite-code-box">
-                            <span class="demo-invite-label">Invite Code</span>
-                            <span id="modalInviteCode" class="demo-invite-code">ABC123</span>
-                            <button type="button" id="copyCodeBtn" class="demo-copy-btn"><i class="ph ph-copy icon-inline"></i> Copy</button>
-                        </div>
-
-                        <!-- Creator vs Admin Toggle (Demo Only) -->
-                        <div class="role-toggle-container">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="adminModeToggle">
-                                <span class="slider round"></span>
-                            </label>
-                            <span class="toggle-label">Reveal Claimers (Admin Mode)</span>
-                        </div>
-
-                        <div class="demo-items-section">
-                            <div class="demo-items-header">
-                                <h4>Gift Items</h4>
-                                <button type="button" id="addItemBtn" class="btn-primary">+ Add Item</button>
-                            </div>
-
-                            <!-- Filter Controls -->
-                            <div class="filter-controls">
-                                <select id="creatorFilterSort" class="form-control-sm">
-                                    <option value="newest">Sort: Newest</option>
-                                    <option value="price-asc">Price: Low to High</option>
-                                    <option value="price-desc">Price: High to Low</option>
-                                    <option value="status">Status: Claimed First</option>
-                                </select>
-                            </div>
-
-                            <div id="itemsList" class="demo-items-list">
-                                <!-- Populated by JS -->
-                            </div>
-                        </div>
-
-                        <!-- Add Item Form (hidden by default) -->
-                        <div id="addItemForm" class="demo-add-item-form" style="display: none;">
-                            <h4>Add New Item</h4>
-                            <form id="itemForm">
-                                <div class="form-group">
-                                    <label for="itemImage">Item Image</label>
-                                    <input type="file" id="itemImage" accept="image/*">
-                                    <small class="muted">Upload an image (max 2MB)</small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="itemTitle">Item Name *</label>
-                                    <input type="text" id="itemTitle" placeholder="e.g., Baby Monitor" required>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="itemPrice">Price (R)</label>
-                                        <input type="number" id="itemPrice" placeholder="e.g., 1500">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="itemQuantity">Quantity</label>
-                                        <input type="number" id="itemQuantity" value="1" min="1">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="itemCategory">Category</label>
-                                    <select id="itemCategory">
-                                        <option value="General">General</option>
-                                        <option value="Kitchen">Kitchen</option>
-                                        <option value="Home">Home Decor</option>
-                                        <option value="Baby">Baby</option>
-                                        <option value="Cash Fund">Cash Fund</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="itemUrl">Product Link</label>
-                                    <input type="url" id="itemUrl" placeholder="https://...">
-                                </div>
-                                <div class="form-group">
-                                    <label for="itemDescription">Notes</label>
-                                    <textarea id="itemDescription" rows="2"
-                                        placeholder="Color preference, size, etc."></textarea>
-                                </div>
-                                <div class="demo-form-actions">
-                                    <button type="button" id="cancelAddItem" class="btn-ghost">Cancel</button>
-                                    <button type="submit" class="btn-primary">Add Item</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Logout Button -->
-            <div class="demo-logout">
-                <button type="button" id="logoutBtn" class="btn-ghost"><i class="ph ph-sign-out icon-inline"></i> Sign Out</button>
-            </div>
+        <form class="gate-form" id="gateForm" autocomplete="off">
+          <input type="text" id="gateCode" placeholder="Invite code" autocapitalize="characters" required />
+          <button type="submit" class="btn btn-primary">Open</button>
+        </form>
+        <div class="gate-form" style="margin-top: 0.5rem;">
+          <button type="button" class="btn btn-ghost btn-sm grow" id="ownerBtn" style="justify-content: center;">I'm the registry owner →</button>
         </div>
-    </main>
+        <div class="demo-code-tip">
+          <strong>Try the demo →</strong> Use invite code <code>DEMO2026</code> to view the sample registry.
+        </div>
+      </div>
 
-    <script src="demos.js"></script>
+      <div class="trust">
+        <span class="trust-dot" aria-hidden="true"></span>
+        Everything stays in your browser — no server, no analytics, no signup.
+      </div>
+    </section>
+
+    <!-- Registry view (guest) -->
+    <section id="registry" hidden>
+      <header class="head">
+        <div class="brand">
+          <div class="brand-mark">G</div>
+          <div class="brand-name">Giftly<span>Invited</span></div>
+        </div>
+        <div class="right">
+          <button type="button" class="btn btn-ghost btn-sm" id="themeToggle" aria-label="Toggle theme">☾</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="leaveBtn">← Leave</button>
+        </div>
+      </header>
+
+      <div class="hero">
+        <div>
+          <p class="eyebrow" id="rEventLabel">Wedding registry</p>
+          <h1 id="rTitle">—</h1>
+          <p class="lead" id="rSubtitle">—</p>
+          <div class="hero-meta" id="rMeta"></div>
+        </div>
+        <div class="hero-actions">
+          <button type="button" class="btn" id="addCalBtn">📅 Add to calendar</button>
+          <button type="button" class="btn" id="shareWaBtn">💬 Share via WhatsApp</button>
+        </div>
+      </div>
+
+      <nav class="tabs" role="tablist" aria-label="Registry sections">
+        <button class="tab-btn" role="tab" aria-selected="true"  data-tab="items">Gift list</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="rsvp">RSVP</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="details">Event details</button>
+      </nav>
+
+      <div id="tab-items" role="tabpanel">
+        <div class="stats" id="stats"></div>
+        <div class="items" id="itemsGrid"></div>
+      </div>
+
+      <div id="tab-rsvp" role="tabpanel" hidden>
+        <div class="card" id="rsvpCard"></div>
+      </div>
+
+      <div id="tab-details" role="tabpanel" hidden>
+        <div class="card">
+          <h2>Event details</h2>
+          <div class="divider"></div>
+          <dl id="detailsList" style="display: grid; gap: 0.75rem; grid-template-columns: max-content 1fr; margin: 0;"></dl>
+        </div>
+      </div>
+
+      <div class="trust">
+        <span class="trust-dot" aria-hidden="true"></span>
+        All claims, contributions and RSVPs stay in your browser. Nothing is sent to a server.
+      </div>
+    </section>
+
+    <!-- Owner panel -->
+    <section id="owner" hidden>
+      <header class="head">
+        <div class="brand">
+          <div class="brand-mark">G</div>
+          <div class="brand-name">Giftly<span>Invited</span> · Owner</div>
+        </div>
+        <div class="right">
+          <button type="button" class="btn btn-ghost btn-sm" id="ownerThemeToggle" aria-label="Toggle theme">☾</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="ownerLeaveBtn">← Back</button>
+        </div>
+      </header>
+
+      <div class="card">
+        <h2>Activity overview</h2>
+        <p class="hint" style="margin-bottom: 1rem;">Live view of every claim, contribution, and RSVP made on this device.</p>
+        <div class="stats" id="ownerStats"></div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-bottom: 0.6rem;">Claims &amp; contributions</h2>
+        <div id="ownerClaims" class="owner-list"></div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-bottom: 0.6rem;">RSVPs</h2>
+        <div id="ownerRsvps" class="owner-list"></div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-bottom: 0.6rem;">Export</h2>
+        <p class="hint" style="margin-bottom: 0.8rem;">Download a CSV of all guest activity.</p>
+        <div class="row">
+          <button type="button" class="btn" id="exportCsvBtn">⬇ Download CSV</button>
+          <button type="button" class="btn btn-danger" id="resetDataBtn">Reset all guest data</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal">
+        <div class="modal-head">
+          <h2 id="modalTitle">Claim a gift</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="modalCloseBtn" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+(() => {
+  'use strict';
+
+  const SAMPLE_REGISTRY = {
+    inviteCode: 'DEMO2026',
+    title: "Tsholo & Naledi's Wedding",
+    subtitle: "We'd love to have you celebrate with us in the Cape Winelands.",
+    eventLabel: 'Wedding registry',
+    eventDate: '2026-09-12T15:00:00+02:00',
+    eventEndDate: '2026-09-12T23:00:00+02:00',
+    venue: 'Boschendal Estate',
+    address: 'Pniel Rd, Groot Drakenstein, 7680',
+    dressCode: 'Garden formal',
+    rsvpDeadline: '2026-08-15',
+    contactWhatsApp: '+27821234567',
+    items: [
+      { id: 'i1', emoji: '🫖', name: 'Le Creuset Tea Kettle', desc: 'Cherry red, 1.7L', price: 1899, mode: 'claim' },
+      { id: 'i2', emoji: '🛏️', name: 'Linen bedding set', desc: '100% Stonewashed linen, queen', price: 4250, mode: 'claim' },
+      { id: 'i3', emoji: '🍽️', name: 'Stoneware dinner set', desc: 'Service for 8, charcoal glaze', price: 3600, mode: 'claim' },
+      { id: 'i4', emoji: '🛋️', name: 'Lounge sofa', desc: 'Three-seater, oatmeal weave', price: 18500, mode: 'group', target: 18500 },
+      { id: 'i5', emoji: '🌿', name: 'Garden landscaping fund', desc: 'Help us plant indigenous fynbos', price: 8000, mode: 'group', target: 8000 },
+      { id: 'i6', emoji: '🍷', name: 'Wine farm experience', desc: 'A weekend at Babylonstoren', price: 6500, mode: 'group', target: 6500 },
+      { id: 'i7', emoji: '☕', name: 'La Marzocco coffee machine', desc: 'Linea Mini, white', price: 92000, mode: 'group', target: 92000 },
+      { id: 'i8', emoji: '🍳', name: 'Cast iron cookware bundle', desc: '4-piece skillet & pot set', price: 4400, mode: 'claim' },
+      { id: 'i9', emoji: '🎨', name: 'Original artwork commission', desc: 'Local artist, mounted canvas', price: 12500, mode: 'group', target: 12500 },
+    ],
+  };
+
+  const STORAGE_KEY = 'giftly-v2';
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { claims: [], rsvps: [] };
+      const parsed = JSON.parse(raw);
+      return {
+        claims: Array.isArray(parsed.claims) ? parsed.claims : [],
+        rsvps:  Array.isArray(parsed.rsvps)  ? parsed.rsvps  : [],
+      };
+    } catch { return { claims: [], rsvps: [] }; }
+  }
+  function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+  let state = loadState();
+  const reg = SAMPLE_REGISTRY;
+
+  const $  = (s, root = document) => root.querySelector(s);
+  const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
+  const fmtMoney = (n) => 'R' + Number(n).toLocaleString('en-ZA', { maximumFractionDigits: 0 });
+  const fmtDate  = (iso) => { try { return new Date(iso).toLocaleDateString('en-ZA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); } catch { return iso; } };
+  const fmtTime  = (iso) => { try { return new Date(iso).toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' }); } catch { return ''; } };
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2));
+  const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  let toastTimer;
+  function toast(msg) {
+    const el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+  }
+
+  function itemStatus(item) {
+    const claims = state.claims.filter((c) => c.itemId === item.id);
+    if (item.mode === 'claim') {
+      const fully = claims.find((c) => c.kind === 'claim');
+      if (fully) return { kind: 'claimed', raised: item.price, target: item.price, contributors: claims };
+      const raised = claims.reduce((s, c) => s + (c.amount || 0), 0);
+      const status = raised >= item.price ? 'claimed' : raised > 0 ? 'partial' : 'available';
+      return { kind: status, raised, target: item.price, contributors: claims };
+    }
+    const raised = claims.reduce((s, c) => s + (c.amount || 0), 0);
+    const target = item.target || item.price;
+    const status = raised >= target ? 'claimed' : raised > 0 ? 'partial' : 'available';
+    return { kind: status, raised, target, contributors: claims };
+  }
+
+  // Theme
+  function currentTheme() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
+  function toggleTheme() {
+    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    $$('#themeToggle, #ownerThemeToggle').forEach((b) => { b.textContent = next === 'dark' ? '☀' : '☾'; });
+  }
+  $('#themeToggle').addEventListener('click', toggleTheme);
+  $('#ownerThemeToggle').addEventListener('click', toggleTheme);
+  $$('#themeToggle, #ownerThemeToggle').forEach((b) => { b.textContent = currentTheme() === 'dark' ? '☀' : '☾'; });
+
+  // Gate
+  $('#gateForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const code = ($('#gateCode').value || '').trim().toUpperCase();
+    if (code === reg.inviteCode) showRegistry();
+    else toast(`Invite code not recognised. Try ${reg.inviteCode}.`);
+  });
+  $('#ownerBtn').addEventListener('click', showOwner);
+  $('#leaveBtn').addEventListener('click', showGate);
+  $('#ownerLeaveBtn').addEventListener('click', showGate);
+
+  function showGate()     { $('#gate').hidden = false; $('#registry').hidden = true;  $('#owner').hidden = true;  $('#gateCode').value = ''; window.scrollTo(0, 0); }
+  function showRegistry() { $('#gate').hidden = true;  $('#registry').hidden = false; $('#owner').hidden = true;  renderRegistry(); window.scrollTo(0, 0); }
+  function showOwner()    { $('#gate').hidden = true;  $('#registry').hidden = true;  $('#owner').hidden = false; renderOwner(); window.scrollTo(0, 0); }
+
+  function renderRegistry() {
+    $('#rEventLabel').textContent = reg.eventLabel;
+    $('#rTitle').textContent      = reg.title;
+    $('#rSubtitle').textContent   = reg.subtitle;
+    $('#rMeta').innerHTML = [
+      `<span class="hero-chip">📅 ${escapeHtml(fmtDate(reg.eventDate))}</span>`,
+      `<span class="hero-chip">🕒 ${escapeHtml(fmtTime(reg.eventDate))}</span>`,
+      `<span class="hero-chip">📍 ${escapeHtml(reg.venue)}</span>`,
+    ].join('');
+    $('#detailsList').innerHTML = [
+      ['Date',       fmtDate(reg.eventDate)],
+      ['Time',       fmtTime(reg.eventDate) + ' – ' + fmtTime(reg.eventEndDate)],
+      ['Venue',      reg.venue],
+      ['Address',    reg.address],
+      ['Dress code', reg.dressCode],
+      ['RSVP by',    fmtDate(reg.rsvpDeadline)],
+      ['Contact',    `<a href="https://wa.me/${reg.contactWhatsApp.replace(/\D/g, '')}" target="_blank" rel="noopener" style="color: var(--color-accent);">WhatsApp ${escapeHtml(reg.contactWhatsApp)}</a>`],
+    ].map(([k, v]) => `<dt style="color: var(--color-ink-tertiary); font-size: var(--font-sm);">${escapeHtml(k)}</dt><dd style="margin: 0; font-size: var(--font-sm);">${v}</dd>`).join('');
+
+    renderStats();
+    renderItems();
+    renderRsvpForm();
+  }
+
+  function renderStats() {
+    const total       = reg.items.reduce((s, it) => s + (it.target || it.price), 0);
+    const raised      = reg.items.reduce((s, it) => s + itemStatus(it).raised, 0);
+    const claimed     = reg.items.filter((it) => itemStatus(it).kind === 'claimed').length;
+    const supporters  = new Set(state.claims.map((c) => (c.name || '').toLowerCase()).filter(Boolean)).size;
+    $('#stats').innerHTML = [
+      ['Items',      `${claimed} / ${reg.items.length}`],
+      ['Raised',     fmtMoney(raised)],
+      ['Goal',       fmtMoney(total)],
+      ['Supporters', String(supporters)],
+    ].map(([l, v]) => `<div class="tile"><div class="tile-label">${l}</div><div class="tile-value">${v}</div></div>`).join('');
+  }
+
+  function renderItems() {
+    const grid = $('#itemsGrid');
+    grid.innerHTML = reg.items.map((it) => {
+      const s = itemStatus(it);
+      const pillClass = s.kind === 'claimed' ? 'pill-claimed' : s.kind === 'partial' ? 'pill-partial' : 'pill-available';
+      const pillLabel = s.kind === 'claimed' ? '✓ Fully funded' : s.kind === 'partial' ? 'Group gift in progress' : 'Available';
+      const groupChip = it.mode === 'group' ? '<span class="pill pill-group">Group gift</span>' : '';
+      const pct = Math.min(100, Math.round((s.raised / s.target) * 100));
+      const progress = (it.mode === 'group' || s.kind === 'partial') ? `
+        <div class="prog-wrap">
+          <div class="prog-bar"><div class="prog-fill" style="width: ${pct}%"></div></div>
+          <div class="prog-meta"><span><strong>${fmtMoney(s.raised)}</strong> raised</span><span>of ${fmtMoney(s.target)}</span></div>
+        </div>
+      ` : '';
+      const action = s.kind === 'claimed'
+        ? `<button class="btn btn-sm" disabled style="margin-left: auto;">Funded</button>`
+        : `<button class="btn btn-primary btn-sm" data-claim="${it.id}" style="margin-left: auto;">${it.mode === 'group' ? 'Chip in' : 'Claim it'}</button>`;
+      return `
+        <article class="item">
+          <div class="item-art" aria-hidden="true">${it.emoji}</div>
+          <div class="item-body">
+            <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+              <div class="item-title">${escapeHtml(it.name)}</div>
+              <div class="item-price">${fmtMoney(it.price)}</div>
+            </div>
+            <div class="item-desc">${escapeHtml(it.desc)}</div>
+            <div class="row"><span class="pill ${pillClass}">${pillLabel}</span>${groupChip}</div>
+            ${progress}
+            <div class="item-foot">${action}</div>
+          </div>
+        </article>
+      `;
+    }).join('');
+    $$('#itemsGrid [data-claim]').forEach((btn) => {
+      btn.addEventListener('click', () => openClaimModal(btn.getAttribute('data-claim')));
+    });
+  }
+
+  // Claim/chip-in modal
+  let modalState = null;
+  function openClaimModal(itemId) {
+    const item = reg.items.find((i) => i.id === itemId);
+    if (!item) return;
+    const s = itemStatus(item);
+    modalState = { item, mode: item.mode === 'group' ? 'chipin' : 'claim' };
+
+    const remaining = Math.max(0, s.target - s.raised);
+    const suggested = item.mode === 'group' ? Math.max(100, Math.round(remaining / 4 / 100) * 100) : item.price;
+
+    $('#modalTitle').textContent = item.mode === 'group' ? 'Chip in for ' + item.name : 'Claim ' + item.name;
+    $('#modalBody').innerHTML = `
+      <div class="row" style="gap: 0.75rem; margin-bottom: 1rem;">
+        <div style="font-size: 2.4rem;">${item.emoji}</div>
+        <div>
+          <div style="font-weight: 600;">${escapeHtml(item.name)}</div>
+          <div class="hint">${escapeHtml(item.desc)} · ${fmtMoney(item.price)}</div>
+          ${item.mode === 'group' ? `<div class="hint">Remaining: <strong style="color: var(--color-accent);">${fmtMoney(remaining)}</strong></div>` : ''}
+        </div>
+      </div>
+      ${item.mode === 'claim' ? `
+        <div class="mode-grid">
+          <button type="button" class="mode-btn" aria-pressed="true"  data-mode="claim">
+            <div class="mode-title">Claim the full gift</div>
+            <div class="mode-desc">${fmtMoney(item.price)} · I'll cover this myself.</div>
+          </button>
+          <button type="button" class="mode-btn" aria-pressed="false" data-mode="chipin">
+            <div class="mode-title">Chip in instead</div>
+            <div class="mode-desc">Contribute towards it as a group.</div>
+          </button>
+        </div>` : ''}
+      <form id="claimForm">
+        <div class="field">
+          <label for="claimName">Your name</label>
+          <input type="text" id="claimName" required minlength="2" maxlength="60" placeholder="e.g. Sipho Dlamini" />
+        </div>
+        <div class="field" id="amountField" ${modalState.mode === 'claim' ? 'hidden' : ''}>
+          <label for="claimAmount">Amount (ZAR)</label>
+          <input type="number" id="claimAmount" min="50" step="50" value="${suggested}" />
+          <p class="hint">Minimum R50. Any amount counts.</p>
+        </div>
+        <div class="field">
+          <label for="claimMessage">Message (optional)</label>
+          <textarea id="claimMessage" maxlength="280" placeholder="A short note for the couple…"></textarea>
+        </div>
+        <div class="row" style="margin-top: 1rem;">
+          <button type="submit" class="btn btn-primary">Confirm</button>
+          <button type="button" class="btn btn-ghost" id="cancelClaimBtn">Cancel</button>
+          <button type="button" class="btn" id="shareItemBtn" style="margin-left: auto;">Share via WhatsApp</button>
+        </div>
+      </form>
+    `;
+
+    $$('#modalBody [data-mode]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const m = btn.getAttribute('data-mode');
+        modalState.mode = m;
+        $$('#modalBody [data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        $('#amountField').hidden = m === 'claim';
+      });
+    });
+    $('#cancelClaimBtn').addEventListener('click', closeModal);
+    $('#shareItemBtn').addEventListener('click', () => {
+      const text = `Join me in giving ${item.name} to ${reg.title}! Use invite code ${reg.inviteCode}.`;
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+    });
+    $('#claimForm').addEventListener('submit', (e) => { e.preventDefault(); submitClaim(); });
+
+    $('#modalOverlay').setAttribute('data-open', 'true');
+    setTimeout(() => $('#claimName').focus(), 50);
+  }
+  function closeModal() {
+    $('#modalOverlay').removeAttribute('data-open');
+    modalState = null;
+  }
+  $('#modalCloseBtn').addEventListener('click', closeModal);
+  $('#modalOverlay').addEventListener('click', (e) => { if (e.target === $('#modalOverlay')) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#modalOverlay').getAttribute('data-open') === 'true') closeModal(); });
+
+  function submitClaim() {
+    if (!modalState) return;
+    const { item, mode } = modalState;
+    const name    = ($('#claimName').value    || '').trim();
+    const message = ($('#claimMessage').value || '').trim();
+    if (!name) { toast('Please enter your name'); return; }
+    let amount = item.price;
+    if (mode === 'chipin') {
+      amount = Math.round(Number($('#claimAmount').value) || 0);
+      if (amount < 50) { toast('Minimum chip-in is R50'); return; }
+    }
+    state.claims.push({
+      id: uid(), itemId: item.id,
+      kind: mode === 'claim' ? 'claim' : 'chipin',
+      name, amount, message, createdAt: Date.now(),
+    });
+    saveState();
+    closeModal();
+    renderStats();
+    renderItems();
+    toast(mode === 'claim' ? `Thanks ${name.split(' ')[0]} — gift claimed.` : `Thanks ${name.split(' ')[0]} — chip-in recorded.`);
+  }
+
+  // Tabs
+  $$('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tab = btn.getAttribute('data-tab');
+      $$('.tab-btn').forEach((b) => b.setAttribute('aria-selected', String(b === btn)));
+      ['items', 'rsvp', 'details'].forEach((t) => { $('#tab-' + t).hidden = t !== tab; });
+    });
+  });
+
+  // RSVP
+  function renderRsvpForm() {
+    const existing = state.rsvps.find((r) => r.code === reg.inviteCode);
+    const card = $('#rsvpCard');
+    if (existing) {
+      card.innerHTML = `
+        <h2>RSVP received ✓</h2>
+        <div class="rsvp-confirmed">
+          <p style="margin-bottom: 0.5rem;"><strong>${escapeHtml(existing.name)}</strong> — ${existing.attend === 'yes' ? `attending with ${existing.plusOnes} additional guest${existing.plusOnes === 1 ? '' : 's'}` : 'sadly cannot attend'}</p>
+          ${existing.dietary ? `<p class="hint" style="margin-top: 0.4rem;"><strong>Dietary:</strong> ${escapeHtml(existing.dietary)}</p>` : ''}
+          ${existing.message ? `<p class="hint" style="margin-top: 0.4rem;"><strong>Message:</strong> ${escapeHtml(existing.message)}</p>` : ''}
+        </div>
+        <div class="row" style="margin-top: 1rem;">
+          <button type="button" class="btn btn-ghost" id="rsvpClearBtn">Clear &amp; resubmit</button>
+        </div>
+      `;
+      $('#rsvpClearBtn').addEventListener('click', () => {
+        state.rsvps = state.rsvps.filter((r) => r.code !== reg.inviteCode);
+        saveState();
+        renderRsvpForm();
+      });
+      return;
+    }
+    card.innerHTML = `
+      <h2>Will you be joining us?</h2>
+      <p class="hint" style="margin-bottom: 1rem;">Quick RSVP — we'd love to know.</p>
+      <form id="rsvpForm">
+        <div class="field">
+          <label for="rsvpName">Your name</label>
+          <input type="text" id="rsvpName" required minlength="2" maxlength="60" />
+        </div>
+        <div class="field">
+          <label>Will you attend?</label>
+          <div class="row">
+            <label class="row" style="flex: 1; padding: 0.55rem 0.75rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); cursor: pointer;">
+              <input type="radio" name="rsvpAttend" value="yes" required /> <span>Yes, count me in</span>
+            </label>
+            <label class="row" style="flex: 1; padding: 0.55rem 0.75rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); cursor: pointer;">
+              <input type="radio" name="rsvpAttend" value="no" /> <span>Sadly can't</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="rsvpPlusOnes">Number of additional guests</label>
+          <input type="number" id="rsvpPlusOnes" min="0" max="6" value="0" />
+        </div>
+        <div class="field">
+          <label for="rsvpDietary">Dietary requirements (optional)</label>
+          <textarea id="rsvpDietary" placeholder="e.g. vegetarian, no shellfish, halaal" maxlength="240"></textarea>
+        </div>
+        <div class="field">
+          <label for="rsvpMessage">Message for the hosts (optional)</label>
+          <textarea id="rsvpMessage" placeholder="A short note…" maxlength="500"></textarea>
+        </div>
+        <div class="row" style="margin-top: 1rem;">
+          <button type="submit" class="btn btn-primary">Send RSVP</button>
+        </div>
+      </form>
+    `;
+    $('#rsvpForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const attendInput = $('input[name="rsvpAttend"]:checked');
+      if (!attendInput) { toast('Please choose attending or not'); return; }
+      const r = {
+        id: uid(), code: reg.inviteCode,
+        name:     ($('#rsvpName').value     || '').trim(),
+        attend:   attendInput.value,
+        plusOnes: Math.max(0, Math.min(6, Number($('#rsvpPlusOnes').value) || 0)),
+        dietary:  ($('#rsvpDietary').value  || '').trim(),
+        message:  ($('#rsvpMessage').value  || '').trim(),
+        createdAt: Date.now(),
+      };
+      if (!r.name) { toast('Please enter your name'); return; }
+      state.rsvps.push(r);
+      saveState();
+      toast('RSVP sent — thank you!');
+      renderRsvpForm();
+    });
+  }
+
+  // ICS export
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function toICSDate(iso) {
+    const d = new Date(iso);
+    return d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + '00Z';
+  }
+  function buildICS() {
+    const now = toICSDate(new Date().toISOString());
+    return [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//GiftlyInvited//Demo//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      'UID:' + reg.inviteCode + '@giftlyinvited.demo',
+      'DTSTAMP:' + now,
+      'DTSTART:' + toICSDate(reg.eventDate),
+      'DTEND:'   + toICSDate(reg.eventEndDate),
+      'SUMMARY:' + reg.title,
+      'LOCATION:' + reg.venue + ', ' + reg.address,
+      'DESCRIPTION:' + reg.subtitle.replace(/\n/g, '\\n') + '\\n\\nDress code: ' + reg.dressCode,
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].join('\r\n');
+  }
+  $('#addCalBtn').addEventListener('click', () => {
+    const blob = new Blob([buildICS()], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = reg.title.replace(/[^\w]+/g, '-').toLowerCase() + '.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('Calendar invite downloaded');
+  });
+
+  // WhatsApp share
+  $('#shareWaBtn').addEventListener('click', () => {
+    const text = `You're invited to ${reg.title} on ${fmtDate(reg.eventDate)} at ${reg.venue}. View the registry & RSVP — invite code ${reg.inviteCode}: ${location.href.split('?')[0]}`;
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  });
+
+  // Owner
+  function renderOwner() {
+    const totalRaised = state.claims.reduce((s, c) => s + (c.amount || 0), 0);
+    const claimed     = reg.items.filter((it) => itemStatus(it).kind === 'claimed').length;
+    const attending   = state.rsvps.filter((r) => r.attend === 'yes').reduce((s, r) => s + 1 + (r.plusOnes || 0), 0);
+    $('#ownerStats').innerHTML = [
+      ['Items funded', `${claimed} / ${reg.items.length}`],
+      ['Raised',       fmtMoney(totalRaised)],
+      ['RSVPs',        String(state.rsvps.length)],
+      ['Attending',    String(attending)],
+    ].map(([l, v]) => `<div class="tile"><div class="tile-label">${l}</div><div class="tile-value">${v}</div></div>`).join('');
+
+    if (state.claims.length === 0) {
+      $('#ownerClaims').innerHTML = '<div class="empty">No claims or contributions yet.</div>';
+    } else {
+      $('#ownerClaims').innerHTML = state.claims.slice().sort((a, b) => b.createdAt - a.createdAt).map((c) => {
+        const it = reg.items.find((i) => i.id === c.itemId);
+        return `
+          <div class="owner-row">
+            <div>
+              <div class="who"><strong>${escapeHtml(c.name)}</strong> · ${c.kind === 'claim' ? 'claimed' : 'chipped in for'} <em>${escapeHtml(it ? it.name : '—')}</em></div>
+              ${c.message ? `<div class="hint">"${escapeHtml(c.message)}"</div>` : ''}
+            </div>
+            <div class="amt">${fmtMoney(c.amount)}</div>
+            <button type="button" class="btn btn-danger btn-sm" data-remove-claim="${c.id}">Remove</button>
+          </div>
+        `;
+      }).join('');
+      $$('[data-remove-claim]').forEach((b) => b.addEventListener('click', () => {
+        state.claims = state.claims.filter((c) => c.id !== b.getAttribute('data-remove-claim'));
+        saveState(); renderOwner();
+      }));
+    }
+
+    if (state.rsvps.length === 0) {
+      $('#ownerRsvps').innerHTML = '<div class="empty">No RSVPs yet.</div>';
+    } else {
+      $('#ownerRsvps').innerHTML = state.rsvps.slice().sort((a, b) => b.createdAt - a.createdAt).map((r) => `
+        <div class="owner-row">
+          <div>
+            <div class="who"><strong>${escapeHtml(r.name)}</strong> · ${r.attend === 'yes' ? `attending +${r.plusOnes}` : 'cannot attend'}</div>
+            ${r.dietary ? `<div class="hint">Dietary: ${escapeHtml(r.dietary)}</div>` : ''}
+            ${r.message ? `<div class="hint">"${escapeHtml(r.message)}"</div>` : ''}
+          </div>
+          <div class="amt" style="color: var(--color-ink-tertiary);">${new Date(r.createdAt).toLocaleDateString('en-ZA')}</div>
+          <button type="button" class="btn btn-danger btn-sm" data-remove-rsvp="${r.id}">Remove</button>
+        </div>
+      `).join('');
+      $$('[data-remove-rsvp]').forEach((b) => b.addEventListener('click', () => {
+        state.rsvps = state.rsvps.filter((r) => r.id !== b.getAttribute('data-remove-rsvp'));
+        saveState(); renderOwner();
+      }));
+    }
+  }
+
+  $('#exportCsvBtn').addEventListener('click', () => {
+    const rows = [['type', 'name', 'item_or_response', 'amount_zar', 'message', 'created_at']];
+    state.claims.forEach((c) => {
+      const it = reg.items.find((i) => i.id === c.itemId);
+      rows.push([c.kind, c.name, it ? it.name : c.itemId, String(c.amount), c.message || '', new Date(c.createdAt).toISOString()]);
+    });
+    state.rsvps.forEach((r) => {
+      rows.push(['rsvp', r.name, r.attend + ' (+' + r.plusOnes + ')', '', (r.dietary ? 'Dietary: ' + r.dietary + '. ' : '') + (r.message || ''), new Date(r.createdAt).toISOString()]);
+    });
+    const csv = rows.map((r) => r.map((cell) => '"' + String(cell).replace(/"/g, '""') + '"').join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'giftly-export.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('CSV downloaded');
+  });
+  $('#resetDataBtn').addEventListener('click', () => {
+    if (!confirm('Reset all guest activity for this registry?')) return;
+    state = { claims: [], rsvps: [] };
+    saveState(); renderOwner();
+    toast('All guest data cleared');
+  });
+
+  // Boot
+  const params = new URLSearchParams(location.search);
+  if (params.get('owner') === '1') showOwner();
+  else if ((params.get('code') || '').toUpperCase() === reg.inviteCode) showRegistry();
+  else showGate();
+})();
+</script>
 </body>
-
 </html>

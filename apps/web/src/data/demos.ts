@@ -107,7 +107,7 @@ export const demos: Demo[] = [
     title: 'GiftlyInvited',
     tagline: 'Private gift registry',
     description:
-      'Invite-only gift registry with admin and guest experiences. Client-side only — all state is held in your browser.',
+      'Invite-only gift registry with a guest experience and an owner panel. Items can be claimed outright or chipped in for as a group gift. Client-side only — every claim, contribution, and RSVP lives in your browser.',
     iframe: '/demos/giftly/demo.html',
     height: 1100,
     category: 'Productivity',
@@ -115,11 +115,12 @@ export const demos: Demo[] = [
     narrative: {
       claim: 'A private, invite-gated registry without the surveillance baggage of the big platforms.',
       capabilities: [
-        'Admin / guest split-view that reflects how a real registry has to work.',
-        'Item claims, group chip-ins, RSVP and .ics calendar export.',
-        'No accounts, no tracking — everything lives in your browser.',
+        'Invite-gated entry (try code DEMO2026) so the registry never appears on a public index.',
+        'Per-item claim or group chip-in with a live progress bar and supporter count.',
+        'Built-in RSVP, downloadable .ics calendar invite, and one-tap WhatsApp share.',
+        'Owner panel with full activity feed and CSV export — no accounts, no analytics.',
       ],
-      stack: ['Vanilla JS', 'Local state', 'Privacy-first'],
+      stack: ['Vanilla JS', 'localStorage', '.ics generation', 'WhatsApp deep link'],
     },
   },
 ];
