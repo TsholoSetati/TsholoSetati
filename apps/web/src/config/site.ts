@@ -7,7 +7,7 @@ export const site = {
   name: 'Tsholofelo K. Setati',
   shortName: 'TS',
   url: 'https://tsholosetati.com',
-  title: 'Tsholofelo K. Setati — AI Strategy & Innovation Economics',
+  title: 'Tsholofelo K. Setati: AI Strategy & Innovation Economics',
   description:
     'Tsholofelo K. Setati is an AI Strategy and Innovation Economics consultant working with leaders to translate emerging technology into compounding business advantage.',
   tagline: 'AI Strategy. Innovation Economics. Compounding Advantage.',
