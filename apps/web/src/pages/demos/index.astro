@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import { Icon } from 'astro-icon/components';
 import { demos } from '~/data/demos';
 ---
 
@@ -14,11 +15,17 @@ import { demos } from '~/data/demos';
     <div class="grid">
       {demos.map((d) => (
         <a class="card card-hover demo" href={`/demos/${d.slug}`} data-reveal>
+          <span class="icon-wrap" aria-hidden="true">
+            <Icon name={`ph:${d.icon}`} />
+          </span>
           <p class="kicker">{d.category} · {d.status}</p>
           <h2>{d.title}</h2>
           <p class="tag">{d.tagline}</p>
           <p class="desc muted">{d.description}</p>
-          <span class="cta">Open demo →</span>
+          <span class="cta">
+            Open demo
+            <Icon name="ph:arrow-right" aria-hidden="true" />
+          </span>
         </a>
       ))}
     </div>
@@ -31,9 +38,23 @@ import { demos } from '~/data/demos';
   .lead { color: var(--color-ink-secondary); max-width: 60ch; margin: 0 0 2.5rem; line-height: 1.6; }
   .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
   .demo { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+  .icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.75rem;
+    background: color-mix(in oklab, var(--color-accent) 12%, transparent);
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+  }
+  .icon-wrap :global(svg) { width: 1.5rem; height: 1.5rem; }
   .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); margin: 0; }
   h2 { font-family: var(--font-display); font-size: var(--font-xl); margin: 0.5rem 0 0.25rem; }
   .tag { color: var(--color-ink-primary); font-weight: 500; margin: 0 0 0.75rem; }
   .desc { line-height: 1.6; }
-  .cta { margin-top: auto; padding-top: 1rem; color: var(--color-accent); font-weight: 500; }
+  .cta { margin-top: auto; padding-top: 1rem; color: var(--color-accent); font-weight: 500; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .cta :global(svg) { width: 1rem; height: 1rem; transition: transform 200ms ease; }
+  .demo:hover .cta :global(svg) { transform: translateX(3px); }
 </style>

@@ -7,6 +7,8 @@ export interface Demo {
   height: number;
   category: 'Fintech' | 'Productivity' | 'AI Tooling' | 'Personal Finance';
   status: 'Live demo' | 'Prototype';
+  /** Phosphor icon name (without the `ph:` prefix). Rendered via astro-icon. */
+  icon: string;
   /** Brand narrative: what this demo demonstrates about how I think and build. */
   narrative?: {
     /** One-line claim shown at the top of the panel. */
@@ -31,6 +33,7 @@ export const demos: Demo[] = [
     height: 900,
     category: 'Personal Finance',
     status: 'Live demo',
+    icon: 'users-three',
     narrative: {
       claim: 'Reducing the friction between owing and settling.',
       capabilities: [
@@ -51,6 +54,7 @@ export const demos: Demo[] = [
     height: 1000,
     category: 'Fintech',
     status: 'Prototype',
+    icon: 'handshake',
     narrative: {
       claim: 'Bringing structure to the messy moment between offer and payment.',
       capabilities: [
@@ -71,6 +75,7 @@ export const demos: Demo[] = [
     height: 1100,
     category: 'Personal Finance',
     status: 'Live demo',
+    icon: 'chart-line-up',
     narrative: {
       claim: 'Personal finance should be quantitative, local, and honest about uncertainty.',
       capabilities: [
@@ -91,6 +96,7 @@ export const demos: Demo[] = [
     height: 1000,
     category: 'AI Tooling',
     status: 'Live demo',
+    icon: 'lightbulb-filament',
     narrative: {
       claim: 'Turning the "should we build this with AI?" debate into a defensible decision.',
       capabilities: [
@@ -112,6 +118,7 @@ export const demos: Demo[] = [
     height: 1100,
     category: 'Productivity',
     status: 'Prototype',
+    icon: 'gift',
     narrative: {
       claim: 'A private, invite-gated registry without the surveillance baggage of the big platforms.',
       capabilities: [
@@ -133,6 +140,7 @@ export const demos: Demo[] = [
     height: 1100,
     category: 'AI Tooling',
     status: 'Prototype',
+    icon: 'scales',
     narrative: {
       claim: 'AI governance is not one debate; it is five overlapping ones with different priorities.',
       capabilities: [
