@@ -1,94 +1,945 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Financial Planning — Demo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Planning — South African Toolkit</title>
+  <meta name="description" content="A South-African personal finance toolkit: tax, retirement Monte Carlo, two-pot, goal planning and loan amortisation. Runs entirely in your browser." />
   <style>
-    :root{--accent:#22c55e;--accent-600:#16a34a}
-    [data-theme="dark"]{--accent:#22c55e;--accent-600:#16a34a}
-    body{background:var(--bg);color:var(--text);font-family:Inter, system-ui, sans-serif}
-    .container{max-width:1100px;margin:0 auto;padding:20px}
+    /* === Design tokens (parity with parent site & ID8) === */
+    :root {
+      --color-bg: #ffffff;
+      --color-surface-base: #ffffff;
+      --color-surface-raised: #ffffff;
+      --color-surface-sunken: #f4f4f5;
+      --color-border: #e5e7eb;
+      --color-border-strong: #d1d5db;
+      --color-ink-primary: #0a0e1a;
+      --color-ink-secondary: #4b5563;
+      --color-ink-tertiary: #6b7280;
+      --color-accent: #047857;          /* SA-grounded green */
+      --color-accent-2: #2563eb;
+      --color-success: #059669;
+      --color-warning: #d97706;
+      --color-danger:  #dc2626;
+      --color-band:    rgba(4,120,87,0.16);
+      --color-band-2:  rgba(4,120,87,0.30);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 14px;
+      --radius-full: 999px;
+      --shadow-sm: 0 1px 2px rgba(10,14,26,0.05);
+      --shadow-md: 0 4px 12px rgba(10,14,26,0.08);
+      --font-display: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+      --font-xs: 0.75rem; --font-sm: 0.875rem; --font-base: 1rem; --font-lg: 1.125rem; --font-xl: 1.5rem;
+      --motion-fast: 150ms; --motion-base: 240ms;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    html[data-theme='dark'] {
+      --color-bg: #0a0e1a;
+      --color-surface-base: #0f1422;
+      --color-surface-raised: #161c2e;
+      --color-surface-sunken: #0a0e1a;
+      --color-border: #1f2937;
+      --color-border-strong: #374151;
+      --color-ink-primary: #f3f4f6;
+      --color-ink-secondary: #d1d5db;
+      --color-ink-tertiary: #9ca3af;
+      --color-accent: #34d399;
+      --color-accent-2: #60a5fa;
+      --color-success: #34d399;
+      --color-warning: #fbbf24;
+      --color-danger:  #f87171;
+      --color-band:   rgba(52,211,153,0.18);
+      --color-band-2: rgba(52,211,153,0.32);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-ink-primary);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; line-height: 1.2; }
+    h1 { font-size: clamp(1.6rem, 3.2vw, 2.25rem); }
+    h2 { font-size: var(--font-xl); }
+    h3 { font-size: var(--font-lg); }
+    p { margin: 0; }
+    code, .mono { font-family: var(--font-mono); }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
+    .head { margin-bottom: 1.5rem; }
+    .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+    .lead { color: var(--color-ink-secondary); max-width: 64ch; margin-top: 0.6rem; }
+
+    /* Tabs */
+    .tabs {
+      display: flex; flex-wrap: wrap; gap: 0.25rem;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: 1.25rem; padding-bottom: 0;
+      position: sticky; top: 0; z-index: 5;
+      background: var(--color-bg);
+    }
+    .tab {
+      font: inherit; font-size: var(--font-sm); font-weight: 500;
+      background: transparent; border: 0; padding: 0.7rem 0.95rem;
+      color: var(--color-ink-tertiary); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color var(--motion-fast) var(--ease), border-color var(--motion-fast) var(--ease);
+    }
+    .tab:hover { color: var(--color-ink-primary); }
+    .tab[aria-selected='true'] { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+    .tab:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 3px; }
+
+    .panel { display: none; }
+    .panel[data-active='true'] { display: block; }
+
+    /* Card */
+    .card {
+      background: var(--color-surface-raised);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .card + .card { margin-top: 1rem; }
+    .card h2, .card h3 { margin-bottom: 0.4rem; }
+    .card .sub { color: var(--color-ink-tertiary); font-size: var(--font-sm); margin-bottom: 1rem; }
+
+    /* Forms */
+    .grid { display: grid; gap: 0.85rem; grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .grid.cols-2 { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 880px) { .grid.cols-3 { grid-template-columns: repeat(3, 1fr); } }
+    .field label { display: block; font-weight: 500; font-size: var(--font-sm); margin-bottom: 0.35rem; color: var(--color-ink-primary); }
+    .field input, .field select {
+      width: 100%; font: inherit; font-size: var(--font-sm);
+      padding: 0.55rem 0.7rem; border-radius: var(--radius-md);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-base); color: var(--color-ink-primary);
+      transition: border-color var(--motion-fast) var(--ease);
+    }
+    .field input:focus, .field select:focus { outline: none; border-color: var(--color-accent); }
+    .field-hint { font-size: var(--font-xs); color: var(--color-ink-tertiary); margin-top: 0.25rem; }
+    .with-prefix { position: relative; }
+    .with-prefix > .pfx {
+      position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%);
+      font-family: var(--font-mono); font-size: var(--font-xs); color: var(--color-ink-tertiary);
+    }
+    .with-prefix input { padding-left: 1.7rem; }
+
+    .actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+    .btn {
+      font: inherit; font-size: var(--font-sm); font-weight: 500;
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-raised); color: var(--color-ink-primary);
+      padding: 0.55rem 0.95rem; border-radius: var(--radius-md); cursor: pointer;
+      transition: all var(--motion-fast) var(--ease);
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+    .btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+    .btn-primary { background: var(--color-accent); color: white; border-color: var(--color-accent); }
+    .btn-primary:hover { background: color-mix(in oklab, var(--color-accent) 88%, black); color: white; border-color: transparent; }
+    .btn-ghost { background: transparent; border-color: transparent; color: var(--color-ink-secondary); }
+    .btn-ghost:hover { background: var(--color-surface-sunken); color: var(--color-ink-primary); }
+
+    /* Result tiles */
+    .result { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--color-border); }
+    .tiles { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+    .tile { background: var(--color-surface-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 0.85rem; }
+    .tile .label { font-family: var(--font-mono); font-size: var(--font-xs); color: var(--color-ink-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.35rem; }
+    .tile .value { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; color: var(--color-ink-primary); }
+    .tile .delta { font-family: var(--font-mono); font-size: var(--font-xs); margin-top: 0.2rem; color: var(--color-ink-tertiary); }
+    .tile .delta.up { color: var(--color-success); }
+    .tile .delta.down { color: var(--color-danger); }
+
+    /* Bars (inline for tax breakdown etc.) */
+    .bar { height: 8px; background: var(--color-surface-sunken); border-radius: var(--radius-full); overflow: hidden; }
+    .bar > .fill { height: 100%; background: var(--color-accent); transition: width var(--motion-base) var(--ease); }
+
+    /* Score-ring (parity with ID8) */
+    .ring-row { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+    .score-ring {
+      width: 110px; height: 110px; border-radius: 50%; flex-shrink: 0;
+      background: conic-gradient(var(--color-accent) calc(var(--p, 0) * 1%), var(--color-surface-sunken) 0);
+      display: grid; place-content: center; position: relative;
+    }
+    .score-ring::after { content: ''; position: absolute; inset: 8px; background: var(--color-surface-raised); border-radius: 50%; }
+    .score-ring span, .score-ring small { position: relative; z-index: 1; text-align: center; display: block; }
+    .score-ring span { font-family: var(--font-display); font-size: var(--font-xl); font-weight: 600; }
+    .score-ring small { font-family: var(--font-mono); font-size: var(--font-xs); color: var(--color-ink-tertiary); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.15rem; }
+
+    /* Tier badges (parity) */
+    .tier { font-family: var(--font-mono); font-size: 0.65rem; padding: 0.18rem 0.5rem; border-radius: var(--radius-sm); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+    .tier-fragile     { background: #fee2e2; color: #991b1b; }
+    .tier-stretched   { background: #fed7aa; color: #9a3412; }
+    .tier-on-track    { background: #fef3c7; color: #92400e; }
+    .tier-comfortable { background: #d1fae5; color: #065f46; }
+    .tier-secure      { background: #dbeafe; color: #1e40af; }
+    html[data-theme='dark'] .tier-fragile     { background: rgba(220,38,38,0.22); color: #fca5a5; }
+    html[data-theme='dark'] .tier-stretched   { background: rgba(234,88,12,0.22); color: #fdba74; }
+    html[data-theme='dark'] .tier-on-track    { background: rgba(202,138,4,0.22); color: #fde047; }
+    html[data-theme='dark'] .tier-comfortable { background: rgba(5,150,105,0.22); color: #6ee7b7; }
+    html[data-theme='dark'] .tier-secure      { background: rgba(37,99,235,0.22); color: #93c5fd; }
+
+    /* Charts */
+    .chart-wrap { margin-top: 0.75rem; padding: 0.5rem; background: var(--color-surface-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .chart-wrap svg { display: block; width: 100%; height: auto; }
+    .chart-legend { display: flex; gap: 0.85rem; font-size: var(--font-xs); color: var(--color-ink-tertiary); margin-top: 0.5rem; flex-wrap: wrap; }
+    .chart-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 0.3rem; vertical-align: -1px; }
+
+    /* Tables (amortisation) */
+    .table-wrap { overflow-x: auto; margin-top: 0.75rem; }
+    table { width: 100%; border-collapse: collapse; font-size: var(--font-sm); }
+    th, td { text-align: right; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--color-border); font-variant-numeric: tabular-nums; }
+    th:first-child, td:first-child { text-align: left; font-family: var(--font-mono); font-size: var(--font-xs); color: var(--color-ink-tertiary); }
+    th { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-tertiary); font-weight: 500; }
+    .table-gap td { color: var(--color-ink-tertiary); text-align: center; padding: 0.35rem; font-style: italic; font-size: var(--font-xs); }
+
+    /* Notes */
+    .note {
+      margin-top: 0.85rem; padding: 0.75rem 0.9rem;
+      background: var(--color-surface-sunken); border-left: 3px solid var(--color-accent);
+      border-radius: var(--radius-sm); font-size: var(--font-sm); color: var(--color-ink-secondary);
+    }
+    .note strong { color: var(--color-ink-primary); }
+    details.method { margin-top: 1rem; padding: 0.85rem 1rem; background: var(--color-surface-sunken); border-radius: var(--radius-md); }
+    details.method summary { cursor: pointer; font-weight: 500; font-size: var(--font-sm); }
+    details.method[open] summary { margin-bottom: 0.5rem; }
+    details.method p, details.method ul { color: var(--color-ink-secondary); font-size: var(--font-sm); margin: 0.5rem 0; }
+    details.method ul { padding-left: 1.25rem; }
+
+    /* Market context table */
+    .ctx-grid { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+    .ctx { background: var(--color-surface-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 0.7rem 0.85rem; }
+    .ctx .k { font-family: var(--font-mono); font-size: var(--font-xs); color: var(--color-ink-tertiary); text-transform: uppercase; letter-spacing: 0.08em; }
+    .ctx .v { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: var(--color-ink-primary); }
+
+    .toast {
+      position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%);
+      background: var(--color-ink-primary); color: var(--color-bg);
+      padding: 0.5rem 0.9rem; border-radius: var(--radius-md); font-size: var(--font-sm);
+      box-shadow: var(--shadow-md); z-index: 100;
+      opacity: 0; pointer-events: none; transition: opacity var(--motion-base) var(--ease);
+    }
+    .toast.show { opacity: 1; }
+
+    /* Print */
+    @media print {
+      .tabs, .actions, .toast { display: none !important; }
+      .panel { display: block !important; page-break-inside: avoid; }
+      .card { box-shadow: none; border-color: #aaa; page-break-inside: avoid; }
+      body { background: white; color: black; }
+    }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body data-theme="dark">
-  <div class="container">
-    <div class="card" style="margin-top:12px;">
-      <h2>💰 Financial Planning — Smart Advisor & Retirement</h2>
-      <p class="muted">Standalone demo of the financial planning calculators.</p>
+<body>
+  <div class="wrap">
+    <header class="head">
+      <p class="eyebrow">Personal finance toolkit · South Africa</p>
+      <h1>Financial Planning</h1>
+      <p class="lead">
+        SA-localised calculators for tax, retirement, the two-pot system, goal planning and loan amortisation.
+        Tax tables and contribution limits are the SARS 2024/25 figures. Everything runs in your browser.
+      </p>
+    </header>
 
-      <div class="analysis-tabs" style="margin-top:18px;">
-        <button class="tab-button active" onclick="switchFinancialTab('advisor')">🤖 Smart Advisor</button>
-        <button class="tab-button" onclick="switchFinancialTab('calc-retirement')">👴 Retirement</button>
-      </div>
+    <nav class="tabs" role="tablist" aria-label="Calculators">
+      <button class="tab" role="tab" aria-selected="true"  aria-controls="tab-tax"   id="t-tax">SA Tax</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-ret"   id="t-ret">Retirement &amp; Monte Carlo</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-tp"    id="t-tp">Two-pot</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-goal"  id="t-goal">Goal Planner</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-loan"  id="t-loan">Loan Amortisation</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-ctx"   id="t-ctx">Market Context</button>
+    </nav>
 
-      <div id="financial-tools">
-        <div id="advisor" class="financial-tab active" style="margin-top:16px;">
-          <section class="card">
-            <h3>Smart Financial Advisor</h3>
-            <p class="muted">Get a personalized financial health assessment and investment strategy.</p>
-            <form id="advisorForm" class="calculator-form">
-              <div class="form-row">
-                <div class="form-group"><label>Annual Income (R)</label><input type="number" id="annualIncome" required></div>
-                <div class="form-group"><label>Monthly Expenses (R)</label><input type="number" id="monthlyExpenses" required></div>
-              </div>
-              <div class="form-row">
-                <div class="form-group"><label>Age</label><input type="number" id="advAge" required></div>
-                <div class="form-group"><label>Total Debt (R)</label><input type="number" id="currentDebt" required></div>
-              </div>
-              <div class="form-row">
-                <div class="form-group"><label>Emergency Fund (R)</label><input type="number" id="emergencyFund" required></div>
-                <div class="form-group"><label>Investment Goal (Years)</label><input type="number" id="investmentGoal" required></div>
-              </div>
-              <button type="submit" class="btn-primary">Get Assessment</button>
-            </form>
-            <div id="advisorResult" class="result-box"></div>
-          </section>
+    <!-- ============ SA TAX ============ -->
+    <section class="panel" data-active="true" id="tab-tax" role="tabpanel" aria-labelledby="t-tax">
+      <div class="card">
+        <h2>South African income tax (2024/25)</h2>
+        <p class="sub">Compute your marginal and effective rates, including the RA tax shield benefit.</p>
+        <form id="tax-form" class="grid cols-3" autocomplete="off">
+          <div class="field"><label for="tax-income">Annual taxable income</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="tax-income" min="0" value="600000" step="1000" /></div>
+          </div>
+          <div class="field"><label for="tax-age">Age</label>
+            <input type="number" id="tax-age" min="18" max="120" value="35" />
+          </div>
+          <div class="field"><label for="tax-ra">Annual RA &amp; pension contribution</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="tax-ra" min="0" value="0" step="500" /></div>
+            <p class="field-hint">Capped at 27.5% of taxable income, max R350 000 / year.</p>
+          </div>
+          <div class="field"><label for="tax-medical">Medical aid members (you + dependants)</label>
+            <input type="number" id="tax-medical" min="0" max="20" value="1" />
+            <p class="field-hint">Section 6A medical scheme fees tax credit.</p>
+          </div>
+        </form>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="tax-go">Calculate</button>
+          <button class="btn btn-ghost" type="button" id="tax-print">Print</button>
         </div>
+        <div class="result" id="tax-result" hidden></div>
+        <details class="method"><summary>Method &amp; sources</summary>
+          <p>Brackets, rebates and thresholds are the SARS 2024/25 individual figures.</p>
+          <ul>
+            <li>Brackets 18% / 26% / 31% / 36% / 39% / 41% / 45%.</li>
+            <li>Primary rebate R17 235; secondary (65+) R9 444; tertiary (75+) R3 145.</li>
+            <li>Section 11F RA / pension / provident: 27.5% of greater of taxable income or remuneration, capped at R350 000.</li>
+            <li>Section 6A: R364/month for first two members, R246/month for each additional.</li>
+          </ul>
+        </details>
+      </div>
+    </section>
 
-        <div id="calc-retirement" class="financial-tab" style="display:none; margin-top:16px;">
-          <section class="card calculator-card">
-            <h3>Retirement Savings Calculator</h3>
-            <p class="muted">Project your savings growth over time.</p>
-            <form id="retirementForm" class="calculator-form">
-              <div class="form-row">
-                <div class="form-group"><label>Current Age</label><input type="number" id="currentAge" required></div>
-                <div class="form-group"><label>Retirement Age</label><input type="number" id="retirementAge" required></div>
-              </div>
-              <div class="form-group"><label>Current Savings (R)</label><input type="number" id="currentSavings" required></div>
-              <div class="form-group"><label>Monthly Contribution (R)</label><input type="number" id="monthlyContribution" required></div>
-              <div class="form-group"><label>Annual Return (%)</label><input type="number" step="0.01" id="annualReturn" required></div>
-              <button type="submit" class="btn-primary">Project Savings</button>
-            </form>
-            <div id="retirementResult" class="result-box"></div>
-          </section>
+    <!-- ============ RETIREMENT + MONTE CARLO ============ -->
+    <section class="panel" id="tab-ret" role="tabpanel" aria-labelledby="t-ret">
+      <div class="card">
+        <h2>Retirement projection with Monte Carlo</h2>
+        <p class="sub">1 000 simulated paths show the 10th–90th percentile cone around the median outcome. Returns are seeded so results are reproducible.</p>
+        <form id="ret-form" class="grid cols-3" autocomplete="off">
+          <div class="field"><label for="ret-age">Current age</label><input type="number" id="ret-age" min="18" max="80" value="35" /></div>
+          <div class="field"><label for="ret-target">Target retirement age</label><input type="number" id="ret-target" min="40" max="80" value="65" /></div>
+          <div class="field"><label for="ret-current">Current retirement savings</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="ret-current" min="0" value="500000" step="10000" /></div>
+          </div>
+          <div class="field"><label for="ret-monthly">Monthly contribution</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="ret-monthly" min="0" value="6000" step="500" /></div>
+          </div>
+          <div class="field"><label for="ret-mu">Expected real return (%)</label>
+            <input type="number" id="ret-mu" step="0.1" value="6.5" />
+            <p class="field-hint">After inflation. Reg-28 balanced funds historically ≈ 4–7% real.</p>
+          </div>
+          <div class="field"><label for="ret-sigma">Return volatility (σ %)</label>
+            <input type="number" id="ret-sigma" step="0.1" value="11.0" />
+            <p class="field-hint">Annual standard deviation of returns.</p>
+          </div>
+          <div class="field"><label for="ret-target-pot">Target retirement pot (today's rands)</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="ret-target-pot" min="0" value="6000000" step="100000" /></div>
+            <p class="field-hint">Rule of thumb: 25× desired annual income (4% safe-withdrawal heuristic).</p>
+          </div>
+          <div class="field"><label for="ret-esc">Annual contribution escalation (%)</label>
+            <input type="number" id="ret-esc" step="0.5" value="6.0" />
+            <p class="field-hint">Nominal — net of the inflation toggle below.</p>
+          </div>
+          <div class="field"><label for="ret-inflation">Inflation assumption (%)</label>
+            <input type="number" id="ret-inflation" step="0.1" value="5.0" />
+          </div>
+        </form>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="ret-go">Run 1 000 simulations</button>
+          <button class="btn btn-ghost" type="button" id="ret-print">Print</button>
+        </div>
+        <div class="result" id="ret-result" hidden></div>
+        <details class="method"><summary>Method &amp; assumptions</summary>
+          <p>
+            Geometric Brownian motion in real terms, monthly steps. Each simulation samples a normal return with mean μ/12 and std σ/√12 per month.
+            Contributions escalate annually at the escalation rate (real terms = nominal − inflation). Seed: <code>0xF1A7</code> (deterministic for reproducibility).
+          </p>
+          <p>The success score is the proportion of paths that reach or exceed your target pot at the retirement age.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ TWO-POT ============ -->
+    <section class="panel" id="tab-tp" role="tabpanel" aria-labelledby="t-tp">
+      <div class="card">
+        <h2>Two-pot withdrawal calculator</h2>
+        <p class="sub">From 1 September 2024, one third of new contributions accrue to a "savings pot" you can access annually (taxed at marginal rate). Two thirds are locked until retirement.</p>
+        <form id="tp-form" class="grid cols-2" autocomplete="off">
+          <div class="field"><label for="tp-income">Annual taxable income (excl. withdrawal)</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="tp-income" min="0" value="500000" step="1000" /></div>
+          </div>
+          <div class="field"><label for="tp-age">Age</label><input type="number" id="tp-age" min="18" max="120" value="35" /></div>
+          <div class="field"><label for="tp-pot">Savings-pot balance</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="tp-pot" min="0" value="40000" step="1000" /></div>
+          </div>
+          <div class="field"><label for="tp-amount">Amount to withdraw</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="tp-amount" min="0" value="30000" step="500" /></div>
+            <p class="field-hint">Minimum R2 000 per annual withdrawal; cannot exceed savings-pot balance.</p>
+          </div>
+        </form>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="tp-go">Calculate</button>
+        </div>
+        <div class="result" id="tp-result" hidden></div>
+        <details class="method"><summary>Why this matters</summary>
+          <p>
+            Savings-pot withdrawals are taxed at your <strong>marginal</strong> rate, not the favourable retirement-fund lump-sum table.
+            On a R30 000 withdrawal at the 36% bracket you keep ~R19 200. Treat it as last-resort liquidity, not a top-up income stream.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ GOAL PLANNER ============ -->
+    <section class="panel" id="tab-goal" role="tabpanel" aria-labelledby="t-goal">
+      <div class="card">
+        <h2>Goal planner</h2>
+        <p class="sub">Work backwards from a target. Switch between TFSA, RA and discretionary vehicles to compare after-tax outcomes.</p>
+        <form id="goal-form" class="grid cols-3" autocomplete="off">
+          <div class="field"><label for="goal-target">Target amount</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="goal-target" min="0" value="500000" step="10000" /></div>
+          </div>
+          <div class="field"><label for="goal-years">Time horizon (years)</label>
+            <input type="number" id="goal-years" min="1" max="50" value="10" />
+          </div>
+          <div class="field"><label for="goal-current">Current savings toward goal</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="goal-current" min="0" value="50000" step="5000" /></div>
+          </div>
+          <div class="field"><label for="goal-vehicle">Vehicle</label>
+            <select id="goal-vehicle">
+              <option value="tfsa">TFSA — tax-free growth (R36k/yr · R500k lifetime)</option>
+              <option value="ra">Retirement annuity — tax-deductible contributions</option>
+              <option value="disc">Discretionary — flexible, fully taxed</option>
+            </select>
+          </div>
+          <div class="field"><label for="goal-return">Expected real return (%)</label>
+            <input type="number" id="goal-return" step="0.1" value="6.0" />
+          </div>
+          <div class="field"><label for="goal-marginal">Marginal tax rate (%)</label>
+            <input type="number" id="goal-marginal" step="1" value="36" />
+            <p class="field-hint">Used for RA shield and discretionary CGT/dividend drag.</p>
+          </div>
+        </form>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="goal-go">Calculate</button>
+          <button class="btn btn-ghost" type="button" id="goal-print">Print</button>
+        </div>
+        <div class="result" id="goal-result" hidden></div>
+      </div>
+    </section>
+
+    <!-- ============ LOAN AMORTISATION ============ -->
+    <section class="panel" id="tab-loan" role="tabpanel" aria-labelledby="t-loan">
+      <div class="card">
+        <h2>Loan amortisation</h2>
+        <p class="sub">For home loans, vehicle finance and personal loans. Default rate is current SA prime (11.25%).</p>
+        <form id="loan-form" class="grid cols-3" autocomplete="off">
+          <div class="field"><label for="loan-principal">Loan amount</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="loan-principal" min="0" value="1500000" step="10000" /></div>
+          </div>
+          <div class="field"><label for="loan-rate">Annual interest rate (%)</label>
+            <input type="number" id="loan-rate" step="0.05" value="11.25" />
+          </div>
+          <div class="field"><label for="loan-years">Term (years)</label>
+            <input type="number" id="loan-years" min="1" max="35" value="20" />
+          </div>
+          <div class="field"><label for="loan-extra">Extra monthly payment (optional)</label>
+            <div class="with-prefix"><span class="pfx">R</span><input type="number" id="loan-extra" min="0" value="0" step="500" /></div>
+            <p class="field-hint">Shows the interest saved and term shortened.</p>
+          </div>
+        </form>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="loan-go">Calculate</button>
+          <button class="btn btn-ghost" type="button" id="loan-print">Print</button>
+        </div>
+        <div class="result" id="loan-result" hidden></div>
+      </div>
+    </section>
+
+    <!-- ============ MARKET CONTEXT ============ -->
+    <section class="panel" id="tab-ctx" role="tabpanel" aria-labelledby="t-ctx">
+      <div class="card">
+        <h2>SA market context</h2>
+        <p class="sub">Reference figures used by the calculators above. <strong id="ctx-asof">Snapshot as at 2025-01.</strong> Replace with live data in production.</p>
+        <div class="ctx-grid" id="ctx-grid"></div>
+        <div class="note">
+          These are <strong>illustrative reference rates</strong> for scenario modelling, not tradeable quotes. The repo and prime rates anchor lending costs;
+          inflation drives the conversion between nominal and real returns; the JSE Top 40 figure is a reasonable proxy for an SA equity-heavy Reg-28 fund.
         </div>
       </div>
-    </div>
+    </section>
   </div>
 
-  <script src="./stock-data.js"></script>
-  <script src="./script.js"></script>
-  <script src="./analysis-tools.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    // Ensure tabs work inside demo
-    function switchFinancialTab(tabId){
-      document.querySelectorAll('.financial-tab').forEach(el=>el.style.display='none');
-      document.querySelectorAll('.financial-tab').forEach(el=>el.classList.remove('active'));
-      const t = document.getElementById(tabId);
-      if(t){ t.style.display='block'; t.classList.add('active'); }
-      document.querySelectorAll('.analysis-tabs .tab-button').forEach(btn=>{
-        btn.classList.remove('active'); if(btn.getAttribute('onclick')?.includes(tabId)) btn.classList.add('active');
-      });
+  (() => {
+    'use strict';
+
+    // === Theme handoff ===
+    try {
+      const params = new URLSearchParams(location.search);
+      const t = params.get('theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
+    } catch (e) {}
+
+    // === SA Tax tables (2024/25) ===
+    const BRACKETS = [
+      { upTo: 237100, rate: 0.18, base: 0,      from: 0 },
+      { upTo: 370500, rate: 0.26, base: 42678,  from: 237100 },
+      { upTo: 512800, rate: 0.31, base: 77362,  from: 370500 },
+      { upTo: 673000, rate: 0.36, base: 121475, from: 512800 },
+      { upTo: 857900, rate: 0.39, base: 179147, from: 673000 },
+      { upTo: 1817000,rate: 0.41, base: 251258, from: 857900 },
+      { upTo: Infinity, rate: 0.45, base: 644489, from: 1817000 },
+    ];
+    const REBATE_PRIMARY   = 17235;
+    const REBATE_SECONDARY = 9444;   // 65+
+    const REBATE_TERTIARY  = 3145;   // 75+
+    const RA_CAP_PCT = 0.275;
+    const RA_CAP_ABS = 350000;
+
+    function bracketFor(income) {
+      for (const b of BRACKETS) if (income <= b.upTo) return b;
+      return BRACKETS[BRACKETS.length - 1];
     }
+    function paye(income) {
+      if (income <= 0) return 0;
+      const b = bracketFor(income);
+      return b.base + (income - b.from) * b.rate;
+    }
+    function rebates(age) {
+      let r = REBATE_PRIMARY;
+      if (age >= 65) r += REBATE_SECONDARY;
+      if (age >= 75) r += REBATE_TERTIARY;
+      return r;
+    }
+    function medicalCredit(members) {
+      members = Math.max(0, Math.floor(members));
+      if (members === 0) return 0;
+      const first = Math.min(members, 2) * 364;
+      const extra = Math.max(0, members - 2) * 246;
+      return (first + extra) * 12;
+    }
+    function marginalRate(income) { return bracketFor(Math.max(income, 1)).rate; }
+
+    function calcTax({ income, age, ra, medical }) {
+      const raAllowed = Math.min(ra, RA_CAP_ABS, RA_CAP_PCT * income);
+      const taxable = Math.max(0, income - raAllowed);
+      const grossTax = paye(taxable);
+      const reb = rebates(age);
+      const medCredit = medicalCredit(medical);
+      const taxBeforeMed = Math.max(0, grossTax - reb);
+      const finalTax = Math.max(0, taxBeforeMed - medCredit);
+      const noRaTaxable = income;
+      const noRaTax = Math.max(0, paye(noRaTaxable) - reb - medCredit);
+      const raSaving = Math.max(0, noRaTax - finalTax);
+      return {
+        income, age, raContribution: ra, raAllowed,
+        taxable, grossTax, reb, medCredit, finalTax, raSaving,
+        marginal: marginalRate(taxable),
+        effective: income > 0 ? finalTax / income : 0,
+        takeHome: income - finalTax,
+      };
+    }
+
+    // === Formatting ===
+    const fmtR = (v) => 'R\u00A0' + (Math.round(v)).toLocaleString('en-ZA');
+    const fmtR1 = (v) => 'R\u00A0' + v.toLocaleString('en-ZA', { maximumFractionDigits: 0 });
+    const fmtPct = (v, d = 1) => (v * 100).toFixed(d) + '%';
+    const fmtN = (v, d = 0) => v.toLocaleString('en-ZA', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+    // === Tabs ===
+    const tabs = Array.from(document.querySelectorAll('.tab'));
+    const panels = Array.from(document.querySelectorAll('.panel'));
+    function activate(id) {
+      tabs.forEach(t => t.setAttribute('aria-selected', t.getAttribute('aria-controls') === id ? 'true' : 'false'));
+      panels.forEach(p => p.setAttribute('data-active', p.id === id ? 'true' : 'false'));
+      try {
+        const slug = id.replace('tab-', '');
+        const url = new URL(location.href); url.searchParams.set('t', slug);
+        history.replaceState(null, '', url.toString());
+      } catch (e) {}
+    }
+    tabs.forEach(t => t.addEventListener('click', () => activate(t.getAttribute('aria-controls'))));
+    try {
+      const initial = new URLSearchParams(location.search).get('t');
+      const validIds = ['tax', 'ret', 'tp', 'goal', 'loan', 'ctx'];
+      if (initial && validIds.includes(initial)) activate('tab-' + initial);
+    } catch (e) {}
+
+    // === SA Tax panel ===
+    document.getElementById('tax-go').addEventListener('click', () => {
+      const data = {
+        income: +document.getElementById('tax-income').value || 0,
+        age:    +document.getElementById('tax-age').value || 0,
+        ra:     +document.getElementById('tax-ra').value || 0,
+        medical:+document.getElementById('tax-medical').value || 0,
+      };
+      const r = calcTax(data);
+      const host = document.getElementById('tax-result');
+      host.hidden = false;
+      host.innerHTML = `
+        <div class="tiles">
+          <div class="tile"><div class="label">Tax payable</div><div class="value">${fmtR(r.finalTax)}</div></div>
+          <div class="tile"><div class="label">Take-home</div><div class="value">${fmtR(r.takeHome)}</div><div class="delta">${fmtR(r.takeHome / 12)} per month</div></div>
+          <div class="tile"><div class="label">Marginal rate</div><div class="value">${fmtPct(r.marginal, 0)}</div></div>
+          <div class="tile"><div class="label">Effective rate</div><div class="value">${fmtPct(r.effective)}</div></div>
+          <div class="tile"><div class="label">RA tax saving</div><div class="value ${r.raSaving > 0 ? '' : ''}">${fmtR(r.raSaving)}</div><div class="delta ${r.raSaving > 0 ? 'up' : ''}">${r.raSaving > 0 ? 'per year' : 'no contribution'}</div></div>
+          <div class="tile"><div class="label">Medical credit</div><div class="value">${fmtR(r.medCredit)}</div></div>
+        </div>
+        <div class="note">
+          Of every additional rand earned, you keep <strong>${fmtPct(1 - r.marginal, 0)}</strong>.
+          Contributing the maximum-allowed RA (${fmtR(r.raAllowed)}) shields ${fmtR(r.raSaving)} from tax this year.
+        </div>
+      `;
+    });
+
+    // === Two-pot ===
+    document.getElementById('tp-go').addEventListener('click', () => {
+      const income = +document.getElementById('tp-income').value || 0;
+      const age    = +document.getElementById('tp-age').value || 0;
+      const pot    = +document.getElementById('tp-pot').value || 0;
+      const wantedRaw = +document.getElementById('tp-amount').value || 0;
+      const cap = Math.max(0, pot);
+      const withdrawal = Math.min(Math.max(wantedRaw, wantedRaw > 0 ? 2000 : 0), cap);
+      const newIncome = income + withdrawal;
+      const taxOnNew = Math.max(0, paye(newIncome) - rebates(age));
+      const taxOnOld = Math.max(0, paye(income) - rebates(age));
+      const tax = Math.max(0, taxOnNew - taxOnOld);
+      const net = withdrawal - tax;
+      const eff = withdrawal > 0 ? tax / withdrawal : 0;
+      const host = document.getElementById('tp-result');
+      host.hidden = false;
+      host.innerHTML = `
+        <div class="tiles">
+          <div class="tile"><div class="label">Eligible withdrawal</div><div class="value">${fmtR(withdrawal)}</div></div>
+          <div class="tile"><div class="label">Tax on withdrawal</div><div class="value">${fmtR(tax)}</div><div class="delta down">at marginal rate</div></div>
+          <div class="tile"><div class="label">Net to your bank</div><div class="value">${fmtR(net)}</div><div class="delta">${fmtPct(1 - eff, 1)} of gross</div></div>
+        </div>
+        <div class="note">
+          ${withdrawal < wantedRaw ? `<strong>Capped at the savings-pot balance of ${fmtR(pot)}.</strong> ` : ''}
+          The two-pot withdrawal is <strong>not</strong> taxed under the favourable retirement lump-sum table — it is added to your income and taxed at your marginal rate.
+          Consider whether short-term liquidity is worth giving up the compounded growth on this amount.
+        </div>
+      `;
+    });
+
+    // === Retirement + Monte Carlo ===
+    // Mulberry32 PRNG, seeded for reproducibility
+    function mulberry32(seed) {
+      return function() {
+        seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    function gaussian(rng) {
+      // Box-Muller
+      let u = 0, v = 0;
+      while (u === 0) u = rng();
+      while (v === 0) v = rng();
+      return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+    }
+
+    function runMonteCarlo(p) {
+      const months = (p.targetAge - p.age) * 12;
+      const muM = (p.mu - p.inflation) / 100 / 12;       // real monthly mean
+      const sigM = (p.sigma / 100) / Math.sqrt(12);
+      const escMReal = ((1 + p.esc / 100) / (1 + p.inflation / 100) - 1) / 12; // real monthly escalation factor
+      const N = 1000;
+      const rng = mulberry32(0xF1A7);
+      // Allocate
+      const finals = new Float64Array(N);
+      // Sample a subset of paths to plot
+      const PLOT_PATHS = 50;
+      const pathSamples = [];
+      // For percentile bands across time we need to keep all paths, but to save memory we keep only quantile-relevant samples.
+      // Instead: store balances at every 12 months for percentile bands.
+      const stepYears = p.targetAge - p.age;
+      const yearly = Array.from({ length: stepYears + 1 }, () => new Float64Array(N));
+      for (let i = 0; i < N; i++) yearly[0][i] = p.current;
+      for (let i = 0; i < N; i++) {
+        let bal = p.current;
+        let contrib = p.monthly;
+        for (let m = 1; m <= months; m++) {
+          const r = muM + sigM * gaussian(rng);
+          bal = bal * (1 + r) + contrib;
+          contrib *= 1 + escMReal;
+          if (m % 12 === 0) yearly[m / 12][i] = bal;
+        }
+        finals[i] = bal;
+        if (i < PLOT_PATHS) {
+          // Re-run a thin path snapshot using same seed-position would require capture; for plotting we just draw from yearly bands.
+        }
+      }
+
+      // Quantile per year
+      const sortedYears = yearly.map(arr => Float64Array.from(arr).sort());
+      function q(arr, p) {
+        const idx = Math.min(arr.length - 1, Math.max(0, Math.floor(p * (arr.length - 1))));
+        return arr[idx];
+      }
+      const bands = sortedYears.map((sa, idx) => ({
+        year: idx,
+        p10: q(sa, 0.10),
+        p25: q(sa, 0.25),
+        p50: q(sa, 0.50),
+        p75: q(sa, 0.75),
+        p90: q(sa, 0.90),
+      }));
+
+      const sortedFinal = Float64Array.from(finals).sort();
+      const successes = sortedFinal.reduce((n, v) => n + (v >= p.target ? 1 : 0), 0);
+      return {
+        bands,
+        finalP10: q(sortedFinal, 0.10),
+        finalP50: q(sortedFinal, 0.50),
+        finalP90: q(sortedFinal, 0.90),
+        successPct: successes / N * 100,
+      };
+    }
+
+    function tierFromSuccess(pct) {
+      if (pct < 20) return { name: 'Fragile',     cls: 'tier-fragile' };
+      if (pct < 40) return { name: 'Stretched',   cls: 'tier-stretched' };
+      if (pct < 60) return { name: 'On track',    cls: 'tier-on-track' };
+      if (pct < 80) return { name: 'Comfortable', cls: 'tier-comfortable' };
+      return { name: 'Secure', cls: 'tier-secure' };
+    }
+
+    function drawFanChart(bands, target) {
+      const W = 720, H = 320, PAD_L = 60, PAD_R = 16, PAD_T = 16, PAD_B = 32;
+      const innerW = W - PAD_L - PAD_R, innerH = H - PAD_T - PAD_B;
+      const xs = (i) => PAD_L + (i / Math.max(bands.length - 1, 1)) * innerW;
+      const yMax = Math.max(...bands.map(b => b.p90), target) * 1.05;
+      const yMin = 0;
+      const ys = (v) => PAD_T + (1 - (v - yMin) / (yMax - yMin || 1)) * innerH;
+
+      function path(points) {
+        return points.map((p, i) => (i === 0 ? 'M' : 'L') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
+      }
+      const upper90 = bands.map((b, i) => ({ x: xs(i), y: ys(b.p90) }));
+      const lower10 = bands.map((b, i) => ({ x: xs(i), y: ys(b.p10) })).reverse();
+      const upper75 = bands.map((b, i) => ({ x: xs(i), y: ys(b.p75) }));
+      const lower25 = bands.map((b, i) => ({ x: xs(i), y: ys(b.p25) })).reverse();
+      const median  = bands.map((b, i) => ({ x: xs(i), y: ys(b.p50) }));
+      const targetY = ys(target);
+
+      // Y-axis ticks (5)
+      const ticks = [];
+      for (let k = 0; k <= 4; k++) {
+        const v = yMin + (yMax - yMin) * k / 4;
+        ticks.push({ y: ys(v), label: 'R\u00A0' + (v / 1e6).toFixed(1) + 'm' });
+      }
+      // X-axis ticks every 5 years
+      const xTicks = [];
+      for (let i = 0; i < bands.length; i += 5) xTicks.push({ x: xs(i), label: i + 'y' });
+      if (xTicks[xTicks.length - 1].x < xs(bands.length - 1) - 8) {
+        xTicks.push({ x: xs(bands.length - 1), label: (bands.length - 1) + 'y' });
+      }
+
+      return `
+        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Monte Carlo outcome cone">
+          ${ticks.map(t => `<line x1="${PAD_L}" y1="${t.y}" x2="${W - PAD_R}" y2="${t.y}" stroke="var(--color-border)" stroke-dasharray="2 4" />
+                            <text x="${PAD_L - 8}" y="${t.y + 4}" font-family="var(--font-mono)" font-size="10" fill="var(--color-ink-tertiary)" text-anchor="end">${t.label}</text>`).join('')}
+          <path d="${path([...upper90, ...lower10])} Z" fill="var(--color-band)" />
+          <path d="${path([...upper75, ...lower25])} Z" fill="var(--color-band-2)" />
+          <path d="${path(median)}" stroke="var(--color-accent)" stroke-width="2" fill="none" />
+          <line x1="${PAD_L}" y1="${targetY}" x2="${W - PAD_R}" y2="${targetY}" stroke="var(--color-warning)" stroke-width="1.5" stroke-dasharray="4 3" />
+          <text x="${W - PAD_R - 4}" y="${targetY - 4}" font-family="var(--font-mono)" font-size="10" fill="var(--color-warning)" text-anchor="end">Target</text>
+          ${xTicks.map(t => `<text x="${t.x}" y="${H - 8}" font-family="var(--font-mono)" font-size="10" fill="var(--color-ink-tertiary)" text-anchor="middle">${t.label}</text>`).join('')}
+        </svg>
+      `;
+    }
+
+    document.getElementById('ret-go').addEventListener('click', () => {
+      const p = {
+        age:        +document.getElementById('ret-age').value,
+        targetAge:  +document.getElementById('ret-target').value,
+        current:    +document.getElementById('ret-current').value,
+        monthly:    +document.getElementById('ret-monthly').value,
+        mu:         +document.getElementById('ret-mu').value,
+        sigma:      +document.getElementById('ret-sigma').value,
+        esc:        +document.getElementById('ret-esc').value,
+        inflation:  +document.getElementById('ret-inflation').value,
+        target:     +document.getElementById('ret-target-pot').value,
+      };
+      if (p.targetAge <= p.age) { toast('Target age must exceed current age.'); return; }
+      const sim = runMonteCarlo(p);
+      const tier = tierFromSuccess(sim.successPct);
+      const host = document.getElementById('ret-result');
+      host.hidden = false;
+      host.innerHTML = `
+        <div class="ring-row">
+          <div class="score-ring" style="--p:${sim.successPct.toFixed(1)}">
+            <span>${Math.round(sim.successPct)}%</span><small>success</small>
+          </div>
+          <div>
+            <p class="eyebrow">Probability of reaching target</p>
+            <p style="margin-top:0.25rem"><span class="tier ${tier.cls}">${tier.name}</span></p>
+            <p style="color:var(--color-ink-secondary); font-size:var(--font-sm); margin-top:0.4rem; max-width:48ch">
+              Across 1 000 simulated paths, ${Math.round(sim.successPct)}% reach the ${fmtR(p.target)} target by age ${p.targetAge}.
+              Median outcome ${fmtR(sim.finalP50)}; 80% range ${fmtR(sim.finalP10)} → ${fmtR(sim.finalP90)} (today's rands).
+            </p>
+          </div>
+        </div>
+        <div class="chart-wrap">${drawFanChart(sim.bands, p.target)}</div>
+        <div class="chart-legend">
+          <span><span class="dot" style="background:var(--color-band)"></span>10–90 percentile</span>
+          <span><span class="dot" style="background:var(--color-band-2)"></span>25–75 percentile</span>
+          <span><span class="dot" style="background:var(--color-accent)"></span>Median path</span>
+          <span><span class="dot" style="background:var(--color-warning)"></span>Target</span>
+        </div>
+        <div class="tiles" style="margin-top:1rem">
+          <div class="tile"><div class="label">Median outcome</div><div class="value">${fmtR(sim.finalP50)}</div></div>
+          <div class="tile"><div class="label">10th percentile</div><div class="value">${fmtR(sim.finalP10)}</div><div class="delta down">downside</div></div>
+          <div class="tile"><div class="label">90th percentile</div><div class="value">${fmtR(sim.finalP90)}</div><div class="delta up">upside</div></div>
+        </div>
+      `;
+    });
+
+    // === Goal Planner ===
+    function pmtForFV(fv, pv, n, r) {
+      // Future value of annuity: FV = pv*(1+r)^n + PMT * ((1+r)^n - 1) / r
+      const factor = Math.pow(1 + r, n);
+      if (Math.abs(r) < 1e-9) return Math.max(0, (fv - pv) / n);
+      return Math.max(0, (fv - pv * factor) * r / (factor - 1));
+    }
+    function fvOfPlan(pv, pmt, n, r) {
+      const factor = Math.pow(1 + r, n);
+      if (Math.abs(r) < 1e-9) return pv + pmt * n;
+      return pv * factor + pmt * (factor - 1) / r;
+    }
+
+    document.getElementById('goal-go').addEventListener('click', () => {
+      const target  = +document.getElementById('goal-target').value;
+      const years   = +document.getElementById('goal-years').value;
+      const current = +document.getElementById('goal-current').value;
+      const vehicle = document.getElementById('goal-vehicle').value;
+      const realRet = +document.getElementById('goal-return').value / 100;
+      const marg    = +document.getElementById('goal-marginal').value / 100;
+
+      // Effective monthly return after vehicle drag
+      let effReturn = realRet;
+      let drag = '';
+      if (vehicle === 'disc') {
+        // Approx: ~25% of return is interest+dividends taxed at marginal; CGT effective ~18% of remaining gain at exit (approximation).
+        const incomeShare = 0.30;
+        const incomeDrag = incomeShare * realRet * marg;
+        effReturn = realRet - incomeDrag;
+        drag = `Discretionary investing assumes ~30% of return is taxed annually at your marginal rate, dragging the effective real return from ${(realRet*100).toFixed(1)}% to ${(effReturn*100).toFixed(2)}%.`;
+      } else if (vehicle === 'tfsa') {
+        drag = 'TFSA: no tax on growth, dividends or withdrawals. R36 000/yr · R500 000 lifetime contribution cap. Excess attracts a 40% penalty.';
+      } else if (vehicle === 'ra') {
+        drag = `RA: contributions are deductible up to 27.5% of taxable income (R350k cap). Income on retirement is taxed under the lump-sum + annuity table — typically lower than your marginal rate today (${(marg*100).toFixed(0)}%).`;
+      }
+
+      const monthlyR = effReturn / 12;
+      const months = years * 12;
+      const reqPmt = pmtForFV(target, current, months, monthlyR);
+      const projWith0 = fvOfPlan(current, 0, months, monthlyR);
+      const projWith500 = fvOfPlan(current, 500, months, monthlyR);
+
+      const host = document.getElementById('goal-result');
+      host.hidden = false;
+      host.innerHTML = `
+        <div class="tiles">
+          <div class="tile"><div class="label">Required monthly</div><div class="value">${fmtR(reqPmt)}</div><div class="delta">to reach ${fmtR(target)}</div></div>
+          <div class="tile"><div class="label">If you stop contributing</div><div class="value">${fmtR(projWith0)}</div><div class="delta ${projWith0 >= target ? 'up' : 'down'}">${projWith0 >= target ? 'meets target' : 'falls short'}</div></div>
+          <div class="tile"><div class="label">At R500/month</div><div class="value">${fmtR(projWith500)}</div></div>
+          <div class="tile"><div class="label">Effective real return</div><div class="value">${(effReturn * 100).toFixed(2)}%</div></div>
+        </div>
+        <div class="note">${drag}</div>
+      `;
+    });
+
+    // === Loan amortisation ===
+    function loanSchedule(P, r, n, extra = 0) {
+      const i = r / 12 / 100;
+      const pmt = i === 0 ? P / n : P * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+      const sched = [];
+      let bal = P, paid = 0, interest = 0, m = 0;
+      while (bal > 0.01 && m < n + 600) {
+        m++;
+        const intM = bal * i;
+        let prinM = pmt - intM + extra;
+        if (prinM > bal) prinM = bal;
+        bal -= prinM;
+        paid += prinM + intM;
+        interest += intM;
+        sched.push({ m, intM, prinM, bal });
+      }
+      return { pmt, totalPaid: paid, totalInterest: interest, monthsActual: m, schedule: sched };
+    }
+
+    document.getElementById('loan-go').addEventListener('click', () => {
+      const P = +document.getElementById('loan-principal').value;
+      const r = +document.getElementById('loan-rate').value;
+      const yrs = +document.getElementById('loan-years').value;
+      const extra = +document.getElementById('loan-extra').value || 0;
+      const n = yrs * 12;
+      const baseline = loanSchedule(P, r, n, 0);
+      const accel    = extra > 0 ? loanSchedule(P, r, n, extra) : baseline;
+      const interestSaved = baseline.totalInterest - accel.totalInterest;
+      const monthsSaved = baseline.monthsActual - accel.monthsActual;
+
+      // Render first 12 + last 12 schedule rows
+      const rows = (s) => {
+        const list = s.schedule;
+        const head = list.slice(0, 12);
+        const tail = list.slice(-12);
+        const showGap = list.length > 24;
+        const rowHtml = (r) => `<tr><td>${r.m}</td><td>${fmtR(r.intM)}</td><td>${fmtR(r.prinM)}</td><td>${fmtR(r.bal)}</td></tr>`;
+        return head.map(rowHtml).join('')
+          + (showGap ? `<tr class="table-gap"><td colspan="4">… ${list.length - 24} months omitted …</td></tr>` : '')
+          + (showGap ? tail.map(rowHtml).join('') : '');
+      };
+
+      const host = document.getElementById('loan-result');
+      host.hidden = false;
+      host.innerHTML = `
+        <div class="tiles">
+          <div class="tile"><div class="label">Monthly instalment</div><div class="value">${fmtR(baseline.pmt)}</div></div>
+          <div class="tile"><div class="label">Total paid</div><div class="value">${fmtR(accel.totalPaid)}</div></div>
+          <div class="tile"><div class="label">Total interest</div><div class="value">${fmtR(accel.totalInterest)}</div></div>
+          ${extra > 0 ? `
+            <div class="tile"><div class="label">Interest saved</div><div class="value">${fmtR(interestSaved)}</div><div class="delta up">vs baseline</div></div>
+            <div class="tile"><div class="label">Months saved</div><div class="value">${monthsSaved}</div><div class="delta up">${(monthsSaved/12).toFixed(1)} years</div></div>
+          ` : ''}
+        </div>
+        <div class="table-wrap">
+          <table aria-label="Amortisation schedule">
+            <thead><tr><th>Month</th><th>Interest</th><th>Principal</th><th>Balance</th></tr></thead>
+            <tbody>${rows(accel)}</tbody>
+          </table>
+        </div>
+      `;
+    });
+
+    // === Market context (static snapshot) ===
+    const MARKET = [
+      { k: 'SARB repo rate',   v: '7.75%' },
+      { k: 'Prime lending',    v: '11.25%' },
+      { k: 'CPI inflation',    v: '~3.0%' },
+      { k: 'JSE Top 40 (1y)',  v: '+12%'  },
+      { k: 'ZAR / USD',        v: '~18.50' },
+      { k: 'R186 yield',       v: '~9.5%' },
+      { k: 'TFSA limit',       v: 'R36 000 / yr' },
+      { k: 'TFSA lifetime',    v: 'R500 000' },
+      { k: 'RA s.11F cap',     v: 'R350 000 / yr' },
+    ];
+    const ctxGrid = document.getElementById('ctx-grid');
+    ctxGrid.innerHTML = MARKET.map(m => `<div class="ctx"><div class="k">${m.k}</div><div class="v">${m.v}</div></div>`).join('');
+
+    // === Print buttons ===
+    ['tax-print', 'ret-print', 'goal-print', 'loan-print'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', () => window.print());
+    });
+
+    // === Toast ===
+    let toastTimer;
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg; el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+    }
+
+    // Auto-run tax on load so first impression isn't an empty card
+    document.getElementById('tax-go').click();
+  })();
   </script>
 </body>
 </html>
