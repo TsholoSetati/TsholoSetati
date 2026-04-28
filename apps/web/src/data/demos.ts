@@ -123,6 +123,26 @@ export const demos: Demo[] = [
       stack: ['Vanilla JS', 'localStorage', '.ics generation', 'WhatsApp deep link'],
     },
   },
+  {
+    slug: 'policy-prism',
+    title: 'PolicyPrism',
+    tagline: 'Comparative AI policy framework explorer',
+    description:
+      'Refract a single AI use case through five governance regimes — EU AI Act, NIST RMF, AU Continental AI Strategy, SA POPIA + Draft AI Policy, and China AI Measures — and see how the obligations diverge.',
+    iframe: '/demos/policy-prism/demo.html',
+    height: 1100,
+    category: 'AI Tooling',
+    status: 'Prototype',
+    narrative: {
+      claim: 'AI governance is not one debate; it is five overlapping ones with different priorities.',
+      capabilities: [
+        'Side-by-side comparison of how each framework classifies and constrains the same use case.',
+        'Four worked use cases: retail credit scoring, hiring, generative customer agents, and healthcare triage.',
+        'Surfaces the deltas — what one regime prohibits, another only requires you to disclose.',
+      ],
+      stack: ['React', 'Vite', 'Comparative regulatory analysis'],
+    },
+  },
 ];
 
 export const getDemo = (slug: string) => demos.find((d) => d.slug === slug);
