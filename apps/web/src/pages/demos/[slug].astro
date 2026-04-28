@@ -7,6 +7,11 @@ export function getStaticPaths() {
 }
 
 const { demo } = Astro.props as { demo: ReturnType<typeof getDemo> & {} };
+// Stricter default sandbox — drop allow-popups/allow-modals unless a demo opts in.
+const sandboxAttr =
+  demo.sandbox === 'standard'
+    ? 'allow-scripts allow-same-origin allow-forms allow-popups allow-modals'
+    : 'allow-scripts allow-same-origin allow-forms';
 ---
 
 <BaseLayout seo={{ title: demo.title, description: demo.description }}>
@@ -19,35 +24,133 @@ const { demo } = Astro.props as { demo: ReturnType<typeof getDemo> & {} };
       <p class="desc">{demo.description}</p>
     </header>
 
-    <div class="frame" data-reveal style={`--demo-h: ${demo.height}px;`}>
+    {demo.narrative && (
+      <aside class="narrative" data-reveal aria-label="What this demo demonstrates">
+        <p class="narr-eyebrow">What this demonstrates</p>
+        <p class="narr-claim">{demo.narrative.claim}</p>
+        <ul class="narr-list">
+          {demo.narrative.capabilities.map((c) => <li>{c}</li>)}
+        </ul>
+        <p class="narr-stack">
+          {demo.narrative.stack.map((s, i) => (
+            <span class="chip">{s}</span>
+          ))}
+        </p>
+      </aside>
+    )}
+
+    <div
+      class="frame"
+      data-reveal
+      data-iframe-src={demo.iframe}
+      style={`--demo-h: ${demo.height}px;`}
+    >
       <div class="frame-bar">
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
         <span class="addr">{demo.iframe}</span>
         <a class="open" href={demo.iframe} target="_blank" rel="noopener">Open in new tab ↗</a>
       </div>
-      <iframe
-        src={demo.iframe}
-        title={`${demo.title} demo`}
-        loading="lazy"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
-        referrerpolicy="no-referrer"
-      />
+      <div class="iframe-host">
+        <button class="iframe-load" type="button" aria-label="Load demo">
+          <span class="play">▶</span>
+          <span class="play-label">Load interactive demo</span>
+          <span class="play-hint">Runs entirely in your browser. No data is sent to a server.</span>
+        </button>
+        <iframe
+          data-src={demo.iframe}
+          title={`${demo.title} demo`}
+          loading="lazy"
+          sandbox={sandboxAttr}
+          referrerpolicy="no-referrer"
+          hidden
+        />
+      </div>
     </div>
 
-    <p class="muted" style="margin-top:1.5rem; text-align:center;">
-      <small>Demos run client-side. State is held only in your browser.</small>
+    <p class="trust" style="margin-top:1.5rem; text-align:center;">
+      <span class="trust-dot" aria-hidden="true"></span>
+      <small>All processing happens in your browser. No telemetry. No external API calls.</small>
     </p>
   </section>
 </BaseLayout>
 
+<script>
+  // Theme handoff + click-to-load iframe with ?theme=&t= passthrough.
+  (function () {
+    const root = document.documentElement;
+    function currentTheme() {
+      const t = root.getAttribute('data-theme');
+      if (t === 'light' || t === 'dark') return t;
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+    }
+    function withTheme(src: string) {
+      try {
+        const u = new URL(src, location.href);
+        u.searchParams.set('theme', currentTheme());
+        return u.pathname + u.search + u.hash;
+      } catch {
+        return src;
+      }
+    }
+
+    document.querySelectorAll<HTMLDivElement>('.frame[data-iframe-src]').forEach((frame) => {
+      const btn = frame.querySelector<HTMLButtonElement>('.iframe-load');
+      const iframe = frame.querySelector<HTMLIFrameElement>('iframe[data-src]');
+      if (!btn || !iframe) return;
+      const load = () => {
+        const src = iframe.getAttribute('data-src') || '';
+        iframe.src = withTheme(src);
+        iframe.hidden = false;
+        btn.remove();
+      };
+      btn.addEventListener('click', load);
+      // Auto-load on intersection if user scrolls past it (better UX than pure click-to-load)
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                load();
+                io.disconnect();
+              }
+            });
+          },
+          { rootMargin: '200px' }
+        );
+        io.observe(frame);
+      } else {
+        load();
+      }
+    });
+  })();
+</script>
+
 <style>
   .back { margin-bottom: 1.5rem; }
   .back a { color: var(--color-ink-tertiary); text-decoration: none; }
-  .head { margin-bottom: 2rem; max-width: 70ch; }
+  .head { margin-bottom: 1.5rem; max-width: 70ch; }
   .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); margin: 0 0 0.5rem; }
   h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 0.5rem; }
   .tag { color: var(--color-ink-primary); font-weight: 500; margin: 0 0 0.75rem; }
   .desc { color: var(--color-ink-secondary); line-height: 1.6; }
+
+  .narrative {
+    margin: 0 0 1.5rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--color-surface-sunken);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    max-width: 76ch;
+  }
+  .narr-eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.4rem; }
+  .narr-claim { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: var(--color-ink-primary); margin: 0 0 0.65rem; line-height: 1.35; }
+  .narr-list { margin: 0 0 0.75rem; padding-left: 1.15rem; color: var(--color-ink-secondary); }
+  .narr-list li { margin-bottom: 0.25rem; line-height: 1.5; }
+  .narr-stack { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0; }
+  .chip { display: inline-block; font-family: var(--font-mono); font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: var(--radius-full); background: var(--color-surface-base); border: 1px solid var(--color-border); color: var(--color-ink-secondary); }
+
   .frame { border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-surface-raised); box-shadow: var(--shadow-lg); }
   .frame-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.85rem; background: var(--color-surface-sunken); border-bottom: 1px solid var(--color-border); font-family: var(--font-mono); font-size: var(--font-xs); }
   .dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -55,6 +158,21 @@ const { demo } = Astro.props as { demo: ReturnType<typeof getDemo> & {} };
   .addr { margin-left: 0.5rem; color: var(--color-ink-tertiary); flex: 1; overflow: hidden; text-overflow: ellipsis; }
   .open { color: var(--color-accent); text-decoration: none; }
   .open:hover { text-decoration: underline; }
+
+  .iframe-host { position: relative; min-height: var(--demo-h, 900px); background: white; }
   iframe { width: 100%; height: var(--demo-h, 900px); border: 0; display: block; background: white; }
-  .muted { color: var(--color-ink-tertiary); }
+  .iframe-load {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.5rem; background: var(--color-surface-sunken);
+    border: 0; cursor: pointer; font: inherit; color: var(--color-ink-primary);
+    transition: background 200ms ease;
+  }
+  .iframe-load:hover { background: var(--color-surface-base); }
+  .iframe-load .play { font-size: 2rem; color: var(--color-accent); line-height: 1; }
+  .iframe-load .play-label { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
+  .iframe-load .play-hint { font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-ink-tertiary); }
+
+  .trust { color: var(--color-ink-tertiary); display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+  .trust-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-success, #10b981); display: inline-block; }
 </style>
