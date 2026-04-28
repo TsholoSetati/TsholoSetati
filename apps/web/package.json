@@ -13,7 +13,9 @@
     "astro": "astro",
     "check": "astro check",
     "embed": "tsx scripts/build-embeddings.ts",
-    "summarize": "tsx scripts/ai-summarize.ts"
+    "summarize": "tsx scripts/ai-summarize.ts",
+    "import:linkedin": "node scripts/import-linkedin.mjs",
+    "import:linkedin:force": "node scripts/import-linkedin.mjs --force"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
