@@ -1,13 +1,18 @@
 name: Fetch market data
 
+# Yahoo Finance (with Stooq lite fallback) — refreshed 4x daily during the SAST workday.
+# 09:00, 12:00, 15:00, 18:00 SAST = 07:00, 10:00, 13:00, 16:00 UTC.
 on:
   schedule:
-    # Weekdays (Mon–Fri) every 30 minutes during a wide market window (06:00–22:00 UTC).
-    - cron: '*/30 6-22 * * 1-5'
+    - cron: '0 7,10,13,16 * * 1-5'
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: fetch-markets
+  cancel-in-progress: false
 
 jobs:
   fetch:
@@ -15,46 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch quotes from Yahoo Finance
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p apps/web/public/data
-          out=apps/web/public/data/markets.json
-          tmp=$(mktemp)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-          declare -A LABELS=(
-            ["%5EGSPC"]="S&P 500"
-            ["%5EIXIC"]="NASDAQ"
-            ["%5EJ203.JO"]="JSE Top 40"
-            ["CL%3DF"]="WTI Crude"
-            ["HG%3DF"]="Copper"
-            ["USDZAR%3DX"]="USD/ZAR"
-          )
-          ORDER=("%5EGSPC" "%5EIXIC" "%5EJ203.JO" "CL%3DF" "HG%3DF" "USDZAR%3DX")
+      - name: Fetch quotes (Yahoo → Stooq fallback)
+        run: node apps/web/scripts/fetch-markets.mjs
 
-          echo '{ "updated": "'"$(date -u +%FT%TZ)"'", "quotes": [' > "$tmp"
-          first=1
-          for sym in "${ORDER[@]}"; do
-            label="${LABELS[$sym]}"
-            url="https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=5d"
-            resp=$(curl -fsSL -A 'Mozilla/5.0 (compatible; tsholosetati-bot/1.0)' "$url" || echo '{}')
-            price=$(echo "$resp" | jq -r '.chart.result[0].meta.regularMarketPrice // empty')
-            prev=$(echo "$resp" | jq -r '.chart.result[0].meta.chartPreviousClose // empty')
-            if [[ -z "$price" || -z "$prev" || "$prev" == "0" ]]; then
-              continue
-            fi
-            change=$(awk "BEGIN { printf \"%.2f\", (($price-$prev)/$prev)*100 }")
-            sym_clean=$(printf '%b' "${sym//%/\\x}")
-            [[ $first -eq 1 ]] || echo ',' >> "$tmp"
-            first=0
-            printf '  { "symbol": "%s", "label": "%s", "price": %s, "changePct": %s }' \
-              "$sym_clean" "$label" "$price" "$change" >> "$tmp"
-          done
-          echo '' >> "$tmp"
-          echo ']}' >> "$tmp"
-          mv "$tmp" "$out"
-          cat "$out"
+      - name: Show output
+        run: head -c 2000 apps/web/public/data/markets.json && echo
 
       - name: Commit changes
         run: |
