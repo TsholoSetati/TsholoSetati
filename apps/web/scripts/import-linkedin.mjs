@@ -184,7 +184,10 @@ function htmlToMdx(html) {
     const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'gi');
     s = s.replace(re, (_, inner) => {
       const items = [...inner.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)].map((m, i) => {
-        const text = inlineConvert(m[1]).trim().replace(/\n+/g, ' ');
+        // LinkedIn wraps every <li> body in <p>…</p>. Strip those before
+        // inline conversion so the marker stays on a single line.
+        const stripped = m[1].replace(/<p[^>]*>/gi, '').replace(/<\/p>/gi, ' ');
+        const text = inlineConvert(stripped).trim().replace(/\s+/g, ' ');
         const m2 = typeof marker === 'function' ? marker(i) : marker;
         return `${m2} ${text}`;
       });
@@ -194,17 +197,37 @@ function htmlToMdx(html) {
   convertList('ul', '-');
   convertList('ol', (i) => `${i + 1}.`);
 
+  // Pre/code blocks. LinkedIn often emits empty <pre></pre> placeholders;
+  // drop those, and convert any with content into a fenced code block.
+  s = s.replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gi, (_, inner) => {
+    const text = stripTags(inner).trim();
+    if (!text) return '\n\n';
+    return `\n\n\`\`\`\n${text}\n\`\`\`\n\n`;
+  });
+
   // Paragraphs.
   s = s.replace(/<p[^>]*>([\s\S]*?)<\/p>/gi, (_, inner) => `\n\n${inlineConvert(inner).trim()}\n\n`);
-
-  // Strip any leftover unknown block tags but keep their content.
-  s = s.replace(/<\/?(?:div|section|article|figure|figcaption|span)[^>]*>/gi, '');
 
   // Final inline pass for orphan inline tags.
   s = inlineConvert(s);
 
+  // Aggressive sweep: strip any remaining HTML tags (open or close, known or
+  // not). MDX would otherwise try to parse these as JSX and fail when the
+  // tags are unbalanced or contain attributes that look like expressions.
+  s = s.replace(/<\/?[a-zA-Z][^>]*>/g, '');
+
+  // Decode HTML entities first so we can safely escape the resulting
+  // characters for MDX in the next step.
+  s = decodeEntities(s);
+
+  // Escape any remaining bare `<` that isn't followed by a valid tag/name
+  // character. MDX interprets `<50%`, `<X` etc. as JSX which fails to parse.
+  s = s.replace(/<(?![a-zA-Z\/!])/g, '&lt;');
+  // Escape stray `{` `}` so MDX doesn't try to parse them as expressions.
+  s = s.replace(/(?<!\\)\{/g, '\\{').replace(/(?<!\\)\}/g, '\\}');
+
   // Whitespace normalisation.
-  s = decodeEntities(s)
+  s = s
     .replace(/[ \t]+\n/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
     .replace(/[\u2014]/g, ', ') // em dash → comma per house style
@@ -223,6 +246,8 @@ function inlineConvert(s) {
       const text = stripTags(txt) || href;
       return `[${text}](${href})`;
     })
+    // Anchors without href (LinkedIn @mention residue): keep the inner text only.
+    .replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, (_, txt) => stripTags(txt))
     .replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, (_, t) => `\`${stripTags(t)}\``);
 }
 
@@ -290,7 +315,17 @@ function main() {
   }
   mkdirSync(OUT_DIR, { recursive: true });
 
-  const files = readdirSync(SRC_DIR).filter((f) => f.toLowerCase().endsWith('.html'));
+  const files = readdirSync(SRC_DIR).filter((f) => {
+    if (!f.toLowerCase().endsWith('.html')) return false;
+    // Skip LinkedIn draft exports — their filenames lead with a date+time stamp
+    // (e.g. "2025-06-23 05_44_31.0-Part 2_ ...html"). The published versions of
+    // these articles arrive with a normal slug filename in the same export.
+    if (/^\d{4}-\d{2}-\d{2}\s+\d{2}_\d{2}_\d{2}\.\d/.test(f)) {
+      console.log(`  skip draft: ${f}`);
+      return false;
+    }
+    return true;
+  });
   if (files.length === 0) {
     console.log('No HTML articles to import.');
     return;
