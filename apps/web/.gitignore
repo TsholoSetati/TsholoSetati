@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # generated
 public/ai/
+
+build.log
+preview.log

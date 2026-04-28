@@ -16,7 +16,7 @@ export const demos: Demo[] = [
     tagline: 'Shared expense tracker',
     description:
       'Split bills, track expenses, and settle up with friends. A SPA prototype exploring offline-first ledgers and friction-light settlement flows.',
-    iframe: '/demos/sharp-sharp/',
+    iframe: '/demos/sharp-sharp/demo.html',
     height: 900,
     category: 'Personal Finance',
     status: 'Live demo',
@@ -27,7 +27,7 @@ export const demos: Demo[] = [
     tagline: 'Negotiation & payment platform',
     description:
       'Fintech prototype for managing payments and negotiation workflows. Demonstrates a structured back-and-forth between counterparties before settlement.',
-    iframe: '/demos/payper/',
+    iframe: '/demos/payper/demo.html',
     height: 1000,
     category: 'Fintech',
     status: 'Prototype',
@@ -38,7 +38,7 @@ export const demos: Demo[] = [
     tagline: 'Smart advisor & retirement calculators',
     description:
       'Personal financial planning toolkit — retirement projections, savings goals, and scenario modelling. Built to make long-horizon decisions tractable.',
-    iframe: '/demos/financial-planning/',
+    iframe: '/demos/financial-planning/demo.html',
     height: 1000,
     category: 'Personal Finance',
     status: 'Live demo',
@@ -49,7 +49,7 @@ export const demos: Demo[] = [
     tagline: 'AI use-case assessment tool',
     description:
       'A framework for identifying, scoring, and prioritising AI opportunities. Inputs a portfolio of ideas; outputs a value-weighted shortlist.',
-    iframe: '/demos/id8/',
+    iframe: '/demos/id8/demo.html',
     height: 1000,
     category: 'AI Tooling',
     status: 'Live demo',
@@ -60,7 +60,7 @@ export const demos: Demo[] = [
     tagline: 'Private gift registry',
     description:
       'Invite-only gift registry with admin and guest experiences. Client-side only — all state is held in your browser.',
-    iframe: '/demos/giftly/',
+    iframe: '/demos/giftly/demo.html',
     height: 1100,
     category: 'Productivity',
     status: 'Prototype',
