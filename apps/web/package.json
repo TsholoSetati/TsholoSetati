@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "build": "npm run build:demos && astro build && pagefind --site dist",
+    "build:demos": "npm run build:sharp-sharp",
+    "build:sharp-sharp": "npm --prefix demos-src/sharp-sharp run build",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
