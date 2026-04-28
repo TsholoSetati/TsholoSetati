@@ -1,0 +1,60 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { demos, getDemo } from '~/data/demos';
+
+export function getStaticPaths() {
+  return demos.map((d) => ({ params: { slug: d.slug }, props: { demo: d } }));
+}
+
+const { demo } = Astro.props as { demo: ReturnType<typeof getDemo> & {} };
+---
+
+<BaseLayout seo={{ title: demo.title, description: demo.description }}>
+  <section class="container section">
+    <p class="back"><a href="/demos">← Back to demos</a></p>
+    <header class="head" data-reveal>
+      <p class="kicker">{demo.category} · {demo.status}</p>
+      <h1>{demo.title}</h1>
+      <p class="tag">{demo.tagline}</p>
+      <p class="desc">{demo.description}</p>
+    </header>
+
+    <div class="frame" data-reveal style={`--demo-h: ${demo.height}px;`}>
+      <div class="frame-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="addr">{demo.iframe}</span>
+        <a class="open" href={demo.iframe} target="_blank" rel="noopener">Open in new tab ↗</a>
+      </div>
+      <iframe
+        src={demo.iframe}
+        title={`${demo.title} demo`}
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+        referrerpolicy="no-referrer"
+      />
+    </div>
+
+    <p class="muted" style="margin-top:1.5rem; text-align:center;">
+      <small>Demos run client-side. State is held only in your browser.</small>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .back { margin-bottom: 1.5rem; }
+  .back a { color: var(--color-ink-tertiary); text-decoration: none; }
+  .head { margin-bottom: 2rem; max-width: 70ch; }
+  .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 0.5rem; }
+  .tag { color: var(--color-ink-primary); font-weight: 500; margin: 0 0 0.75rem; }
+  .desc { color: var(--color-ink-secondary); line-height: 1.6; }
+  .frame { border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-surface-raised); box-shadow: var(--shadow-lg); }
+  .frame-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.85rem; background: var(--color-surface-sunken); border-bottom: 1px solid var(--color-border); font-family: var(--font-mono); font-size: var(--font-xs); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #ff5f56; } .dot.y { background: #ffbd2e; } .dot.g { background: #27c93f; }
+  .addr { margin-left: 0.5rem; color: var(--color-ink-tertiary); flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  .open { color: var(--color-accent); text-decoration: none; }
+  .open:hover { text-decoration: underline; }
+  iframe { width: 100%; height: var(--demo-h, 900px); border: 0; display: block; background: white; }
+  .muted { color: var(--color-ink-tertiary); }
+</style>

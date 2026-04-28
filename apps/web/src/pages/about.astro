@@ -1,0 +1,78 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { site } from '~/config/site';
+---
+
+<BaseLayout seo={{ title: 'About', description: 'Background, focus areas and credentials of Tsholofelo K. Setati.' }}>
+  <section class="container section about">
+    <header class="about-head" data-reveal>
+      <img src="/assets/profile.jpg" alt="Tsholofelo K. Setati" class="portrait" loading="eager" />
+      <div>
+        <p class="eyebrow">About</p>
+        <h1>Tsholofelo K. Setati</h1>
+        <p class="tagline">
+          Driving enterprise AI transformations at the intersection of economics, strategy and frontier technology.
+        </p>
+      </div>
+    </header>
+
+    <div class="prose" data-reveal>
+      <p>
+        My background combines PhD-level economic training with hands-on expertise in AI architecture, MLOps,
+        and cloud platforms — enabling me to translate complex technical capabilities into boardroom-ready
+        business cases that deliver measurable ROI.
+      </p>
+      <p>
+        I lead cross-functional teams to design AI strategies, build AI Centres of Excellence, and deliver
+        value realisation through operationalised AI. Current focus areas include AI strategy & transformation,
+        executive advisory, cross-platform integration (Azure AI, Microsoft Fabric), and frontier innovation
+        (GenAI and Agentic AI).
+      </p>
+    </div>
+
+    <div class="about-grid" data-reveal>
+      <div class="card">
+        <h3>Focus areas</h3>
+        <ul>
+          <li>Enterprise AI strategy & operating model</li>
+          <li>Innovation economics & value realisation</li>
+          <li>GenAI and Agentic AI architecture</li>
+          <li>Executive advisory & CoE design</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Credentials</h3>
+        <ul>
+          <li>PhD candidate, Innovation Economics</li>
+          <li>Microsoft (current) — Senior Cloud & AI Solution Engineer, MEA</li>
+          <li>Former technology consulting at EY</li>
+          <li>Economic & quantitative research at SALDRU, TIPS, ACEIR</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Based in</h3>
+        <p>{site.author.location}. Working with clients across Africa, the Middle East and Europe.</p>
+        <p><a class="link-arrow" href="/contact">Start a conversation →</a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-head { display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; margin-bottom: 3rem; }
+  .portrait { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; box-shadow: var(--shadow-lg); }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 0.5rem; }
+  .tagline { color: var(--color-ink-secondary); font-size: var(--font-lg); margin: 0; max-width: 50ch; }
+  .prose { max-width: 70ch; margin: 0 auto 3rem; }
+  .prose p { line-height: 1.7; margin: 0 0 1rem; color: var(--color-ink-secondary); }
+  .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+  .about-grid h3 { font-family: var(--font-display); margin: 0 0 0.75rem; }
+  .about-grid ul { padding-left: 1.1rem; margin: 0; color: var(--color-ink-secondary); }
+  .about-grid ul li { margin-bottom: 0.4rem; }
+  .link-arrow { color: var(--color-accent); }
+  @media (max-width: 640px) {
+    .about-head { grid-template-columns: 1fr; text-align: center; }
+    .portrait { margin: 0 auto; width: 140px; height: 140px; }
+  }
+</style>

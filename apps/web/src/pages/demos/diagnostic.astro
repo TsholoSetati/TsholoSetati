@@ -1,0 +1,220 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { questions, dimensions } from '~/data/diagnostic-rubric';
+---
+
+<BaseLayout seo={{ title: 'AI Maturity Diagnostic', description: 'A 10-question deterministic diagnostic across six dimensions of enterprise AI maturity. No data leaves your browser.' }}>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Diagnostic</p>
+      <h1>AI Maturity Diagnostic</h1>
+      <p class="lead">
+        Ten questions across six dimensions. The result is a profile and three priority recommendations.
+        Everything runs in your browser — no data leaves the page.
+      </p>
+    </header>
+
+    <div class="layout">
+      <form id="diagnostic-form" data-reveal>
+        <div id="progress" class="progress">
+          <div class="bar"><div class="fill" id="progress-fill" style="width:0%"></div></div>
+          <p class="count" id="progress-count">0 / {questions.length} answered</p>
+        </div>
+
+        {questions.map((q, idx) => (
+          <fieldset class="q card" data-qid={q.id}>
+            <legend>
+              <span class="num">Q{idx + 1}</span>
+              <span class="dim">{dimensions[q.dimension].name}</span>
+            </legend>
+            <p class="prompt">{q.prompt}</p>
+            <div class="choices">
+              {q.choices.map((c) => (
+                <label class="choice">
+                  <input type="radio" name={q.id} value={c.score} />
+                  <span>{c.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+
+        <div class="actions">
+          <button type="button" id="score-btn" class="btn btn-primary" disabled>Calculate result</button>
+          <button type="reset" class="btn btn-ghost" id="reset-btn">Reset</button>
+        </div>
+      </form>
+
+      <aside id="result" class="result card" hidden data-reveal>
+        <h2>Your AI maturity profile</h2>
+        <div class="overall">
+          <div class="score-ring" id="ring">
+            <span id="overall-pct">0%</span>
+            <small id="overall-tier">—</small>
+          </div>
+          <div>
+            <p class="kicker">Overall maturity</p>
+            <p id="overall-summary" class="overall-summary"></p>
+          </div>
+        </div>
+
+        <h3>Dimension breakdown</h3>
+        <ul id="dim-list" class="dim-list"></ul>
+
+        <h3>Priority recommendations</h3>
+        <ol id="recs" class="recs"></ol>
+
+        <div class="next">
+          <p>Want a deeper read of these results, with a tailored roadmap?</p>
+          <a class="btn btn-primary" href="/contact">Book a discovery conversation</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { questions, score } from '~/data/diagnostic-rubric';
+
+  function bind() {
+    const form = document.getElementById('diagnostic-form') as HTMLFormElement | null;
+    const btn = document.getElementById('score-btn') as HTMLButtonElement | null;
+    const reset = document.getElementById('reset-btn') as HTMLButtonElement | null;
+    const fill = document.getElementById('progress-fill') as HTMLElement | null;
+    const count = document.getElementById('progress-count') as HTMLElement | null;
+    const result = document.getElementById('result') as HTMLElement | null;
+    if (!form || !btn || !fill || !count || !result || !reset) return;
+
+    const total = questions.length;
+
+    function answers(): Record<string, number> {
+      const out: Record<string, number> = {};
+      const data = new FormData(form!);
+      for (const q of questions) {
+        const v = data.get(q.id);
+        if (typeof v === 'string') out[q.id] = Number(v);
+      }
+      return out;
+    }
+
+    function update() {
+      const answered = Object.keys(answers()).length;
+      const pct = Math.round((answered / total) * 100);
+      fill!.style.width = `${pct}%`;
+      count!.textContent = `${answered} / ${total} answered`;
+      btn!.disabled = answered < total;
+    }
+
+    form.addEventListener('change', update);
+    reset.addEventListener('click', () => {
+      setTimeout(() => {
+        update();
+        result!.hidden = true;
+      }, 0);
+    });
+
+    btn.addEventListener('click', () => {
+      const r = score(answers());
+      const ring = document.getElementById('ring') as HTMLElement;
+      const overallPct = document.getElementById('overall-pct')!;
+      const overallTier = document.getElementById('overall-tier')!;
+      const overallSummary = document.getElementById('overall-summary')!;
+      overallPct.textContent = `${Math.round(r.overallPct)}%`;
+      overallTier.textContent = r.overallTier;
+      ring.style.setProperty('--p', String(r.overallPct));
+      overallSummary.textContent = `Overall tier: ${r.overallTier}. The strongest leverage is in your three lowest-scoring dimensions, listed below.`;
+
+      const list = document.getElementById('dim-list')!;
+      list.innerHTML = '';
+      for (const d of r.dimensions) {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="dim-row">
+            <span class="dim-name">${d.name}</span>
+            <span class="dim-tier tier-${d.tier.toLowerCase()}">${d.tier}</span>
+          </div>
+          <div class="dim-bar"><div class="dim-fill" style="width:${d.pct}%"></div></div>
+          <p class="dim-desc">${d.description}</p>
+        `;
+        list.appendChild(li);
+      }
+
+      const recs = document.getElementById('recs')!;
+      recs.innerHTML = '';
+      for (const text of r.recommendations) {
+        const li = document.createElement('li');
+        li.textContent = text;
+        recs.appendChild(li);
+      }
+
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    update();
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 0.75rem; }
+  .lead { color: var(--color-ink-secondary); max-width: 60ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .layout { display: grid; gap: 1.5rem; grid-template-columns: 1.4fr 1fr; align-items: start; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  .progress { position: sticky; top: 80px; background: var(--color-surface-base); padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--color-border); z-index: 5; }
+  .bar { height: 6px; background: var(--color-surface-sunken); border-radius: var(--radius-full); overflow: hidden; }
+  .fill { height: 100%; background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2)); transition: width var(--motion-base) var(--ease-out-quad); }
+  .count { font-family: var(--font-mono); font-size: var(--font-xs); color: var(--color-ink-tertiary); margin: 0.5rem 0 0; text-align: right; }
+
+  .q { margin-bottom: 1rem; }
+  legend { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; padding: 0; }
+  .num { font-family: var(--font-mono); color: var(--color-accent); font-weight: 600; }
+  .dim { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-ink-tertiary); padding: 0.2rem 0.5rem; background: var(--color-surface-sunken); border-radius: var(--radius-sm); }
+  .prompt { font-weight: 500; margin: 0 0 1rem; font-size: var(--font-base); }
+  .choices { display: grid; gap: 0.4rem; }
+  .choice { display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.6rem 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--color-border); cursor: pointer; transition: all var(--motion-fast) var(--ease-out-quad); font-size: var(--font-sm); color: var(--color-ink-secondary); }
+  .choice:hover { border-color: var(--color-accent); color: var(--color-ink-primary); }
+  .choice input { margin-top: 0.2rem; accent-color: var(--color-accent); }
+  .choice:has(input:checked) { border-color: var(--color-accent); background: color-mix(in oklab, var(--color-accent) 8%, transparent); color: var(--color-ink-primary); }
+
+  .actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+
+  .result { position: sticky; top: 80px; }
+  .result h2 { font-family: var(--font-display); margin: 0 0 1.5rem; font-size: var(--font-xl); }
+  .result h3 { font-family: var(--font-display); margin: 1.5rem 0 0.75rem; font-size: var(--font-lg); }
+  .overall { display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1rem; }
+  .score-ring { width: 110px; height: 110px; border-radius: 50%; background: conic-gradient(var(--color-accent) calc(var(--p, 0) * 1%), var(--color-surface-sunken) 0); display: grid; place-content: center; position: relative; flex-shrink: 0; }
+  .score-ring::after { content: ''; position: absolute; inset: 8px; background: var(--color-surface-raised); border-radius: 50%; }
+  .score-ring span, .score-ring small { position: relative; z-index: 1; text-align: center; display: block; }
+  .score-ring span { font-family: var(--font-display); font-size: var(--font-xl); font-weight: 600; }
+  .score-ring small { font-family: var(--font-mono); font-size: var(--font-xs); color: var(--color-ink-tertiary); text-transform: uppercase; letter-spacing: 0.1em; }
+  .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-ink-tertiary); margin: 0; }
+  .overall-summary { color: var(--color-ink-secondary); margin: 0.25rem 0 0; line-height: 1.5; font-size: var(--font-sm); }
+
+  .dim-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+  .dim-row { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+  .dim-name { font-weight: 500; font-size: var(--font-sm); }
+  .dim-tier { font-family: var(--font-mono); font-size: var(--font-xs); padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); text-transform: uppercase; letter-spacing: 0.08em; }
+  .tier-nascent { background: #fee2e2; color: #991b1b; }
+  .tier-emerging { background: #fed7aa; color: #9a3412; }
+  .tier-operational { background: #fef3c7; color: #92400e; }
+  .tier-scaling { background: #d1fae5; color: #065f46; }
+  .tier-leading { background: #dbeafe; color: #1e40af; }
+  :global([data-theme='dark']) .tier-nascent { background: rgba(220,38,38,0.2); color: #fca5a5; }
+  :global([data-theme='dark']) .tier-emerging { background: rgba(234,88,12,0.2); color: #fdba74; }
+  :global([data-theme='dark']) .tier-operational { background: rgba(202,138,4,0.2); color: #fde047; }
+  :global([data-theme='dark']) .tier-scaling { background: rgba(5,150,105,0.2); color: #6ee7b7; }
+  :global([data-theme='dark']) .tier-leading { background: rgba(37,99,235,0.2); color: #93c5fd; }
+  .dim-bar { height: 4px; background: var(--color-surface-sunken); border-radius: var(--radius-full); overflow: hidden; margin: 0.4rem 0; }
+  .dim-fill { height: 100%; background: var(--color-accent); }
+  .dim-desc { font-size: var(--font-xs); color: var(--color-ink-tertiary); margin: 0; }
+
+  .recs { padding-left: 1.4rem; margin: 0; display: grid; gap: 0.75rem; }
+  .recs li { color: var(--color-ink-secondary); line-height: 1.55; font-size: var(--font-sm); }
+
+  .next { margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--color-border); }
+  .next p { color: var(--color-ink-secondary); margin: 0 0 0.75rem; font-size: var(--font-sm); }
+</style>

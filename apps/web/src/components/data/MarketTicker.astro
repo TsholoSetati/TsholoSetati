@@ -1,0 +1,199 @@
+---
+/**
+ * MarketTicker — strip under the site header.
+ * Loads from /data/markets.json (refreshed by GH Action) with /data/*.json legacy fallback.
+ * Marquees on small screens; static row on desktop.
+ *
+ * Initial render is empty markup; the island below hydrates with the latest snapshot.
+ */
+---
+
+<div class="ticker" data-ticker aria-label="Live market data" role="region">
+  <div class="ticker-track" data-ticker-track>
+    {/* Server-side initial dotty placeholder; hydrated by client */}
+    {Array.from({ length: 6 }).map(() => (
+      <span class="ticker-item ticker-skeleton">
+        <span class="ticker-symbol">———</span>
+        <span class="ticker-value">·····</span>
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ticker {
+    border-top: 1px solid var(--color-border-subtle);
+    border-bottom: 1px solid var(--color-border-subtle);
+    background: var(--color-surface-base);
+    overflow: hidden;
+    height: 36px;
+    display: flex;
+    align-items: center;
+  }
+  .ticker-track {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    padding-inline: var(--container-padding);
+    width: 100%;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-ink-secondary);
+  }
+  .ticker-symbol {
+    color: var(--color-ink-primary);
+    font-weight: 600;
+  }
+  .ticker-up {
+    color: var(--color-signal-up);
+  }
+  .ticker-down {
+    color: var(--color-signal-down);
+  }
+  .ticker-skeleton {
+    opacity: 0.4;
+  }
+
+  /* Marquee on small screens */
+  @media (max-width: 768px) {
+    .ticker-track {
+      animation: ticker-scroll 40s linear infinite;
+      width: max-content;
+    }
+    @keyframes ticker-scroll {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  type Quote = {
+    symbol: string;
+    label: string;
+    price: number;
+    changePct: number;
+  };
+
+  async function fetchMarkets(): Promise<Quote[]> {
+    try {
+      const res = await fetch('/data/markets.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`status ${res.status}`);
+      const data = (await res.json()) as { quotes: Quote[] };
+      if (Array.isArray(data?.quotes) && data.quotes.length > 0) return data.quotes;
+    } catch {
+      /* fall through to legacy fallback */
+    }
+    return loadLegacyFallback();
+  }
+
+  /** Legacy fallback — best-effort parse of the older Alpha Vantage shape. */
+  async function loadLegacyFallback(): Promise<Quote[]> {
+    const out: Quote[] = [];
+    const sources: Array<{ url: string; label: string; symbol: string }> = [
+      { url: '/data/sp500.json', label: 'S&P 500', symbol: 'GSPC' },
+      { url: '/data/nasdaq.json', label: 'NASDAQ', symbol: 'IXIC' },
+      { url: '/data/wti-oil.json', label: 'WTI', symbol: 'CL' },
+      { url: '/data/copper.json', label: 'Copper', symbol: 'HG' },
+    ];
+    await Promise.all(
+      sources.map(async (s) => {
+        try {
+          const r = await fetch(s.url, { cache: 'no-store' });
+          if (!r.ok) return;
+          const j = await r.json();
+          const q = j?.['Global Quote'];
+          if (q && q['05. price']) {
+            out.push({
+              symbol: s.symbol,
+              label: s.label,
+              price: parseFloat(q['05. price']),
+              changePct: parseFloat(q['10. change percent']) || 0,
+            });
+          }
+        } catch {
+          /* ignore individual failure */
+        }
+      })
+    );
+    return out;
+  }
+
+  function fmtPrice(n: number): string {
+    return n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  }
+  function fmtPct(n: number): string {
+    const sign = n >= 0 ? '+' : '';
+    return `${sign}${n.toFixed(2)}%`;
+  }
+
+  function render(track: HTMLElement, quotes: Quote[]) {
+    if (quotes.length === 0) {
+      track.innerHTML =
+        '<span class="ticker-item">Markets · live data unavailable</span>';
+      return;
+    }
+    const isMarquee = window.matchMedia('(max-width: 768px)').matches;
+    const items = quotes
+      .map(
+        (q) =>
+          `<span class="ticker-item">
+             <span class="ticker-symbol">${q.label}</span>
+             <span>${fmtPrice(q.price)}</span>
+             <span class="${q.changePct >= 0 ? 'ticker-up' : 'ticker-down'}">${fmtPct(q.changePct)}</span>
+           </span>`
+      )
+      .join('');
+    // Duplicate for seamless marquee loop on small screens.
+    track.innerHTML = isMarquee ? items + items : items;
+  }
+
+  function setupTicker() {
+    const ticker = document.querySelector<HTMLElement>('[data-ticker]');
+    const track = document.querySelector<HTMLElement>('[data-ticker-track]');
+    if (!ticker || !track || ticker.dataset.bound) return;
+    ticker.dataset.bound = 'true';
+
+    let interval: number | null = null;
+
+    function refresh() {
+      fetchMarkets().then((q) => render(track!, q));
+    }
+
+    // Only poll when ticker is in viewport (saves CPU + bandwidth)
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries[0]?.isIntersecting ?? false;
+        if (visible) {
+          refresh();
+          interval = window.setInterval(refresh, 60_000);
+        } else if (interval !== null) {
+          clearInterval(interval);
+          interval = null;
+        }
+      },
+      { threshold: 0.1 }
+    );
+    io.observe(ticker);
+  }
+
+  setupTicker();
+  document.addEventListener('astro:page-load', setupTicker);
+</script>

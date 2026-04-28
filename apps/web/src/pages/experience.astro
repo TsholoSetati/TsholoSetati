@@ -1,0 +1,44 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { experience } from '~/data/experience';
+---
+
+<BaseLayout seo={{ title: 'Experience', description: 'Professional experience across Microsoft, EY, and economic research institutions.' }}>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Experience</p>
+      <h1>A career arc from quantitative research to enterprise AI leadership.</h1>
+    </header>
+
+    <div class="timeline">
+      {experience.map((co) => (
+        <article class="company card" data-reveal>
+          <div class="company-head">
+            <h2>{co.name}</h2>
+            {co.location && <span class="loc">{co.location}</span>}
+          </div>
+          <div class="roles">
+            {co.roles.map((role) => (
+              <div class="role">
+                <h3>{role.title}</h3>
+                <p>{role.body}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 3rem; max-width: 24ch; }
+  .timeline { display: grid; gap: 1.25rem; }
+  .company-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-border); }
+  .company-head h2 { font-family: var(--font-display); font-size: var(--font-2xl); margin: 0; }
+  .loc { color: var(--color-ink-tertiary); font-family: var(--font-mono); font-size: var(--font-sm); }
+  .roles { display: grid; gap: 1.25rem; }
+  .role h3 { font-family: var(--font-display); font-size: var(--font-lg); margin: 0 0 0.5rem; color: var(--color-accent); }
+  .role p { margin: 0; color: var(--color-ink-secondary); line-height: 1.7; }
+</style>

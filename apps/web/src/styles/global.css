@@ -1,0 +1,372 @@
+/* =========================================================
+ * Global stylesheet — TsholoSetati v2
+ * Imports tokens, fonts, then base resets & utilities
+ * Tailwind v4 layered on via @tailwindcss/vite
+ * ========================================================= */
+
+@import './tokens.css';
+@import 'tailwindcss';
+
+/* ----- Self-hosted variable fonts ----- */
+@import '@fontsource-variable/inter/index.css';
+@import '@fontsource-variable/jetbrains-mono/index.css';
+
+/* ----- Clash Display (display face): hosted via Fontshare CDN.
+    Fontshare doesn't ship NPM variable packages; we keep the CDN
+    request but preconnect in <head> for fast handoff and acceptable
+    CLS impact. */
+@font-face {
+  font-family: 'Clash Display';
+  src: url('https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap');
+  font-display: swap;
+}
+
+/* =========================================================
+ * Tailwind v4 theme bridge — expose tokens as Tailwind utilities
+ * ========================================================= */
+@theme {
+  --color-surface: var(--color-surface-base);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-surface-sunken: var(--color-surface-sunken);
+  --color-ink: var(--color-ink-primary);
+  --color-ink-muted: var(--color-ink-secondary);
+  --color-ink-faint: var(--color-ink-tertiary);
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-2: var(--color-accent-2);
+  --color-up: var(--color-signal-up);
+  --color-down: var(--color-signal-down);
+  --color-border: var(--color-border-default);
+  --color-border-subtle: var(--color-border-subtle);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+
+  --container-prose: 68ch;
+  --container-page: 1200px;
+  --container-wide: 1440px;
+}
+
+/* =========================================================
+ * Base reset & defaults
+ * ========================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-ink-primary);
+  background-color: var(--color-surface-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+  font-synthesis: none;
+  transition:
+    background-color var(--duration-base) var(--ease-out-quad),
+    color var(--duration-base) var(--ease-out-quad);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out-quad);
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Numeric: tabular figures + monospaced where appropriate */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+ * Accessibility primitives
+ * ========================================================= */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-4);
+  z-index: var(--z-max);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-accent);
+  color: var(--color-ink-on-accent);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  transition: top var(--duration-fast) var(--ease-out-quad);
+}
+
+.skip-link:focus-visible {
+  top: var(--space-4);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-sm);
+}
+
+/* Visually hidden but available to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =========================================================
+ * Layout primitives
+ * ========================================================= */
+.container {
+  width: 100%;
+  max-width: var(--container-xl);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.container-prose {
+  max-width: var(--container-prose);
+  margin-inline: auto;
+}
+
+.container-wide {
+  max-width: var(--container-2xl);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+/* Section rhythm */
+.section {
+  padding-block: clamp(4rem, 8vw, 8rem);
+}
+
+.section-tight {
+  padding-block: clamp(2rem, 4vw, 4rem);
+}
+
+/* =========================================================
+ * Component primitives — Buttons
+ * ========================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out-quad),
+    color var(--duration-fast) var(--ease-out-quad),
+    transform var(--duration-fast) var(--ease-out-quad),
+    box-shadow var(--duration-fast) var(--ease-out-quad);
+}
+
+.btn-primary {
+  background: var(--color-ink-primary);
+  color: var(--color-surface-base);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-accent {
+  background: var(--color-accent);
+  color: var(--color-ink-on-accent);
+}
+
+.btn-accent:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-ink-primary);
+  border: 1px solid var(--color-border-default);
+}
+
+.btn-ghost:hover {
+  background: var(--color-surface-sunken);
+  border-color: var(--color-border-strong);
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+}
+
+/* =========================================================
+ * Component primitives — Cards
+ * ========================================================= */
+.card {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  transition:
+    border-color var(--duration-base) var(--ease-out-quad),
+    transform var(--duration-base) var(--ease-out-expo),
+    box-shadow var(--duration-base) var(--ease-out-expo);
+}
+
+.card-hover:hover {
+  border-color: var(--color-border-default);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* =========================================================
+ * Glass surface
+ * ========================================================= */
+.glass {
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(var(--blur-md)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(140%);
+  border-bottom: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-glass-inset);
+}
+
+/* =========================================================
+ * Reveal-on-scroll utilities (set up here, animated by motion.ts)
+ * ========================================================= */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out-expo),
+    transform var(--duration-slow) var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal='in'] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================================
+ * Reduced motion / contrast preferences
+ * ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-subtle: rgba(10, 14, 26, 0.3);
+    --color-border-default: rgba(10, 14, 26, 0.5);
+    --color-ink-secondary: #1e293b;
+  }
+
+  [data-theme='dark'] {
+    --color-border-subtle: rgba(255, 255, 255, 0.3);
+    --color-border-default: rgba(255, 255, 255, 0.5);
+    --color-ink-secondary: #e2e8f0;
+  }
+}
+
+/* =========================================================
+ * Selection
+ * ========================================================= */
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink-on-accent);
+}

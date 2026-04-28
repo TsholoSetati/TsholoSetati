@@ -1,0 +1,111 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { jsonLdArticle, jsonLdBreadcrumb } from '~/lib/seo';
+import { site } from '~/config/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('insights', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+interface Props { post: CollectionEntry<'insights'>; }
+const { post } = Astro.props;
+const { Content } = await post.render();
+const url = new URL(`/insights/${post.slug}`, site.url).toString();
+
+const jsonLd = [
+  jsonLdArticle({
+    headline: post.data.title,
+    description: post.data.description,
+    url,
+    image: post.data.heroImage,
+    publishedTime: post.data.publishDate.toISOString(),
+    modifiedTime: post.data.updatedDate?.toISOString(),
+    canonicalUrl: post.data.canonicalUrl ?? url,
+  }),
+  jsonLdBreadcrumb([
+    { name: 'Home', url: site.url },
+    { name: 'Insights', url: `${site.url}/insights` },
+    { name: post.data.title, url },
+  ]),
+];
+---
+
+<BaseLayout
+  seo={{
+    title: post.data.title,
+    description: post.data.description,
+    ogType: 'article',
+    publishedTime: post.data.publishDate.toISOString(),
+    modifiedTime: post.data.updatedDate?.toISOString(),
+    ogImage: post.data.heroImage,
+    canonical: post.data.canonicalUrl ?? url,
+  }}
+  jsonLd={jsonLd}
+>
+  <article class="container section article" data-pagefind-body>
+    <p class="back"><a href="/insights">← Back to insights</a></p>
+    <header class="article-head" data-reveal>
+      <p class="topics">
+        {post.data.topics.map((t) => <span class="topic">{t}</span>)}
+      </p>
+      <h1>{post.data.title}</h1>
+      <p class="lead">{post.data.description}</p>
+      <p class="byline">
+        <span>{post.data.publishDate.toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        {post.data.canonicalUrl && (
+          <>
+            <span aria-hidden="true">·</span>
+            <a href={post.data.canonicalUrl} rel="canonical" target="_blank" rel-extra="noopener">Originally published on LinkedIn ↗</a>
+          </>
+        )}
+      </p>
+    </header>
+
+    {post.data.summary && (
+      <aside class="summary card" data-reveal>
+        <p class="kicker">Summary</p>
+        <p>{post.data.summary}</p>
+        {post.data.keyTakeaways && (
+          <>
+            <p class="kicker" style="margin-top:1rem;">Key takeaways</p>
+            <ul>{post.data.keyTakeaways.map((k) => <li>{k}</li>)}</ul>
+          </>
+        )}
+      </aside>
+    )}
+
+    <div class="prose" data-reveal>
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .back { margin-bottom: 2rem; }
+  .back a { color: var(--color-ink-tertiary); text-decoration: none; }
+  .back a:hover { color: var(--color-accent); }
+  .article-head { margin-bottom: 2.5rem; max-width: 70ch; }
+  .topics { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0 0 1rem; }
+  .topic { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent); padding: 0.25rem 0.6rem; background: color-mix(in oklab, var(--color-accent) 12%, transparent); border-radius: var(--radius-sm); }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4.5vw, 3.4rem); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 1rem; }
+  .lead { font-size: var(--font-lg); color: var(--color-ink-secondary); line-height: 1.6; margin: 0 0 1.5rem; }
+  .byline { font-size: var(--font-sm); color: var(--color-ink-tertiary); display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .byline a { color: inherit; }
+  .summary { max-width: 70ch; margin: 0 auto 2.5rem; background: var(--color-surface-sunken); }
+  .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); margin: 0 0 0.5rem; }
+  .summary ul { margin: 0; padding-left: 1.2rem; color: var(--color-ink-secondary); }
+  .summary li { margin-bottom: 0.4rem; }
+  .prose { max-width: 70ch; margin: 0 auto; }
+  .prose :global(h2) { font-family: var(--font-display); font-size: var(--font-2xl); margin: 2.5rem 0 1rem; }
+  .prose :global(h3) { font-family: var(--font-display); font-size: var(--font-xl); margin: 2rem 0 0.75rem; }
+  .prose :global(p) { line-height: 1.75; color: var(--color-ink-secondary); margin: 0 0 1.25rem; font-size: 1.05rem; }
+  .prose :global(ul), .prose :global(ol) { color: var(--color-ink-secondary); padding-left: 1.4rem; margin: 0 0 1.25rem; }
+  .prose :global(li) { margin-bottom: 0.5rem; line-height: 1.7; }
+  .prose :global(strong) { color: var(--color-ink-primary); }
+  .prose :global(a) { color: var(--color-accent); }
+  .prose :global(code) { background: var(--color-surface-sunken); padding: 0.1rem 0.4rem; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 0.9em; }
+  .prose :global(pre) { background: var(--color-surface-sunken); padding: 1rem; border-radius: var(--radius-md); overflow-x: auto; }
+  .prose :global(blockquote) { border-left: 3px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-ink-secondary); font-style: italic; }
+</style>

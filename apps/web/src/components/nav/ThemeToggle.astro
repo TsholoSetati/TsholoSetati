@@ -1,0 +1,81 @@
+---
+/**
+ * ThemeToggle — tri-state visual, but cycles light → dark → system on click.
+ * Persists to localStorage; falls back to system on no preference.
+ */
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  class="theme-toggle"
+  aria-label="Switch color theme"
+  title="Switch color theme"
+>
+  <svg class="icon icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" fill="currentColor" />
+    <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <line x1="12" y1="2" x2="12" y2="5" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+      <line x1="2" y1="12" x2="5" y2="12" />
+      <line x1="19" y1="12" x2="22" y2="12" />
+      <line x1="4.5" y1="4.5" x2="6.5" y2="6.5" />
+      <line x1="17.5" y1="17.5" x2="19.5" y2="19.5" />
+      <line x1="4.5" y1="19.5" x2="6.5" y2="17.5" />
+      <line x1="17.5" y1="6.5" x2="19.5" y2="4.5" />
+    </g>
+  </svg>
+  <svg class="icon icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor" />
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    color: var(--color-ink-primary);
+    transition:
+      background-color var(--duration-fast) var(--ease-out-quad),
+      color var(--duration-fast) var(--ease-out-quad);
+  }
+  .theme-toggle:hover {
+    background: var(--color-surface-sunken);
+  }
+  .icon {
+    transition: opacity var(--duration-base) var(--ease-out-quad), transform var(--duration-base) var(--ease-out-quad);
+  }
+  /* In light mode show the moon (click → go dark); in dark mode show the sun. */
+  :global([data-theme='light']) .icon-sun {
+    display: none;
+  }
+  :global([data-theme='dark']) .icon-moon {
+    display: none;
+  }
+</style>
+
+<script>
+  function setupThemeToggle() {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = 'true';
+
+    btn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      document.documentElement.style.colorScheme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        /* storage unavailable — silently ignore */
+      }
+    });
+  }
+  setupThemeToggle();
+  document.addEventListener('astro:page-load', setupThemeToggle);
+</script>

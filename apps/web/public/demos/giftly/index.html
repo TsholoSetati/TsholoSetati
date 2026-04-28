@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Interactive demos showcasing web applications and prototypes">
+    <title>Demo's — Tsholo Setati</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="ui.js" defer></script>
+</head>
+
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div id="site-header" role="banner"></div>
+
+    <main id="main-content" class="container content-area">
+        <h2>Demo's & Prototypes</h2>
+        <p class="section-subtitle">Interactive demonstrations of web applications and prototypes I've built. <br>
+            <small class="muted">Note: This is a client-side simulation. Data is stored in your browser's local
+                storage.</small>
+        </p>
+
+        <!-- Toast Container -->
+        <div id="toast-container" class="toast-container"></div>
+
+        <!-- Login Gate -->
+        <div id="demo-login" class="demo-login-container">
+            <div class="card demo-login-card">
+                <div class="demo-login-header">
+                    <i class="ph ph-gift icon-button demo-app-icon"></i>
+                    <h3>GiftlyInvited</h3>
+                    <p class="muted">Private Gift Registry Demo</p>
+                </div>
+
+                <!-- Guest Entry -->
+                <div class="guest-entry-section">
+                    <h4>Have an invite code?</h4>
+                    <div class="form-group">
+                        <div class="demo-code-row">
+                            <input type="text" id="landingInviteCode" placeholder="Enter Invite Code">
+                            <button type="button" id="landingFindBtn" class="btn-primary">View Registry</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"><span>OR</span></div>
+
+                <!-- Admin/Creator Login -->
+                <div class="login-toggle">
+                    <button type="button" class="btn-ghost btn-sm"
+                        onclick="document.getElementById('loginFormSection').style.display = 'block'; this.style.display='none';">Login
+                        as Creator/Admin</button>
+                </div>
+
+                <div id="loginFormSection" style="display: none;">
+                    <form id="loginForm" class="demo-login-form">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" placeholder="Enter username" required
+                                autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="Enter password" required
+                                autocomplete="current-password">
+                        </div>
+                        <div id="loginError" class="demo-error" style="display: none;"></div>
+                        <button type="submit" class="btn-primary">Sign In</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sharp-Sharp Card -->
+            <div class="card demo-login-card">
+                <div class="demo-login-header">
+                    <i class="ph ph-currency-dollar icon-button demo-app-icon"></i>
+                    <h3>Sharp-Sharp</h3>
+                    <p class="muted">Shared Expense Tracker</p>
+                </div>
+                <div class="guest-entry-section">
+                    <p class="muted" style="margin-bottom: 1rem;">Split bills, track expenses, and settle up with
+                        friends.</p>
+                    <button id="launchSharpSharp" class="btn-primary"
+                        style="display:block; text-align:center; width: 100%; cursor: pointer;">
+                        <i class="ph ph-play icon-inline"></i> Launch Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sharp-Sharp Demo Container (hidden initially) -->
+            <div id="sharpsharp-demo-container" style="display: none; margin-top: 2rem;">
+                <div style="position: relative; width: 100%; height: min(80vh, 900px); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg);">
+                    <iframe id="sharpsharp-iframe" src="" data-src="sharp-sharp/index.html" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" loading="lazy" title="Sharp-Sharp demo"></iframe>
+
+                    <!-- Preloader overlay shown while SPA bundle loads -->
+                    <div id="sharpsharp-preloader" class="iframe-preloader" role="status" aria-hidden="true" style="display: none;">
+                        <div class="preloader-inner">
+                            <div class="spinner" aria-hidden="true"></div>
+                            <div class="preloader-text">Loading demo…</div>
+                        </div>
+                    </div>
+                </div>
+                <button id="closeSharpSharp" class="btn btn-ghost" style="margin-top: 1rem; width: 100%;">
+                    <i class="ph ph-x icon-inline"></i> Close Demo
+                </button>
+            </div>
+
+            <!-- PayPer Card -->
+            <div class="card demo-login-card" style="margin-top: 2rem;">
+                <div class="demo-login-header">
+                    <i class="ph ph-credit-card icon-button demo-app-icon"></i>
+                    <h3>PayPer</h3>
+                    <p class="muted">Negotiation & Payment Platform</p>
+                </div>
+                <div class="guest-entry-section">
+                    <p class="muted" style="margin-bottom: 1rem;">Fintech prototype for managing payments and negotiation workflows.</p>
+                    <button id="launchPayPer" class="btn-primary"
+                        style="display:block; text-align:center; width: 100%; text-decoration: none; cursor: pointer; border: none;">
+                        <i class="ph ph-play icon-inline"></i> Launch Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- PayPer Demo Container (hidden initially) -->
+            <div id="payper-demo-container" style="display: none; margin-top: 2rem;">
+                <div style="position: relative; width: 100%; height: 1000px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg);">
+                    <iframe id="payper-iframe" src="payper/demo.html" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" loading="lazy"></iframe>
+                </div>
+                <button id="closePayPer" class="btn btn-ghost" style="margin-top: 1rem; width: 100%;">
+                    <i class="ph ph-x icon-inline"></i> Close Demo
+                </button>
+            </div>
+
+            <!-- Financial Planning Card -->
+            <div class="card demo-login-card" style="margin-top: 2rem;">
+                <div class="demo-login-header">
+                    <i class="ph ph-currency-circle-dollar icon-button demo-app-icon"></i>
+                    <h3>Financial Planning</h3>
+                    <p class="muted">Smart Advisor & Retirement Calculators</p>
+                </div>
+                <div class="guest-entry-section">
+                    <p class="muted" style="margin-bottom: 1rem;">Personal financial planning tools.</p>
+                    <button id="launchFinancial" class="btn-primary" style="display:block; text-align:center; width: 100%; cursor: pointer;">
+                        <i class="ph ph-play icon-inline"></i> Launch Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Financial Planning Demo Container (hidden initially) -->
+            <div id="financial-demo-container" style="display: none; margin-top: 2rem;">
+                <div style="position: relative; width: 100%; height: 1000px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg);">
+                    <iframe id="financial-iframe" src="financial-planning/demo.html" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" loading="lazy"></iframe>
+                </div>
+                <button id="closeFinancial" class="btn btn-ghost" style="margin-top: 1rem; width: 100%;">
+                    <i class="ph ph-x icon-inline"></i> Close Demo
+                </button>
+            </div>
+
+            <!-- ID8 Card -->
+            <div class="card demo-login-card" style="margin-top: 2rem;">
+                <div class="demo-login-header">
+                    <i class="ph ph-brain icon-button demo-app-icon"></i>
+                    <h3>ID8</h3>
+                    <p class="muted">AI Use Case Assessment Tool</p>
+                </div>
+                <div class="guest-entry-section">
+                    <p class="muted" style="margin-bottom: 1rem;">Framework for identifying, scoring, and prioritizing AI opportunities.</p>
+                    <button id="launchID8" class="btn-primary"
+                        style="display:block; text-align:center; width: 100%; text-decoration: none; cursor: pointer; border: none;">
+                        <i class="ph ph-play icon-inline"></i> Launch Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- ID8 Demo Container (hidden initially) -->
+            <div id="id8-demo-container" style="display: none; margin-top: 2rem;">
+                <div style="position: relative; width: 100%; height: 1000px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg);">
+                    <iframe id="id8-iframe" src="id8/demo.html" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" loading="lazy"></iframe>
+                </div>
+                <button id="closeID8" class="btn btn-ghost" style="margin-top: 1rem; width: 100%;">
+                    <i class="ph ph-x icon-inline"></i> Close Demo
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Demo App (hidden until login) -->
+        <div id="demo-app" class="demo-app" style="display: none;">
+
+            <!-- Demo Tabs -->
+            <div class="demo-tabs">
+                <button class="demo-tab active" data-tab="dashboard"><i class="ph ph-list icon-inline"></i> Dashboard</button>
+                <button class="demo-tab" data-tab="create"><i class="ph ph-plus icon-inline"></i> Create Registry</button>
+                <button class="demo-tab" data-tab="guest"><i class="ph ph-user icon-inline"></i> Guest View</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="tab-dashboard" class="demo-tab-content active">
+                <div class="demo-welcome">
+                    <h3>Welcome back, Admin! <i class="ph ph-hand-waving icon-inline"></i></h3>
+                    <p class="muted">Manage your gift registries.</p>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="dashboard-stats" id="dashboardStats" style="display: none;">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Value</span>
+                        <span class="stat-value" id="statsTotalValue">R0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Completion</span>
+                        <div class="stat-progress-bar">
+                            <div class="stat-progress-fill" id="statsProgress" style="width: 0%"></div>
+                        </div>
+                        <span class="stat-text" id="statsText">0% Fulfilled</span>
+                    </div>
+                </div>
+
+                <div class="demo-registries-header">
+                    <h4>Your Registries</h4>
+                    <span id="registryCount" class="demo-count">0</span>
+                </div>
+
+                <div id="registriesList" class="demo-registries-list">
+                    <div class="demo-empty-state">
+                        <i class="ph ph-package icon-button demo-empty-icon"></i>
+                        <p>No registries yet. Create your first one!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Registry Tab -->
+            <div id="tab-create" class="demo-tab-content">
+                <div class="card">
+                    <h3>Create New Registry</h3>
+                    <form id="createRegistryForm" class="demo-form">
+                        <div class="form-group">
+                            <label for="registryName">Registry Name *</label>
+                            <input type="text" id="registryName" placeholder="e.g., Sarah's Baby Shower" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDate">Event Date</label>
+                            <input type="date" id="eventDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="registryDescription">Description</label>
+                            <textarea id="registryDescription" rows="3"
+                                placeholder="Tell your guests about the event..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Create Registry</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Guest View Tab -->
+            <div id="tab-guest" class="demo-tab-content">
+                <div class="card">
+                    <h3>Guest View Simulation</h3>
+                    <p class="muted">Enter invite code to view registry as a guest.</p>
+
+                    <!-- Guest Identity Form (Hidden initially) -->
+                    <div id="guestIdentityForm" class="demo-guest-code-input" style="display: none;">
+                        <div class="form-group">
+                            <label for="guestNameInput">What is your name?</label>
+                            <div class="demo-code-row">
+                                <input type="text" id="guestNameInput" placeholder="e.g., John Doe" required>
+                                <button type="button" id="confirmGuestNameBtn" class="btn-primary">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="demo-guest-code-input" id="guestCodeSection">
+                        <div class="form-group">
+                            <label for="inviteCodeInput">Enter Invite Code</label>
+                            <div class="demo-code-row">
+                                <input type="text" id="inviteCodeInput" placeholder="e.g., ABC123">
+                                <button type="button" id="findRegistryBtn" class="btn-primary">Find Registry</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="guestRegistryView" class="demo-guest-registry" style="display: none;">
+                        <!-- Updated by JS with filters -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registry Detail Modal -->
+            <div id="registryModal" class="demo-modal" style="display: none;">
+                <div class="demo-modal-overlay"></div>
+                <div class="demo-modal-content">
+                    <div class="demo-modal-header">
+                        <h3 id="modalRegistryName">Registry Name</h3>
+                        <button type="button" class="demo-modal-close" aria-label="Close">×</button>
+                    </div>
+                    <div class="demo-modal-body">
+                        <div class="demo-invite-code-box">
+                            <span class="demo-invite-label">Invite Code</span>
+                            <span id="modalInviteCode" class="demo-invite-code">ABC123</span>
+                            <button type="button" id="copyCodeBtn" class="demo-copy-btn"><i class="ph ph-copy icon-inline"></i> Copy</button>
+                        </div>
+
+                        <!-- Creator vs Admin Toggle (Demo Only) -->
+                        <div class="role-toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="adminModeToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="toggle-label">Reveal Claimers (Admin Mode)</span>
+                        </div>
+
+                        <div class="demo-items-section">
+                            <div class="demo-items-header">
+                                <h4>Gift Items</h4>
+                                <button type="button" id="addItemBtn" class="btn-primary">+ Add Item</button>
+                            </div>
+
+                            <!-- Filter Controls -->
+                            <div class="filter-controls">
+                                <select id="creatorFilterSort" class="form-control-sm">
+                                    <option value="newest">Sort: Newest</option>
+                                    <option value="price-asc">Price: Low to High</option>
+                                    <option value="price-desc">Price: High to Low</option>
+                                    <option value="status">Status: Claimed First</option>
+                                </select>
+                            </div>
+
+                            <div id="itemsList" class="demo-items-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Add Item Form (hidden by default) -->
+                        <div id="addItemForm" class="demo-add-item-form" style="display: none;">
+                            <h4>Add New Item</h4>
+                            <form id="itemForm">
+                                <div class="form-group">
+                                    <label for="itemImage">Item Image</label>
+                                    <input type="file" id="itemImage" accept="image/*">
+                                    <small class="muted">Upload an image (max 2MB)</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemTitle">Item Name *</label>
+                                    <input type="text" id="itemTitle" placeholder="e.g., Baby Monitor" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="itemPrice">Price (R)</label>
+                                        <input type="number" id="itemPrice" placeholder="e.g., 1500">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="itemQuantity">Quantity</label>
+                                        <input type="number" id="itemQuantity" value="1" min="1">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemCategory">Category</label>
+                                    <select id="itemCategory">
+                                        <option value="General">General</option>
+                                        <option value="Kitchen">Kitchen</option>
+                                        <option value="Home">Home Decor</option>
+                                        <option value="Baby">Baby</option>
+                                        <option value="Cash Fund">Cash Fund</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemUrl">Product Link</label>
+                                    <input type="url" id="itemUrl" placeholder="https://...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemDescription">Notes</label>
+                                    <textarea id="itemDescription" rows="2"
+                                        placeholder="Color preference, size, etc."></textarea>
+                                </div>
+                                <div class="demo-form-actions">
+                                    <button type="button" id="cancelAddItem" class="btn-ghost">Cancel</button>
+                                    <button type="submit" class="btn-primary">Add Item</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logout Button -->
+            <div class="demo-logout">
+                <button type="button" id="logoutBtn" class="btn-ghost"><i class="ph ph-sign-out icon-inline"></i> Sign Out</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="site-footer" role="contentinfo"></div>
+    
+    <script>
+        // Demo Launch Handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const demoLoginContainer = document.getElementById('demo-login');
+
+            // PayPer Demo Handler
+            const launchPayPerBtn = document.getElementById('launchPayPer');
+            const closePayPerBtn = document.getElementById('closePayPer');
+            const payperContainer = document.getElementById('payper-demo-container');
+
+            if (launchPayPerBtn) {
+                launchPayPerBtn.addEventListener('click', () => {
+                    demoLoginContainer.style.display = 'none';
+                    payperContainer.style.display = 'block';
+                    window.scrollTo(0, 0);
+                });
+            }
+
+            if (closePayPerBtn) {
+                closePayPerBtn.addEventListener('click', () => {
+                    payperContainer.style.display = 'none';
+                    demoLoginContainer.style.display = 'grid';
+                });
+            }
+
+            // Sharp-Sharp Demo Handler (lazy-load SPA into iframe)
+            const launchSharpSharpBtn = document.getElementById('launchSharpSharp');
+            const closeSharpSharpBtn = document.getElementById('closeSharpSharp');
+            const sharpsharpContainer = document.getElementById('sharpsharp-demo-container');
+            const sharpsharpIframe = document.getElementById('sharpsharp-iframe');
+            const sharpsharpPreloader = document.getElementById('sharpsharp-preloader');
+
+            // Hide preloader when iframe finishes loading
+            if (sharpsharpIframe) {
+                sharpsharpIframe.addEventListener('load', () => {
+                    if (sharpsharpPreloader) {
+                        sharpsharpPreloader.classList.remove('visible');
+                        sharpsharpPreloader.setAttribute('aria-hidden', 'true');
+                    }
+                });
+            }
+
+            if (launchSharpSharpBtn) {
+                launchSharpSharpBtn.addEventListener('click', () => {
+                    // show preloader and set iframe src from data-src to lazy-load the SPA only when launched
+                    if (sharpsharpPreloader) {
+                        sharpsharpPreloader.classList.add('visible');
+                        sharpsharpPreloader.setAttribute('aria-hidden', 'false');
+                    }
+                    if (sharpsharpIframe && !sharpsharpIframe.src) {
+                        sharpsharpIframe.src = sharpsharpIframe.dataset.src || 'sharp-sharp/index.html';
+                    }
+                    demoLoginContainer.style.display = 'none';
+                    sharpsharpContainer.style.display = 'block';
+                    window.scrollTo(0, 0);
+                });
+            }
+
+            if (closeSharpSharpBtn) {
+                closeSharpSharpBtn.addEventListener('click', () => {
+                    // hide preloader and unload iframe to free resources
+                    if (sharpsharpPreloader) {
+                        sharpsharpPreloader.style.display = 'none';
+                        sharpsharpPreloader.setAttribute('aria-hidden', 'true');
+                    }
+                        if (sharpsharpPreloader) {
+                            sharpsharpPreloader.classList.remove('visible');
+                            sharpsharpPreloader.setAttribute('aria-hidden', 'true');
+                        }
+                        if (sharpsharpIframe) {
+                            sharpsharpIframe.src = '';
+                        }
+                        sharpsharpContainer.style.display = 'none';
+                        demoLoginContainer.style.display = 'grid';
+                        window.scrollTo(0, 0);
+                });
+            }
+
+            // ID8 Demo Handler
+            const launchID8Btn = document.getElementById('launchID8');
+            const closeID8Btn = document.getElementById('closeID8');
+            const id8Container = document.getElementById('id8-demo-container');
+
+            if (launchID8Btn) {
+                launchID8Btn.addEventListener('click', () => {
+                    demoLoginContainer.style.display = 'none';
+                    id8Container.style.display = 'block';
+                    window.scrollTo(0, 0);
+                });
+            }
+
+            if (closeID8Btn) {
+                closeID8Btn.addEventListener('click', () => {
+                    id8Container.style.display = 'none';
+                    demoLoginContainer.style.display = 'grid';
+                });
+            }
+
+            // Financial Planning Demo Handler
+            const launchFinancialBtn = document.getElementById('launchFinancial');
+            const closeFinancialBtn = document.getElementById('closeFinancial');
+            const financialContainer = document.getElementById('financial-demo-container');
+
+            if (launchFinancialBtn) {
+                launchFinancialBtn.addEventListener('click', () => {
+                    demoLoginContainer.style.display = 'none';
+                    financialContainer.style.display = 'block';
+                    window.scrollTo(0, 0);
+                });
+            }
+
+            if (closeFinancialBtn) {
+                closeFinancialBtn.addEventListener('click', () => {
+                    financialContainer.style.display = 'none';
+                    demoLoginContainer.style.display = 'grid';
+                });
+            }
+        });
+    </script>
+    
+    <script src="demos.js"></script>
+</body>
+
+</html>

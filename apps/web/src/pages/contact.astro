@@ -1,0 +1,118 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { site } from '~/config/site';
+import { integrations } from '~/config/features';
+
+const formspreeId = integrations.formspreeId;
+const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
+---
+
+<BaseLayout seo={{ title: 'Contact', description: 'Get in touch — discovery engagements, advisory, speaking.' }}>
+  <section class="container section contact">
+    <header data-reveal>
+      <p class="eyebrow">Contact</p>
+      <h1>Let's talk.</h1>
+      <p class="lead">
+        Whether you have a stalled transformation, a fresh ambition or a speaking opportunity — start here.
+      </p>
+    </header>
+
+    <div class="grid">
+      <div class="card form-card" data-reveal>
+        <h2>Send a message</h2>
+        {formAction ? (
+          <form action={formAction} method="POST" class="form" id="contact-form">
+            <div class="row">
+              <label>
+                <span>Name</span>
+                <input name="name" type="text" required autocomplete="name" />
+              </label>
+              <label>
+                <span>Email</span>
+                <input name="email" type="email" required autocomplete="email" />
+              </label>
+            </div>
+            <label>
+              <span>Organisation <small>(optional)</small></span>
+              <input name="organisation" type="text" autocomplete="organization" />
+            </label>
+            <label>
+              <span>What would you like to discuss?</span>
+              <textarea name="message" rows="5" required></textarea>
+            </label>
+            {/* Honeypot — hidden from real users */}
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute; left:-9999px;" aria-hidden="true" />
+            <input type="hidden" name="_subject" value="New enquiry — tsholosetati.com" />
+            <input type="hidden" name="_t" id="contact-t" value="" />
+            <button class="btn btn-primary" type="submit">Send message</button>
+            <p class="muted small">Replies usually within two business days.</p>
+          </form>
+        ) : (
+          <div class="form-fallback">
+            <p>The contact form is being configured. In the meantime, please reach out directly:</p>
+            <p><a class="btn btn-primary" href={`mailto:${site.author.email}`}>{site.author.email}</a></p>
+          </div>
+        )}
+      </div>
+
+      <aside class="card" data-reveal>
+        <h2>Direct channels</h2>
+        <ul class="channels">
+          <li>
+            <strong>Email</strong>
+            <a href={`mailto:${site.author.email}`}>{site.author.email}</a>
+          </li>
+          <li>
+            <strong>LinkedIn</strong>
+            <a href={site.social.linkedin} target="_blank" rel="noopener">/in/tsholosetati</a>
+          </li>
+          <li>
+            <strong>GitHub</strong>
+            <a href={site.social.github} target="_blank" rel="noopener">@tsholosetati</a>
+          </li>
+          <li>
+            <strong>Based in</strong>
+            <span>{site.author.location}</span>
+          </li>
+        </ul>
+        <p class="muted" style="margin-top:1.5rem;">
+          For executive briefings or speaking enquiries, please mention the date and audience in your message.
+        </p>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Set submission timestamp for spam mitigation
+  function setT() {
+    const el = document.getElementById('contact-t') as HTMLInputElement | null;
+    if (el) el.value = String(Date.now());
+  }
+  setT();
+  document.addEventListener('astro:page-load', setT);
+</script>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 0.75rem; }
+  .lead { color: var(--color-ink-secondary); max-width: 60ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .grid { display: grid; gap: 1.5rem; grid-template-columns: 2fr 1fr; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  h2 { font-family: var(--font-display); margin: 0 0 1.25rem; font-size: var(--font-xl); }
+  .form { display: grid; gap: 1rem; position: relative; }
+  .form .row { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 600px) { .form .row { grid-template-columns: 1fr; } }
+  label { display: grid; gap: 0.4rem; font-size: var(--font-sm); color: var(--color-ink-secondary); }
+  input, textarea { padding: 0.75rem 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--color-border); background: var(--color-surface-raised); color: var(--color-ink-primary); font: inherit; }
+  input:focus, textarea:focus { outline: none; border-color: var(--color-accent); box-shadow: var(--shadow-focus); }
+  textarea { resize: vertical; min-height: 130px; }
+  .small { font-size: var(--font-xs); margin: 0; }
+  .muted { color: var(--color-ink-tertiary); }
+  .channels { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+  .channels li { display: grid; gap: 0.2rem; }
+  .channels strong { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-ink-tertiary); }
+  .channels a { color: var(--color-accent); text-decoration: none; }
+  .channels a:hover { text-decoration: underline; }
+  .form-fallback { display: grid; gap: 1rem; }
+</style>

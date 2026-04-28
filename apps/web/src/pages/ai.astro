@@ -1,0 +1,67 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+---
+
+<BaseLayout seo={{ title: 'How AI is used here', description: 'A short, plain-English account of how AI features on this site work, what data they touch, and where they run.' }}>
+  <section class="container section ai">
+    <header data-reveal>
+      <p class="eyebrow">Transparency</p>
+      <h1>How AI is used here.</h1>
+      <p class="lead">
+        AI is mostly a topic on this site, not a runtime dependency. Where it does run, this page documents
+        what it does, what data it touches, and where the computation happens.
+      </p>
+    </header>
+
+    <article class="card model" data-reveal>
+      <h2>1. The AI Maturity Diagnostic</h2>
+      <p><strong>Where it runs:</strong> entirely in your browser.</p>
+      <p><strong>What it does:</strong> scores your answers against a deterministic rubric I authored across six dimensions of enterprise AI maturity, then surfaces three priority recommendations from a fixed matrix.</p>
+      <p><strong>What it does <em>not</em> do:</strong> there is no language model, no API call, no telemetry. Your answers never leave your device.</p>
+      <p><strong>Why this design:</strong> a diagnostic should be reproducible and inspectable. A deterministic rubric meets that bar; a black-box LLM does not.</p>
+    </article>
+
+    <article class="card model" data-reveal>
+      <h2>2. The Insights search and topic filter</h2>
+      <p><strong>Where it runs:</strong> entirely in your browser.</p>
+      <p><strong>What it does:</strong> client-side keyword filter over the published insights metadata.</p>
+      <p>A semantic-search upgrade using a small embedding model (<code>all-MiniLM-L6-v2</code>) computed at build time is on the roadmap. When it ships, embeddings ship as a static JSON file; nothing is generated at request time.</p>
+    </article>
+
+    <article class="card model" data-reveal>
+      <h2>3. The market ticker</h2>
+      <p><strong>Where the data comes from:</strong> a scheduled GitHub Action queries a public, free Yahoo Finance endpoint and writes the results to a static JSON file in the repo.</p>
+      <p><strong>What runs in your browser:</strong> a small fetch + render. Polling is gated by visibility (no requests when the ticker is off-screen).</p>
+      <p>No personal data is collected by this feature.</p>
+    </article>
+
+    <article class="card model" data-reveal>
+      <h2>4. Things this site deliberately does <em>not</em> do</h2>
+      <ul>
+        <li>No conversational chatbot impersonating me. I prefer real conversations and email.</li>
+        <li>No third-party analytics that track individuals. If analytics is enabled, it is the privacy-respecting Plausible script (no cookies, no cross-site tracking).</li>
+        <li>No model fine-tuning on visitor input. There is no visitor input to fine-tune on.</li>
+      </ul>
+    </article>
+
+    <p class="footnote muted" data-reveal>
+      If you spot something here that should be clearer or more honest, please <a href="/contact">tell me</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 0.75rem; }
+  .lead { color: var(--color-ink-secondary); max-width: 60ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .model { margin-bottom: 1.25rem; max-width: 75ch; }
+  .model h2 { font-family: var(--font-display); margin: 0 0 1rem; font-size: var(--font-xl); }
+  .model p, .model li { color: var(--color-ink-secondary); line-height: 1.65; margin: 0 0 0.75rem; }
+  .model strong { color: var(--color-ink-primary); font-weight: 600; }
+  .model ul { padding-left: 1.2rem; margin: 0; }
+  .model li { margin-bottom: 0.5rem; }
+  .model code { font-family: var(--font-mono); font-size: 0.9em; padding: 0.1rem 0.35rem; background: var(--color-surface-sunken); border-radius: var(--radius-xs); }
+  .footnote { margin-top: 2rem; }
+  .muted { color: var(--color-ink-tertiary); }
+  .muted a { color: var(--color-accent); }
+</style>

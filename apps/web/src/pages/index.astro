@@ -1,0 +1,168 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { capabilities } from '~/data/capabilities';
+import { demos } from '~/data/demos';
+import { site } from '~/config/site';
+
+const allInsights = (await getCollection('insights', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+const featuredInsights = allInsights.slice(0, 3);
+const featuredDemos = demos.slice(0, 3);
+---
+
+<BaseLayout seo={{ title: site.name, description: site.description }}>
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="mesh m1"></div>
+      <div class="mesh m2"></div>
+      <div class="mesh m3"></div>
+      <div class="grain"></div>
+    </div>
+    <div class="container hero-inner">
+      <p class="eyebrow" data-reveal>AI Strategy · Innovation Economics · Frontier Technology</p>
+      <h1 class="display" data-reveal>
+        Translating frontier technology into <span class="grad">compounding business advantage</span>.
+      </h1>
+      <p class="lead" data-reveal>
+        I partner with C-suite leaders to architect, fund and deliver AI transformations that survive
+        CFO review, executive turnover and the next hype cycle.
+      </p>
+      <div class="hero-ctas" data-reveal>
+        <a class="btn btn-primary" href="/contact">Start a conversation</a>
+        <a class="btn btn-ghost" href="/expertise">See how I work →</a>
+      </div>
+      <div class="hero-meta" data-reveal>
+        <span><strong>15+</strong> enterprise transformations</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span><strong>Microsoft</strong> · MEA region</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span><strong>PhD candidate</strong> · Innovation Economics</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof container" data-reveal>
+    <p class="proof-label">Trusted by enterprises across</p>
+    <div class="proof-row">
+      <span>Financial Services</span>
+      <span>Public Sector</span>
+      <span>Telecommunications</span>
+      <span>Energy</span>
+      <span>Retail</span>
+    </div>
+  </section>
+
+  <section class="section container">
+    <header class="section-head">
+      <p class="eyebrow">What I do</p>
+      <h2>Three practices, one operating system for value.</h2>
+    </header>
+    <div class="capabilities">
+      {capabilities.map((c) => (
+        <article class="cap card card-hover" data-reveal>
+          <h3>{c.title}</h3>
+          <p class="cap-summary">{c.summary}</p>
+          <ul class="cap-bullets">
+            {c.bullets.map((b) => <li>{b}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section container">
+    <header class="section-head row">
+      <div>
+        <p class="eyebrow">Insights</p>
+        <h2>Field notes from the work.</h2>
+      </div>
+      <a class="link-arrow" href="/insights">All insights →</a>
+    </header>
+    <div class="insights-grid">
+      {featuredInsights.map((post) => (
+        <a class="insight card card-hover" href={`/insights/${post.slug}`} data-reveal>
+          <p class="kicker">{post.data.topics[0] ?? 'Insight'}</p>
+          <h3>{post.data.title}</h3>
+          <p class="muted">{post.data.description}</p>
+          <p class="meta">{post.data.publishDate.toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section container">
+    <header class="section-head row">
+      <div>
+        <p class="eyebrow">Demos</p>
+        <h2>Prototypes I have built to think out loud.</h2>
+      </div>
+      <a class="link-arrow" href="/demos">All demos →</a>
+    </header>
+    <div class="demos-grid">
+      {featuredDemos.map((d) => (
+        <a class="demo-card card card-hover" href={`/demos/${d.slug}`} data-reveal>
+          <p class="kicker">{d.category}</p>
+          <h3>{d.title}</h3>
+          <p class="muted">{d.tagline}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="container cta-inner" data-reveal>
+      <h2>Have a transformation that has stalled?</h2>
+      <p>Most do. The shape of the fix is usually familiar — even when the context is not.</p>
+      <a class="btn btn-accent" href="/contact">Get in touch</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { position: relative; isolation: isolate; padding: clamp(5rem, 12vh, 9rem) 0 clamp(4rem, 10vh, 7rem); overflow: clip; }
+  .hero-bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+  .mesh { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.55; will-change: transform; }
+  .m1 { width: 60vmax; height: 60vmax; top: -25vmax; left: -10vmax; background: radial-gradient(circle, var(--color-accent), transparent 60%); animation: float1 22s ease-in-out infinite alternate; }
+  .m2 { width: 55vmax; height: 55vmax; top: -10vmax; right: -20vmax; background: radial-gradient(circle, var(--color-accent-2), transparent 60%); animation: float2 26s ease-in-out infinite alternate; }
+  .m3 { width: 40vmax; height: 40vmax; bottom: -20vmax; left: 30%; background: radial-gradient(circle, color-mix(in oklab, var(--color-accent) 60%, var(--color-accent-2)), transparent 60%); animation: float3 30s ease-in-out infinite alternate; opacity: 0.4; }
+  .grain { position: absolute; inset: 0; background-image: radial-gradient(rgba(0,0,0,0.04) 1px, transparent 1px); background-size: 3px 3px; mix-blend-mode: multiply; pointer-events: none; }
+  :global([data-theme='dark']) .grain { background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px); mix-blend-mode: screen; }
+  @keyframes float1 { from { transform: translate(0,0) scale(1); } to { transform: translate(4vmax,3vmax) scale(1.08); } }
+  @keyframes float2 { from { transform: translate(0,0) scale(1); } to { transform: translate(-3vmax,4vmax) scale(1.05); } }
+  @keyframes float3 { from { transform: translate(0,0); } to { transform: translate(-2vmax,-3vmax); } }
+  @media (prefers-reduced-motion: reduce) { .mesh { animation: none; } }
+  .hero-inner { max-width: 1100px; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 1.25rem; }
+  .display { font-family: var(--font-display); font-size: clamp(2.4rem, 5.6vw, 5rem); font-weight: 600; line-height: 1.04; letter-spacing: -0.02em; margin: 0 0 1.5rem; max-width: 18ch; }
+  .grad { background: linear-gradient(120deg, var(--color-accent), var(--color-accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: var(--color-ink-secondary); max-width: 60ch; margin: 0 0 2rem; line-height: 1.55; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2.5rem; }
+  .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; color: var(--color-ink-tertiary); font-size: var(--font-sm); }
+  .hero-meta strong { color: var(--color-ink-primary); font-weight: 600; }
+  .hero-meta .dot { opacity: 0.5; }
+  .proof { padding: 2.5rem 0; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+  .proof-label { text-align: center; font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 1rem; }
+  .proof-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; color: var(--color-ink-secondary); font-weight: 500; }
+  .section-head { margin-bottom: 2.5rem; }
+  .section-head h2 { font-family: var(--font-display); font-size: clamp(1.75rem, 3vw, 2.6rem); font-weight: 600; letter-spacing: -0.015em; margin: 0; max-width: 22ch; }
+  .section-head.row { display: flex; align-items: end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .link-arrow { color: var(--color-accent); font-weight: 500; text-decoration: none; }
+  .link-arrow:hover { text-decoration: underline; }
+  .capabilities { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .cap h3 { font-family: var(--font-display); font-size: var(--font-xl); margin: 0 0 0.75rem; }
+  .cap-summary { color: var(--color-ink-secondary); margin: 0 0 1rem; line-height: 1.55; }
+  .cap-bullets { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
+  .cap-bullets li { padding-left: 1.1rem; position: relative; font-size: var(--font-sm); color: var(--color-ink-secondary); }
+  .cap-bullets li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
+  .insights-grid, .demos-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .insight, .demo-card { display: block; text-decoration: none; color: inherit; }
+  .insight h3, .demo-card h3 { font-family: var(--font-display); font-size: var(--font-lg); margin: 0.5rem 0 0.5rem; }
+  .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); margin: 0; }
+  .meta { font-size: var(--font-xs); color: var(--color-ink-tertiary); margin: 0.5rem 0 0; }
+  .muted { color: var(--color-ink-secondary); margin: 0; }
+  .cta-band { margin-top: 3rem; padding: clamp(3rem, 8vh, 5rem) 0; background: linear-gradient(120deg, var(--color-accent), var(--color-accent-2)); color: white; }
+  .cta-inner { text-align: center; }
+  .cta-inner h2 { font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 600; margin: 0 0 0.75rem; color: white; }
+  .cta-inner p { color: rgba(255,255,255,0.85); margin: 0 0 1.5rem; }
+</style>

@@ -1,0 +1,39 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { demos } from '~/data/demos';
+---
+
+<BaseLayout seo={{ title: 'Demos', description: 'Interactive prototypes — fintech, productivity and AI tooling.' }}>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Demos</p>
+      <h1>Prototypes built to think out loud.</h1>
+      <p class="lead">Each demo is a working artefact — not a pitch. Open, click, break.</p>
+    </header>
+
+    <div class="grid">
+      {demos.map((d) => (
+        <a class="card card-hover demo" href={`/demos/${d.slug}`} data-reveal>
+          <p class="kicker">{d.category} · {d.status}</p>
+          <h2>{d.title}</h2>
+          <p class="tag">{d.tagline}</p>
+          <p class="desc muted">{d.description}</p>
+          <span class="cta">Open demo →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 0.75rem; }
+  .lead { color: var(--color-ink-secondary); max-width: 60ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .demo { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+  .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); margin: 0; }
+  h2 { font-family: var(--font-display); font-size: var(--font-xl); margin: 0.5rem 0 0.25rem; }
+  .tag { color: var(--color-ink-primary); font-weight: 500; margin: 0 0 0.75rem; }
+  .desc { line-height: 1.6; }
+  .cta { margin-top: auto; padding-top: 1rem; color: var(--color-accent); font-weight: 500; }
+</style>

@@ -1,0 +1,378 @@
+---
+/**
+ * SiteHeader — sticky glass header with brand mark, primary nav, theme toggle, mobile drawer trigger.
+ * MarketTicker mounted underneath; collapses on scroll.
+ */
+import { nav, site } from '~/config/site';
+import { features } from '~/config/features';
+import ThemeToggle from './ThemeToggle.astro';
+import MarketTicker from '~/components/data/MarketTicker.astro';
+
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(href + '/');
+}
+---
+
+<header class="site-header glass" data-header>
+  <div class="container header-inner">
+    <a href="/" class="brand" aria-label={`${site.name} — home`}>
+      <span class="brand-mark" aria-hidden="true">TS</span>
+      <span class="brand-text">
+        <span class="brand-name">Tsholofelo Setati</span>
+        <span class="brand-role">AI Strategy &amp; Innovation Economics</span>
+      </span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <ul>
+        {nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class={isActive(item.href) ? 'is-active' : ''}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <ThemeToggle />
+      <button
+        type="button"
+        class="hamburger"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-drawer"
+        data-drawer-toggle
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  {features.marketTicker && <MarketTicker />}
+</header>
+
+{/* Mobile drawer */}
+<div id="mobile-drawer" class="drawer" aria-hidden="true" data-drawer>
+  <div class="drawer-backdrop" data-drawer-close></div>
+  <aside class="drawer-panel" role="dialog" aria-modal="true" aria-label="Site navigation">
+    <div class="drawer-head">
+      <span class="brand-mark" aria-hidden="true">TS</span>
+      <button type="button" aria-label="Close menu" data-drawer-close class="drawer-close">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <nav aria-label="Mobile">
+      <ul>
+        {nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class={isActive(item.href) ? 'is-active' : ''}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </aside>
+</div>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    padding-block: var(--space-4);
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex: 0 0 auto;
+    margin-right: auto;
+  }
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    box-shadow: var(--shadow-sm), var(--shadow-glass-inset);
+  }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-ink-primary);
+  }
+  .brand-role {
+    font-size: 0.72rem;
+    color: var(--color-ink-secondary);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 640px) {
+    .brand-text {
+      display: none;
+    }
+  }
+
+  .primary-nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: var(--space-5);
+  }
+  .primary-nav a {
+    position: relative;
+    display: inline-block;
+    padding-block: var(--space-2);
+    font-size: 0.92rem;
+    color: var(--color-ink-secondary);
+    transition: color var(--duration-fast) var(--ease-out-quad);
+  }
+  .primary-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-base) var(--ease-out-expo);
+  }
+  .primary-nav a:hover,
+  .primary-nav a.is-active {
+    color: var(--color-ink-primary);
+  }
+  .primary-nav a:hover::after,
+  .primary-nav a.is-active::after {
+    transform: scaleX(1);
+  }
+  @media (max-width: 900px) {
+    .primary-nav {
+      display: none;
+    }
+  }
+
+  .header-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+  }
+  .hamburger span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--color-ink-primary);
+    border-radius: 2px;
+    transition: transform var(--duration-base) var(--ease-out-quad), opacity var(--duration-base) var(--ease-out-quad);
+  }
+  .hamburger[aria-expanded='true'] span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .hamburger[aria-expanded='true'] span:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger[aria-expanded='true'] span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+  @media (max-width: 900px) {
+    .hamburger {
+      display: inline-flex;
+    }
+  }
+
+  /* Drawer */
+  .drawer {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-drawer);
+    pointer-events: none;
+  }
+  .drawer[aria-hidden='false'] {
+    pointer-events: auto;
+  }
+  .drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out-quad);
+  }
+  .drawer[aria-hidden='false'] .drawer-backdrop {
+    opacity: 1;
+  }
+  .drawer-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(320px, 86vw);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-xl);
+    padding: var(--space-5);
+    transform: translateX(100%);
+    transition: transform var(--duration-base) var(--ease-out-expo);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  .drawer[aria-hidden='false'] .drawer-panel {
+    transform: translateX(0);
+  }
+  .drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .drawer-close {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    color: var(--color-ink-primary);
+  }
+  .drawer-close:hover {
+    background: var(--color-surface-sunken);
+  }
+  .drawer nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .drawer nav a {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    font-size: 1.05rem;
+    font-family: var(--font-display);
+    color: var(--color-ink-primary);
+    border-radius: var(--radius-md);
+  }
+  .drawer nav a:hover,
+  .drawer nav a.is-active {
+    background: var(--color-surface-sunken);
+    color: var(--color-accent);
+  }
+</style>
+
+<script>
+  function setupDrawer() {
+    const drawer = document.querySelector<HTMLElement>('[data-drawer]');
+    const toggles = document.querySelectorAll<HTMLButtonElement>('[data-drawer-toggle]');
+    const closes = document.querySelectorAll<HTMLElement>('[data-drawer-close]');
+    if (!drawer || drawer.dataset.bound) return;
+    drawer.dataset.bound = 'true';
+
+    let lastFocused: HTMLElement | null = null;
+
+    function getFocusable(): HTMLElement[] {
+      const panel = drawer!.querySelector<HTMLElement>('.drawer-panel');
+      if (!panel) return [];
+      return Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+    }
+
+    function open() {
+      lastFocused = document.activeElement as HTMLElement;
+      drawer!.setAttribute('aria-hidden', 'false');
+      toggles.forEach((t) => t.setAttribute('aria-expanded', 'true'));
+      document.body.style.overflow = 'hidden';
+      const focusables = getFocusable();
+      focusables[0]?.focus();
+    }
+
+    function close() {
+      drawer!.setAttribute('aria-hidden', 'true');
+      toggles.forEach((t) => t.setAttribute('aria-expanded', 'false'));
+      document.body.style.overflow = '';
+      lastFocused?.focus();
+    }
+
+    toggles.forEach((t) =>
+      t.addEventListener('click', () => {
+        const expanded = t.getAttribute('aria-expanded') === 'true';
+        expanded ? close() : open();
+      })
+    );
+    closes.forEach((c) => c.addEventListener('click', close));
+
+    document.addEventListener('keydown', (e) => {
+      if (drawer!.getAttribute('aria-hidden') === 'true') return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+      }
+      if (e.key === 'Tab') {
+        const focusables = getFocusable();
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    // Close on view transition
+    document.addEventListener('astro:before-swap', () => {
+      if (drawer!.getAttribute('aria-hidden') === 'false') close();
+    });
+  }
+  setupDrawer();
+  document.addEventListener('astro:page-load', setupDrawer);
+</script>

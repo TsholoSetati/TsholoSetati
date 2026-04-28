@@ -1,0 +1,173 @@
+---
+/**
+ * SiteFooter — multi-column with newsletter slot reserved for v2.1.
+ */
+import { footerLinks, site } from '~/config/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark" aria-hidden="true">TS</span>
+      <p class="footer-tag">{site.tagline}</p>
+      <p class="footer-loc">{site.author.location}</p>
+    </div>
+
+    <div class="footer-cols">
+      {Object.entries(footerLinks).map(([heading, links]) => (
+        <nav aria-label={heading}>
+          <h3>{heading}</h3>
+          <ul>
+            {links.map((link) => (
+              <li>
+                <a href={link.href} rel={link.href.startsWith('http') ? 'noopener' : undefined}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+
+    <aside class="footer-newsletter">
+      <h3>Stay in the loop</h3>
+      <p class="muted">
+        A newsletter on AI strategy, innovation economics, and what it means for African enterprise — coming soon.
+      </p>
+    </aside>
+  </div>
+
+  <div class="container footer-bottom">
+    <small>&copy; {year} {site.author.name}. All rights reserved.</small>
+    <small>
+      Built with Astro &middot;{' '}
+      <a href="/ai">How AI is used here</a>
+    </small>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: clamp(4rem, 10vw, 8rem);
+    padding-block: var(--space-16) var(--space-8);
+    background: var(--color-surface-sunken);
+    border-top: 1px solid var(--color-border-subtle);
+  }
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 1.2fr 2fr 1.2fr;
+    gap: var(--space-12);
+    margin-bottom: var(--space-12);
+  }
+  @media (max-width: 900px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 24ch;
+  }
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 700;
+    box-shadow: var(--shadow-sm), var(--shadow-glass-inset);
+  }
+  .footer-tag {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--color-ink-primary);
+    line-height: var(--leading-snug);
+  }
+  .footer-loc {
+    font-size: 0.85rem;
+    color: var(--color-ink-secondary);
+  }
+
+  .footer-cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  @media (max-width: 640px) {
+    .footer-cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .footer-cols h3 {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-secondary);
+    margin-bottom: var(--space-4);
+  }
+  .footer-cols ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .footer-cols a {
+    font-size: 0.92rem;
+    color: var(--color-ink-primary);
+    transition: color var(--duration-fast) var(--ease-out-quad);
+  }
+  .footer-cols a:hover {
+    color: var(--color-accent);
+  }
+
+  .footer-newsletter h3 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    margin-bottom: var(--space-3);
+  }
+  .footer-newsletter p {
+    font-size: 0.9rem;
+    color: var(--color-ink-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border-subtle);
+    color: var(--color-ink-secondary);
+    font-size: 0.8rem;
+  }
+  .footer-bottom a {
+    color: var(--color-ink-primary);
+    border-bottom: 1px solid var(--color-border-default);
+  }
+  .footer-bottom a:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .muted {
+    color: var(--color-ink-secondary);
+  }
+</style>

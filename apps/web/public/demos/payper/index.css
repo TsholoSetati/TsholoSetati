@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* HSL Values for easy manipulation */
+  --primary: 159 83% 22%;      /* #0A6847 - Deep Green */
+  --primary-foreground: 40 33% 98%; /* #FAF7F2 - Cream */
+  
+  --background: 40 33% 96%;    /* #FAF7F2 - Cream/Off-white */
+  --foreground: 0 0% 10%;      /* #1A1A1A - Ink Black */
+  
+  --card: 0 0% 100%;           /* White */
+  --card-foreground: 0 0% 10%;
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 10%;
+  
+  --secondary: 159 30% 90%;    /* Light Green tint */
+  --secondary-foreground: 159 83% 22%;
+  
+  --muted: 40 20% 90%;
+  --muted-foreground: 0 0% 40%;
+  
+  --accent: 0 0% 10%;          /* Ink Black */
+  --accent-foreground: 40 33% 98%;
+  
+  --destructive: 0 65% 55%;    /* #D64545 - Alert Red */
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 145 63% 49%;      /* #2ECC71 - Success Green */
+  
+  --border: 40 20% 88%;
+  --input: 40 20% 88%;
+  --ring: 159 83% 22%;
+  
+  --radius: 1rem;
+  
+  --font-sans: 'DM Sans', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased font-sans selection:bg-primary/20;
+    font-family: var(--font-sans);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply font-bold tracking-tight text-accent;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Paper texture effect */
+  .bg-paper {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    background-blend-mode: overlay;
+  }
+  
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg shadow-primary/5;
+  }
+
+  .nav-item-active {
+    @apply text-primary bg-primary/10;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

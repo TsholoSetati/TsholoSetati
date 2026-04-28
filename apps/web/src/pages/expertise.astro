@@ -1,0 +1,55 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { capabilities } from '~/data/capabilities';
+---
+
+<BaseLayout seo={{ title: 'Expertise', description: 'Three practices — AI Strategy, Innovation Economics, and Frontier Technology Architecture — with the artefacts each engagement produces.' }}>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Expertise</p>
+      <h1>Three practices, one operating system for value.</h1>
+      <p class="lead">
+        Most enterprise AI work fails not because the technology is bad, but because the strategy, the
+        economics and the architecture are designed in isolation. Engagements span all three.
+      </p>
+    </header>
+
+    <div class="grid">
+      {capabilities.map((c, i) => (
+        <article class="cap card" data-reveal>
+          <p class="num">0{i + 1}</p>
+          <h2>{c.title}</h2>
+          <p class="summary">{c.summary}</p>
+          <ul>
+            {c.bullets.map((b) => <li>{b}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+
+    <div class="cta-band" data-reveal>
+      <div class="cta-inner">
+        <h2>Want to see this applied to your context?</h2>
+        <p>Discovery engagements typically run 2–4 weeks and produce a signed-off roadmap with a funded first wave.</p>
+        <a class="btn btn-primary" href="/contact">Start a conversation</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; max-width: 22ch; }
+  .lead { color: var(--color-ink-secondary); font-size: var(--font-lg); max-width: 60ch; margin: 0 0 3rem; line-height: 1.6; }
+  .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 3rem; }
+  .cap { display: flex; flex-direction: column; }
+  .num { font-family: var(--font-mono); color: var(--color-accent); font-size: var(--font-sm); margin: 0 0 0.5rem; }
+  .cap h2 { font-family: var(--font-display); font-size: var(--font-xl); margin: 0 0 0.75rem; }
+  .summary { color: var(--color-ink-secondary); line-height: 1.6; margin: 0 0 1rem; }
+  .cap ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
+  .cap li { padding-left: 1.1rem; position: relative; font-size: var(--font-sm); color: var(--color-ink-secondary); }
+  .cap li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
+  .cta-band { padding: 2.5rem; border-radius: var(--radius-xl); background: linear-gradient(120deg, var(--color-accent), var(--color-accent-2)); color: white; text-align: center; }
+  .cta-inner h2 { font-family: var(--font-display); margin: 0 0 0.5rem; color: white; }
+  .cta-inner p { color: rgba(255,255,255,0.85); margin: 0 0 1.25rem; }
+</style>

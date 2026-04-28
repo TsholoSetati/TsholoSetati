@@ -1,0 +1,109 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('insights', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+
+const allTopics = Array.from(new Set(posts.flatMap((p) => p.data.topics))).sort();
+---
+
+<BaseLayout seo={{ title: 'Insights', description: 'Field notes on AI strategy, innovation economics, and frontier technology.' }}>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Insights</p>
+      <h1>Field notes from the work.</h1>
+      <p class="lead">Long-form thinking on AI strategy, the economics of innovation and the operating models that make frontier technology stick.</p>
+    </header>
+
+    <div class="toolbar" data-reveal>
+      <div class="search">
+        <input id="insights-search" type="search" placeholder="Search insights..." aria-label="Search insights" />
+      </div>
+      <div class="filters" role="group" aria-label="Filter by topic">
+        <button class="chip is-active" data-topic="">All</button>
+        {allTopics.map((t) => <button class="chip" data-topic={t}>{t}</button>)}
+      </div>
+    </div>
+
+    <ul class="grid" id="insights-grid">
+      {posts.map((post) => (
+        <li class="item" data-topics={post.data.topics.join('|')} data-title={post.data.title.toLowerCase()} data-desc={post.data.description.toLowerCase()} data-reveal>
+          <a class="card card-hover" href={`/insights/${post.slug}`}>
+            <p class="kicker">{post.data.topics[0] ?? 'Insight'}</p>
+            <h2>{post.data.title}</h2>
+            <p class="muted">{post.data.description}</p>
+            <p class="meta">
+              {post.data.publishDate.toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })}
+              {post.data.canonicalUrl && <span class="badge">Originally on LinkedIn</span>}
+            </p>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p id="insights-empty" class="muted" hidden>No insights match your filters.</p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    const grid = document.getElementById('insights-grid');
+    const empty = document.getElementById('insights-empty');
+    const search = document.getElementById('insights-search') as HTMLInputElement | null;
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip'));
+    if (!grid || !search) return;
+    let activeTopic = '';
+    let query = '';
+
+    function apply() {
+      const items = Array.from(grid.querySelectorAll<HTMLLIElement>('.item'));
+      let visible = 0;
+      for (const it of items) {
+        const topics = (it.dataset.topics ?? '').split('|');
+        const title = it.dataset.title ?? '';
+        const desc = it.dataset.desc ?? '';
+        const matchesTopic = !activeTopic || topics.includes(activeTopic);
+        const q = query.trim().toLowerCase();
+        const matchesQuery = !q || title.includes(q) || desc.includes(q);
+        const show = matchesTopic && matchesQuery;
+        it.hidden = !show;
+        if (show) visible++;
+      }
+      if (empty) empty.hidden = visible !== 0;
+    }
+
+    chips.forEach((c) =>
+      c.addEventListener('click', () => {
+        chips.forEach((x) => x.classList.remove('is-active'));
+        c.classList.add('is-active');
+        activeTopic = c.dataset.topic ?? '';
+        apply();
+      })
+    );
+    search.addEventListener('input', () => {
+      query = search.value;
+      apply();
+    });
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; }
+  .lead { color: var(--color-ink-secondary); max-width: 60ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .toolbar { display: grid; gap: 1rem; margin-bottom: 2rem; }
+  .search input { width: 100%; padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border); background: var(--color-surface-raised); color: var(--color-ink-primary); font-size: var(--font-base); }
+  .filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .chip { padding: 0.4rem 0.85rem; border-radius: var(--radius-full); border: 1px solid var(--color-border); background: var(--color-surface-base); color: var(--color-ink-secondary); font-size: var(--font-sm); cursor: pointer; transition: all var(--motion-fast) var(--ease-out-quad); }
+  .chip:hover { border-color: var(--color-accent); color: var(--color-ink-primary); }
+  .chip.is-active { background: var(--color-accent); color: white; border-color: var(--color-accent); }
+  .grid { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid a { display: block; text-decoration: none; color: inherit; height: 100%; }
+  .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); margin: 0; }
+  h2 { font-family: var(--font-display); font-size: var(--font-xl); margin: 0.5rem 0; }
+  .muted { color: var(--color-ink-secondary); margin: 0; }
+  .meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: var(--font-xs); color: var(--color-ink-tertiary); margin: 0.75rem 0 0; }
+  .badge { background: var(--color-surface-sunken); padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); }
+</style>

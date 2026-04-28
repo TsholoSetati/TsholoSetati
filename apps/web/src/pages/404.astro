@@ -1,0 +1,23 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+---
+
+<BaseLayout seo={{ title: 'Page not found', description: 'The page you are looking for does not exist.', noindex: true }}>
+  <section class="container section center">
+    <p class="code">404</p>
+    <h1>Lost in latent space.</h1>
+    <p class="lead">The page you are looking for has moved, been retired or never existed.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="/">Back to home</a>
+      <a class="btn btn-ghost" href="/insights">Browse insights</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .center { text-align: center; padding-block: clamp(4rem, 12vh, 8rem); }
+  .code { font-family: var(--font-mono); font-size: clamp(4rem, 14vw, 9rem); font-weight: 700; margin: 0; background: linear-gradient(120deg, var(--color-accent), var(--color-accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h1 { font-family: var(--font-display); font-size: clamp(1.75rem, 4vw, 2.6rem); margin: 0.5rem 0 1rem; }
+  .lead { color: var(--color-ink-secondary); margin: 0 auto 2rem; max-width: 50ch; }
+  .ctas { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+</style>
