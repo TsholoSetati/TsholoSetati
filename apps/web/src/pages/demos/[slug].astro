@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import { Icon } from 'astro-icon/components';
 import { demos, getDemo } from '~/data/demos';
 
 export function getStaticPaths() {
@@ -16,12 +17,26 @@ const sandboxAttr =
 
 <BaseLayout seo={{ title: demo.title, description: demo.description }}>
   <section class="container section">
-    <p class="back"><a href="/demos">← Back to demos</a></p>
+    <p class="back">
+      <a href="/demos">
+        <Icon name="ph:arrow-left" aria-hidden="true" /> Back to demos
+      </a>
+    </p>
     <header class="head" data-reveal>
       <p class="kicker">{demo.category} · {demo.status}</p>
       <h1>{demo.title}</h1>
       <p class="tag">{demo.tagline}</p>
       <p class="desc">{demo.description}</p>
+      <div class="launch-row">
+        <button type="button" class="btn btn-primary launch-fs" data-launch-fullscreen>
+          <Icon name="ph:corners-out" aria-hidden="true" />
+          Launch fullscreen
+        </button>
+        <a class="btn btn-ghost" href={demo.iframe} target="_blank" rel="noopener">
+          <Icon name="ph:arrow-square-out" aria-hidden="true" />
+          Open in new tab
+        </a>
+      </div>
     </header>
 
     {demo.narrative && (
@@ -48,7 +63,12 @@ const sandboxAttr =
       <div class="frame-bar">
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
         <span class="addr">{demo.iframe}</span>
-        <a class="open" href={demo.iframe} target="_blank" rel="noopener">Open in new tab ↗</a>
+        <button type="button" class="bar-btn" data-launch-fullscreen aria-label="Launch fullscreen">
+          <Icon name="ph:corners-out" aria-hidden="true" />
+        </button>
+        <a class="bar-btn" href={demo.iframe} target="_blank" rel="noopener" aria-label="Open in new tab">
+          <Icon name="ph:arrow-square-out" aria-hidden="true" />
+        </a>
       </div>
       <div class="iframe-host">
         <button class="iframe-load" type="button" aria-label="Load demo">
@@ -124,17 +144,60 @@ const sandboxAttr =
         load();
       }
     });
+
+    // Fullscreen launch — request fullscreen on the .frame container.
+    const frame = document.querySelector<HTMLDivElement>('.frame[data-iframe-src]');
+    document.querySelectorAll<HTMLElement>('[data-launch-fullscreen]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (!frame) return;
+        // Ensure iframe is loaded before going fullscreen.
+        const iframe = frame.querySelector<HTMLIFrameElement>('iframe[data-src]');
+        if (iframe && !iframe.src) {
+          const src = iframe.getAttribute('data-src') || '';
+          iframe.src = withTheme(src);
+          iframe.hidden = false;
+          frame.querySelector('.iframe-load')?.remove();
+        }
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen();
+          } else if (frame.requestFullscreen) {
+            await frame.requestFullscreen();
+          }
+        } catch (err) {
+          // Fallback: open in new tab if fullscreen API unavailable / denied.
+          if (iframe) window.open(iframe.getAttribute('data-src') || '', '_blank', 'noopener');
+        }
+      });
+    });
   })();
 </script>
 
 <style>
   .back { margin-bottom: 1.5rem; }
-  .back a { color: var(--color-ink-tertiary); text-decoration: none; }
+  .back a { color: var(--color-ink-tertiary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .back a :global(svg) { width: 1rem; height: 1rem; transition: transform 200ms ease; }
+  .back a:hover :global(svg) { transform: translateX(-3px); }
   .head { margin-bottom: 1.5rem; max-width: 70ch; }
   .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); margin: 0 0 0.5rem; }
   h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 0.5rem; }
   .tag { color: var(--color-ink-primary); font-weight: 500; margin: 0 0 0.75rem; }
   .desc { color: var(--color-ink-secondary); line-height: 1.6; }
+
+  .launch-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.1rem; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.55rem 0.95rem; border-radius: var(--radius-md);
+    font-family: var(--font-sans); font-weight: 500; font-size: 0.9rem;
+    text-decoration: none; cursor: pointer; border: 1px solid transparent;
+    transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 120ms ease;
+  }
+  .btn :global(svg) { width: 1.05rem; height: 1.05rem; }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--color-accent); color: var(--color-on-accent, #fff); }
+  .btn-primary:hover { background: color-mix(in oklab, var(--color-accent) 88%, black); }
+  .btn-ghost { background: transparent; color: var(--color-ink-primary); border-color: var(--color-border); }
+  .btn-ghost:hover { background: var(--color-surface-sunken); border-color: var(--color-accent); color: var(--color-accent); }
 
   .narrative {
     margin: 0 0 1.5rem;
@@ -156,8 +219,20 @@ const sandboxAttr =
   .dot { width: 10px; height: 10px; border-radius: 50%; }
   .dot.r { background: #ff5f56; } .dot.y { background: #ffbd2e; } .dot.g { background: #27c93f; }
   .addr { margin-left: 0.5rem; color: var(--color-ink-tertiary); flex: 1; overflow: hidden; text-overflow: ellipsis; }
-  .open { color: var(--color-accent); text-decoration: none; }
-  .open:hover { text-decoration: underline; }
+  .bar-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.75rem; height: 1.75rem; border-radius: var(--radius-sm);
+    background: transparent; border: 0; cursor: pointer;
+    color: var(--color-ink-tertiary); transition: background 160ms ease, color 160ms ease;
+  }
+  .bar-btn :global(svg) { width: 1rem; height: 1rem; }
+  .bar-btn:hover { background: var(--color-surface-base); color: var(--color-accent); }
+
+  /* When fullscreen, fill the whole viewport with the iframe and hide chrome. */
+  .frame:fullscreen { border-radius: 0; border: 0; box-shadow: none; display: flex; flex-direction: column; background: white; }
+  .frame:fullscreen .frame-bar { flex-shrink: 0; }
+  .frame:fullscreen .iframe-host { flex: 1; min-height: 0; }
+  .frame:fullscreen iframe { height: 100%; }
 
   .iframe-host { position: relative; min-height: var(--demo-h, 900px); background: white; }
   iframe { width: 100%; height: var(--demo-h, 900px); border: 0; display: block; background: white; }
