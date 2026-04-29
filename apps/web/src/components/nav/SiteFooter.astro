@@ -3,6 +3,7 @@
  * SiteFooter, multi-column with newsletter slot reserved for v2.1.
  */
 import { footerLinks, site } from '~/config/site';
+import Mark from '~/components/Mark.astro';
 
 const year = new Date().getFullYear();
 ---
@@ -10,7 +11,7 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="container footer-inner">
     <div class="footer-brand">
-      <span class="brand-mark" aria-hidden="true">TS</span>
+      <span class="brand-mark" aria-hidden="true"><Mark id="wave-axes" size={32} /></span>
       <p class="footer-tag">{site.tagline}</p>
       <p class="footer-loc">{site.author.location}</p>
     </div>

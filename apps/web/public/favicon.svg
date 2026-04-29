@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round">
+  <style>
+    .stroke { stroke: #0a0a0a; }
+    .fill { fill: #0a0a0a; }
+    .axis { stroke: #0a0a0a; opacity: 0.45; }
+    @media (prefers-color-scheme: dark) {
+      .stroke { stroke: #fafaf7; }
+      .fill { fill: #fafaf7; }
+      .axis { stroke: #fafaf7; opacity: 0.5; }
+    }
+  </style>
+  <line class="axis" x1="4" y1="20" x2="21" y2="20" stroke-width="1" />
+  <line class="axis" x1="4" y1="20" x2="4" y2="3" stroke-width="1" />
+  <line class="stroke" x1="5" y1="9" x2="16" y2="20" stroke-width="1.6" opacity="0.32" />
+  <line class="stroke" x1="7" y1="6" x2="18" y2="17" stroke-width="1.6" opacity="0.6" />
+  <line class="stroke" x1="10" y1="3" x2="21" y2="14" stroke-width="1.7" />
+  <circle class="fill" cx="14.5" cy="7.5" r="1.7" />
+</svg>

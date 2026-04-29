@@ -7,6 +7,7 @@ import { nav, site } from '~/config/site';
 import { features } from '~/config/features';
 import MarketTicker from '~/components/data/MarketTicker.astro';
 import InnovationStrip from '~/components/data/InnovationStrip.astro';
+import Mark from '~/components/Mark.astro';
 import { Icon } from 'astro-icon/components';
 
 const currentPath = Astro.url.pathname;
@@ -20,7 +21,7 @@ function isActive(href: string): boolean {
 <header class="site-header glass" data-header>
   <div class="container header-inner">
     <a href="/" class="brand" aria-label={`${site.name}: home`}>
-      <span class="brand-mark" aria-hidden="true">TS</span>
+      <span class="brand-mark" aria-hidden="true"><Mark id="wave-axes" size={28} /></span>
       <span class="brand-text">
         <span class="brand-name">Tsholofelo Setati</span>
         <span class="brand-role">AI Strategy &amp; Innovation Economics</span>
