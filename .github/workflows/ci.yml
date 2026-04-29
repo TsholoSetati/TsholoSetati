@@ -28,14 +28,14 @@ jobs:
             apps/web/demos-src/policy-prism/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund --prefer-offline
 
       - name: Install demo (sharp-sharp) dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund --prefer-offline
         working-directory: apps/web/demos-src/sharp-sharp
 
       - name: Install demo (policy-prism) dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund --prefer-offline
         working-directory: apps/web/demos-src/policy-prism
 
       - name: Build site
