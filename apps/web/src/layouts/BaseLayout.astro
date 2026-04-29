@@ -7,6 +7,7 @@ import '~/styles/global.css';
 import SiteHeader from '~/components/nav/SiteHeader.astro';
 import SiteFooter from '~/components/nav/SiteFooter.astro';
 import CommandPalette from '~/components/nav/CommandPalette.astro';
+import IntroOverlay from '~/components/IntroOverlay.astro';
 import { site } from '~/config/site';
 import { features, integrations } from '~/config/features';
 import { themeInitScript } from '~/lib/theme-init';
@@ -113,6 +114,7 @@ const structuredData = [jsonLdPerson(), jsonLdWebsite(), ...jsonLd];
     </main>
     {!bare && <SiteFooter />}
     {!bare && <CommandPalette />}
+    {!bare && <IntroOverlay />}
 
     {/* Motion bootstrap — runs once after first paint, re-binds after view transitions */}
     <script>
