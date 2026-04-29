@@ -20,7 +20,19 @@ type Id =
   | 'fin-yield' | 'fin-candle' | 'fin-volatility' | 'fin-spread' | 'fin-drawdown'
   | 'econ-scatter' | 'econ-ci' | 'econ-residual' | 'econ-iv' | 'econ-did'
   | 'beh-loss' | 'beh-anchor' | 'beh-hyperbolic' | 'beh-frame' | 'beh-herd'
-  | 'prob-bell' | 'prob-bayes' | 'prob-tree' | 'prob-walk' | 'prob-tail';
+  | 'prob-bell' | 'prob-bayes' | 'prob-tree' | 'prob-walk' | 'prob-tail'
+  | 'econ-rdd' | 'econ-panel' | 'econ-fe' | 'econ-loglog' | 'econ-quantile'
+  | 'econ-fan' | 'econ-acf' | 'econ-roc' | 'econ-event' | 'econ-irf'
+  | 'inno-expand' | 'inno-expand-ax'
+  | 'inno-flatten' | 'inno-flatten-ax'
+  | 'inno-cheapen' | 'inno-cheapen-ax'
+  | 'inno-create' | 'inno-create-ax'
+  | 'inno-wave' | 'inno-wave-ax'
+  | 'inno-paradigm' | 'inno-paradigm-ax'
+  | 'inno-ratchet' | 'inno-ratchet-ax'
+  | 'inno-network-eff' | 'inno-network-eff-ax'
+  | 'inno-platform' | 'inno-platform-ax'
+  | 'inno-converge' | 'inno-converge-ax';
 
 const concepts: { id: Id; name: string; note: string }[] = [
   {
@@ -224,6 +236,58 @@ const round4: { family: string; intro: string; items: { id: Id; name: string; no
     ],
   },
 ];
+
+// ── Round 5: more econometric + 10 innovation-as-market-shift × {bare, axes} ──
+const round5: { family: string; intro: string; items: { id: Id; name: string; note: string }[] }[] = [
+  {
+    family: 'Econometric — 10 more',
+    intro: 'Beyond the basics: causal designs, panel structure, scale tricks, distributional fits, dynamic responses.',
+    items: [
+      { id: 'econ-rdd', name: 'Regression discontinuity', note: 'Cutoff line with a clean jump in the fitted means on either side. The cleanest natural experiment we have.' },
+      { id: 'econ-panel', name: 'Panel data', note: 'Three near-parallel time series — units tracked over time. The workhorse of micro-empirics.' },
+      { id: 'econ-fe', name: 'Fixed effects', note: 'Three unit-mean dashes with scatter around each. Within-variation only — the FE intuition in one glyph.' },
+      { id: 'econ-loglog', name: 'Log-log elasticity', note: 'Gridded box with a straight diagonal line. Constant-elasticity models live here.' },
+      { id: 'econ-quantile', name: 'Quantile regression', note: 'Three fitted lines through one cloud — 10/50/90. Distributional, not just mean effects.' },
+      { id: 'econ-fan', name: 'Forecast fan chart', note: 'History rises into a widening cone. Bank-of-England-style uncertainty over time.' },
+      { id: 'econ-acf', name: 'Autocorrelation function', note: 'Lollipop spikes with dashed CI bounds — decaying autocorrelation, the time-series first look.' },
+      { id: 'econ-roc', name: 'ROC curve', note: 'Unit-square curve bowed up-left of the diagonal. Classifier evaluation, sensitivity vs specificity.' },
+      { id: 'econ-event', name: 'Event study', note: 'Coefficients per period with whiskers; vertical line at t=0. Pre-trends flat, post-treatment lifts.' },
+      { id: 'econ-irf', name: 'Impulse response', note: 'Spike then a damped, oscillating tail. The VAR macro lens for shock propagation.' },
+    ],
+  },
+  {
+    family: 'Innovation as market shift — without axes',
+    intro: 'Ten ways innovation reshapes a market, drawn as supply/demand moves. Bare versions read as compact glyphs.',
+    items: [
+      { id: 'inno-expand', name: 'Expand demand', note: 'D shifts outward in parallel — innovation grows the market without changing slope. New product, new customers.' },
+      { id: 'inno-flatten', name: 'Flatten demand', note: 'D pivots flatter — substitutes, transparency, commoditisation make consumers more elastic.' },
+      { id: 'inno-cheapen', name: 'Cheapen supply', note: 'S shifts down — process innovation lowers cost, lower price, more quantity.' },
+      { id: 'inno-create', name: 'Create market', note: 'Equilibrium pops into being where there was no curve before. Category creation; spark detail.' },
+      { id: 'inno-wave', name: 'Innovation waves', note: 'Three D positions, faintest oldest. Successive innovations push demand outward over time.' },
+      { id: 'inno-paradigm', name: 'Paradigm shift', note: 'Linear D fades; a curved D replaces it. Not just a shift — a different shape entirely.' },
+      { id: 'inno-ratchet', name: 'Cost ratchet', note: 'Three S positions falling like a ratchet. Continuous process improvement, learning curves.' },
+      { id: 'inno-network-eff', name: 'Network effects', note: 'D shifts outward with accelerating gap; equilibrium becomes a hub of small linked nodes.' },
+      { id: 'inno-platform', name: 'Two-sided platform', note: 'Both S and D shift outward together — platforms unlock supply and demand simultaneously.' },
+      { id: 'inno-converge', name: 'Market convergence', note: 'Two markets, two equilibria, dotted arrow pulling them toward each other. Cross-industry innovation.' },
+    ],
+  },
+  {
+    family: 'Innovation as market shift — with axes',
+    intro: 'Same ten concepts, drawn as full P/Q charts with dotted equilibrium guides. Reads as textbook figure rather than glyph.',
+    items: [
+      { id: 'inno-expand-ax', name: 'Expand demand · axes', note: 'Parallel D shift with both equilibria projected to the axes.' },
+      { id: 'inno-flatten-ax', name: 'Flatten demand · axes', note: 'D pivots flatter; new equilibrium at lower P, higher Q.' },
+      { id: 'inno-cheapen-ax', name: 'Cheapen supply · axes', note: 'S shifts down; new equilibrium drops along D to lower P, higher Q.' },
+      { id: 'inno-create-ax', name: 'Create market · axes', note: 'A single equilibrium dropped onto a fresh chart with axis projections.' },
+      { id: 'inno-wave-ax', name: 'Innovation waves · axes', note: 'Three D positions inside a clean P/Q frame.' },
+      { id: 'inno-paradigm-ax', name: 'Paradigm shift · axes', note: 'Curved replacement D with new equilibrium projected to axes.' },
+      { id: 'inno-ratchet-ax', name: 'Cost ratchet · axes', note: 'Stair-step S falls; equilibrium walks along D and projects to axes.' },
+      { id: 'inno-network-eff-ax', name: 'Network effects · axes', note: 'Accelerating D shifts inside the chart frame, with axis projection.' },
+      { id: 'inno-platform-ax', name: 'Two-sided platform · axes', note: 'Both curves shift outward; new equilibrium projected to axes.' },
+      { id: 'inno-converge-ax', name: 'Market convergence · axes', note: 'Two mini-equilibria with the convergence arrow inside a single P/Q frame.' },
+    ],
+  },
+];
 ---
 
 <BaseLayout
@@ -337,6 +401,46 @@ const round4: { family: string; intro: string; items: { id: Id; name: string; no
       </header>
 
       {round4.map((v) => (
+        <div class="family">
+          <header class="family-head">
+            <p class="block-eyebrow">{v.family}</p>
+            <p class="family-intro">{v.intro}</p>
+          </header>
+
+          <div class="variant-grid">
+            {v.items.map((vi) => (
+              <article class="variant">
+                <div class="variant-surface light">
+                  <Mark id={vi.id} size={64} />
+                </div>
+                <div class="variant-meta">
+                  <p class="variant-name">{vi.name}</p>
+                  <p class="variant-id"><code>{vi.id}</code></p>
+                  <p class="variant-note">{vi.note}</p>
+                  <div class="variant-sizes">
+                    <Mark id={vi.id} size={16} />
+                    <Mark id={vi.id} size={28} />
+                    <span class="dark-chip"><Mark id={vi.id} size={28} /></span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section class="round" data-reveal>
+      <header class="round-head">
+        <p class="eyebrow">Round 5 · econometric depth + market-shift innovation</p>
+        <h2>Ten more econometric, plus innovation drawn as market shifts — bare and with axes.</h2>
+        <p class="round-lead">
+          Ten more econometric tools (RDD, panel, FE, log-log, quantile, fan, ACF, ROC, event study, IRF).
+          Then ten ways innovation reshapes a market — each in two flavours: clean glyph and full chart.
+        </p>
+      </header>
+
+      {round5.map((v) => (
         <div class="family">
           <header class="family-head">
             <p class="block-eyebrow">{v.family}</p>

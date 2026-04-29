@@ -37,7 +37,21 @@ type MarkId =
   // Round 4 — behavioural
   | 'beh-loss' | 'beh-anchor' | 'beh-hyperbolic' | 'beh-frame' | 'beh-herd'
   // Round 4 — probability
-  | 'prob-bell' | 'prob-bayes' | 'prob-tree' | 'prob-walk' | 'prob-tail';
+  | 'prob-bell' | 'prob-bayes' | 'prob-tree' | 'prob-walk' | 'prob-tail'
+  // Round 5 — more econometric (10)
+  | 'econ-rdd' | 'econ-panel' | 'econ-fe' | 'econ-loglog' | 'econ-quantile'
+  | 'econ-fan' | 'econ-acf' | 'econ-roc' | 'econ-event' | 'econ-irf'
+  // Round 5 — innovation as market shift (10 concepts × 2 = 20: bare + with axes)
+  | 'inno-expand' | 'inno-expand-ax'
+  | 'inno-flatten' | 'inno-flatten-ax'
+  | 'inno-cheapen' | 'inno-cheapen-ax'
+  | 'inno-create' | 'inno-create-ax'
+  | 'inno-wave' | 'inno-wave-ax'
+  | 'inno-paradigm' | 'inno-paradigm-ax'
+  | 'inno-ratchet' | 'inno-ratchet-ax'
+  | 'inno-network-eff' | 'inno-network-eff-ax'
+  | 'inno-platform' | 'inno-platform-ax'
+  | 'inno-converge' | 'inno-converge-ax';
 
 interface Props {
   id: MarkId;
@@ -1102,5 +1116,427 @@ const common = {
     <path d="M3 19 C 7 19, 9 4, 12 4 C 15 4, 17 19, 21 19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
     {/* threshold tick */}
     <line x1="16" y1="19" x2="16" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{/* ─────────── Round 5 — 10 more econometric ─────────── */}
+
+{id === 'econ-rdd' && (
+  <svg {...common}>
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* cutoff */}
+    <line x1="12" y1="3" x2="12" y2="20" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    {/* left fit */}
+    <line x1="4" y1="15" x2="11.5" y2="11" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* right fit (jump) */}
+    <line x1="12.5" y1="7" x2="20" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* scatter */}
+    <circle cx="6" cy="14" r={sw * 0.7} fill="currentColor" opacity="0.6" />
+    <circle cx="9" cy="12.5" r={sw * 0.7} fill="currentColor" opacity="0.6" />
+    <circle cx="14" cy="6.5" r={sw * 0.7} fill="currentColor" opacity="0.6" />
+    <circle cx="18" cy="5" r={sw * 0.7} fill="currentColor" opacity="0.6" />
+  </svg>
+)}
+
+{id === 'econ-panel' && (
+  <svg {...common}>
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* three near-parallel time series */}
+    <path d="M4 7 L 9 5.5 L 14 6.5 L 20 4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <path d="M4 12 L 9 11 L 14 10.5 L 20 9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7" />
+    <path d="M4 17 L 9 16 L 14 15 L 20 13.5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.5" />
+  </svg>
+)}
+
+{id === 'econ-fe' && (
+  <svg {...common}>
+    {/* three unit means */}
+    <line x1="4" y1="7" x2="9" y2="7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-dasharray="0.5 1.4" opacity="0.55" />
+    <line x1="10" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-dasharray="0.5 1.4" opacity="0.55" />
+    <line x1="16" y1="17" x2="21" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-dasharray="0.5 1.4" opacity="0.55" />
+    {/* dots around each */}
+    <circle cx="5" cy="6" r={sw * 0.7} fill="currentColor" />
+    <circle cx="6.5" cy="8" r={sw * 0.7} fill="currentColor" />
+    <circle cx="8" cy="6.5" r={sw * 0.7} fill="currentColor" />
+    <circle cx="11" cy="11" r={sw * 0.7} fill="currentColor" />
+    <circle cx="12.5" cy="13" r={sw * 0.7} fill="currentColor" />
+    <circle cx="14" cy="11.5" r={sw * 0.7} fill="currentColor" />
+    <circle cx="17" cy="16" r={sw * 0.7} fill="currentColor" />
+    <circle cx="18.5" cy="18" r={sw * 0.7} fill="currentColor" />
+    <circle cx="20" cy="16.5" r={sw * 0.7} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'econ-loglog' && (
+  <svg {...common}>
+    {/* log grid */}
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.8" opacity="0.3" />
+    <line x1="9" y1="20" x2="9" y2="3" stroke="currentColor" stroke-width="0.6" opacity="0.18" />
+    <line x1="15" y1="20" x2="15" y2="3" stroke="currentColor" stroke-width="0.6" opacity="0.18" />
+    <line x1="4" y1="14" x2="21" y2="14" stroke="currentColor" stroke-width="0.6" opacity="0.18" />
+    <line x1="4" y1="8" x2="21" y2="8" stroke="currentColor" stroke-width="0.6" opacity="0.18" />
+    {/* constant-elasticity straight line */}
+    <line x1="5" y1="18" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'econ-quantile' && (
+  <svg {...common}>
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" />
+    {/* scatter cloud */}
+    <circle cx="6" cy="16" r={sw * 0.7} fill="currentColor" opacity="0.55" />
+    <circle cx="8" cy="13" r={sw * 0.7} fill="currentColor" opacity="0.55" />
+    <circle cx="10" cy="14.5" r={sw * 0.7} fill="currentColor" opacity="0.55" />
+    <circle cx="13" cy="10.5" r={sw * 0.7} fill="currentColor" opacity="0.55" />
+    <circle cx="15" cy="12" r={sw * 0.7} fill="currentColor" opacity="0.55" />
+    <circle cx="18" cy="7" r={sw * 0.7} fill="currentColor" opacity="0.55" />
+    {/* three quantile lines */}
+    <line x1="4" y1="18" x2="20" y2="11" stroke="currentColor" stroke-width={sw * 0.85} stroke-linecap="round" opacity="0.5" />
+    <line x1="4" y1="15" x2="20" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="11" x2="20" y2="3" stroke="currentColor" stroke-width={sw * 0.85} stroke-linecap="round" opacity="0.5" />
+  </svg>
+)}
+
+{id === 'econ-fan' && (
+  <svg {...common}>
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" />
+    {/* historical */}
+    <path d="M4 16 L 7 14 L 10 11 L 12 9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    {/* fan band */}
+    <path d="M12 9 L 21 12 L 21 4 Z" fill="currentColor" opacity="0.18" />
+    {/* central forecast */}
+    <path d="M12 9 L 21 7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-dasharray="1.6 1.6" />
+    {/* split point */}
+    <circle cx="12" cy="9" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'econ-acf' && (
+  <svg {...common}>
+    {/* zero baseline */}
+    <line x1="3" y1="13" x2="21" y2="13" stroke="currentColor" stroke-width="0.8" opacity="0.4" />
+    {/* CI bounds */}
+    <line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1.2 1.4" opacity="0.4" />
+    <line x1="3" y1="17" x2="21" y2="17" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1.2 1.4" opacity="0.4" />
+    {/* spikes (decaying) */}
+    <line x1="5" y1="13" x2="5" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="5" cy="4" r={sw * 0.9} fill="currentColor" />
+    <line x1="8" y1="13" x2="8" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="8" cy="6" r={sw * 0.9} fill="currentColor" />
+    <line x1="11" y1="13" x2="11" y2="9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="11" cy="9" r={sw * 0.9} fill="currentColor" />
+    <line x1="14" y1="13" x2="14" y2="15" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="14" cy="15" r={sw * 0.9} fill="currentColor" />
+    <line x1="17" y1="13" x2="17" y2="11" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="17" cy="11" r={sw * 0.9} fill="currentColor" />
+    <line x1="20" y1="13" x2="20" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="20" cy="14" r={sw * 0.9} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'econ-roc' && (
+  <svg {...common}>
+    {/* unit square axes */}
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    {/* diagonal (random classifier) */}
+    <line x1="4" y1="20" x2="21" y2="3" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.4 1.6" opacity="0.5" />
+    {/* ROC curve bowed up-left */}
+    <path d="M4 20 C 5 8, 9 4, 21 3" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'econ-event' && (
+  <svg {...common}>
+    {/* zero line */}
+    <line x1="3" y1="13" x2="21" y2="13" stroke="currentColor" stroke-width="0.8" opacity="0.35" />
+    {/* event time t=0 */}
+    <line x1="12" y1="3" x2="12" y2="20" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    {/* coefficients with whiskers (pre flat near 0; post rising) */}
+    <line x1="5" y1="11" x2="5" y2="15" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" />
+    <circle cx="5" cy="13" r={sw * 0.8} fill="currentColor" />
+    <line x1="8" y1="11" x2="8" y2="15" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" />
+    <circle cx="8" cy="13" r={sw * 0.8} fill="currentColor" />
+    <line x1="14" y1="8" x2="14" y2="12" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" />
+    <circle cx="14" cy="10" r={sw * 1} fill="currentColor" />
+    <line x1="17" y1="6" x2="17" y2="10" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" />
+    <circle cx="17" cy="8" r={sw * 1} fill="currentColor" />
+    <line x1="20" y1="4" x2="20" y2="8" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" />
+    <circle cx="20" cy="6" r={sw * 1} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'econ-irf' && (
+  <svg {...common}>
+    {/* zero line */}
+    <line x1="3" y1="13" x2="21" y2="13" stroke="currentColor" stroke-width="0.8" opacity="0.35" />
+    {/* impulse spike */}
+    <line x1="5" y1="13" x2="5" y2="4" stroke="currentColor" stroke-width={sw * 1.2} stroke-linecap="round" />
+    <path d="M5 4 L 3.5 6 M5 4 L 6.5 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* decaying oscillating response */}
+    <path d="M5 4 C 8 7, 9 16, 12 14 C 14 13, 14 17, 16 14.5 C 17.5 12.8, 18.5 14, 21 13.2" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{/* ─────────── Round 5 — innovation as market shift (10 concepts × {bare, +axes}) ─────────── */}
+
+{/* Helper convention:
+    S original line: (5,19)→(20,5)
+    D original line: (5,6)→(20,19)  intersect ≈ (12.5, 12.5)
+    Axes set draws axes; bare set omits them but keeps the same chart geometry.
+*/}
+
+{/* 1. EXPAND — outward parallel D shift */}
+{id === 'inno-expand' && (
+  <svg {...common}>
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12.5" cy="12.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="15.4" cy="9.6" r={sw * 1.3} fill="currentColor" />
+    {/* arrow showing shift direction */}
+    <path d="M11 9 L 15 9 M14 7.5 L 15 9 L 14 10.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" />
+  </svg>
+)}
+{id === 'inno-expand-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="9.6" x2="15.4" y2="9.6" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <line x1="15.4" y1="20" x2="15.4" y2="9.6" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <circle cx="12.5" cy="12.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="15.4" cy="9.6" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* 2. FLATTEN — D pivots flatter (commoditisation) */}
+{id === 'inno-flatten' && (
+  <svg {...common}>
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="4" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="5" y1="11" x2="22" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="11.5" cy="12.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="16" cy="14" r={sw * 1.3} fill="currentColor" />
+    {/* pivot indicator */}
+    <circle cx="5" cy="11" r={sw * 0.6} fill="currentColor" opacity="0.6" />
+  </svg>
+)}
+{id === 'inno-flatten-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="4" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="5" y1="11" x2="22" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="14" x2="16" y2="14" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <line x1="16" y1="20" x2="16" y2="14" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <circle cx="11.5" cy="12.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="16" cy="14" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* 3. CHEAPEN — S shifts down/right (cost-reducing innovation) */}
+{id === 'inno-cheapen' && (
+  <svg {...common}>
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="9" y1="22" x2="22" y2="8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12.5" cy="12.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="15.5" cy="14.5" r={sw * 1.3} fill="currentColor" />
+    {/* down arrow */}
+    <path d="M9 11 L 9 15 M7.5 14 L 9 15 L 10.5 14" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" />
+  </svg>
+)}
+{id === 'inno-cheapen-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="9" y1="22" x2="22" y2="8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="14.5" x2="15.5" y2="14.5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <line x1="15.5" y1="20" x2="15.5" y2="14.5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <circle cx="12.5" cy="12.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="15.5" cy="14.5" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* 4. CREATE — new market appears (no faded original D) */}
+{id === 'inno-create' && (
+  <svg {...common}>
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12.5" cy="12.5" r={sw * 1.4} fill="currentColor" />
+    {/* spark */}
+    <path d="M19 4 L 19 7 M17.5 5.5 L 20.5 5.5 M18 4.5 L 20 6.5 M20 4.5 L 18 6.5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.7" />
+  </svg>
+)}
+{id === 'inno-create-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="12.5" x2="12.5" y2="12.5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <line x1="12.5" y1="20" x2="12.5" y2="12.5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <circle cx="12.5" cy="12.5" r={sw * 1.4} fill="currentColor" />
+    <path d="M19 4 L 19 7 M17.5 5.5 L 20.5 5.5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.7" />
+  </svg>
+)}
+
+{/* 5. WAVE — successive D shifts (waves of innovation) */}
+{id === 'inno-wave' && (
+  <svg {...common}>
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="3" y1="7" x2="16" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.22" />
+    <line x1="6" y1="5" x2="19" y2="18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.45" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="15.4" cy="9.6" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+{id === 'inno-wave-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4.5" y1="7" x2="16" y2="18.5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.22" />
+    <line x1="6" y1="5" x2="19" y2="18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.45" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="15.4" cy="9.6" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* 6. PARADIGM — old linear D fades, new curved D dominates */}
+{id === 'inno-paradigm' && (
+  <svg {...common}>
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.28" />
+    {/* new curved D (convex) */}
+    <path d="M5 5 C 9 6, 13 9, 22 18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    <circle cx="12.5" cy="12.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="14.5" cy="11" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+{id === 'inno-paradigm-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.28" />
+    <path d="M5 5 C 9 6, 13 9, 22 18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    <line x1="4" y1="11" x2="14.5" y2="11" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <line x1="14.5" y1="20" x2="14.5" y2="11" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <circle cx="14.5" cy="11" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* 7. RATCHET — S shifts down in stair-step waves (process innovation) */}
+{id === 'inno-ratchet' && (
+  <svg {...common}>
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.22" />
+    <line x1="6.5" y1="20" x2="21" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.45" />
+    <line x1="9" y1="22" x2="22" y2="8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="15.5" cy="14.5" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+{id === 'inno-ratchet-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.22" />
+    <line x1="6.5" y1="20" x2="21" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.45" />
+    <line x1="9" y1="22" x2="22" y2="8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="14.5" x2="15.5" y2="14.5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <line x1="15.5" y1="20" x2="15.5" y2="14.5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <circle cx="15.5" cy="14.5" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* 8. NETWORK EFFECTS — D shifts right with accelerating gap */}
+{id === 'inno-network-eff' && (
+  <svg {...common}>
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.22" />
+    <line x1="6.5" y1="4.5" x2="20.5" y2="17.5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.4" />
+    <line x1="10" y1="3" x2="22" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* network nodes */}
+    <circle cx="15.8" cy="9.3" r={sw * 1.3} fill="currentColor" />
+    <circle cx="19" cy="6" r={sw * 0.7} fill="currentColor" opacity="0.6" />
+    <circle cx="21" cy="9" r={sw * 0.7} fill="currentColor" opacity="0.6" />
+    <line x1="15.8" y1="9.3" x2="19" y2="6" stroke="currentColor" stroke-width="0.6" opacity="0.5" />
+    <line x1="15.8" y1="9.3" x2="21" y2="9" stroke="currentColor" stroke-width="0.6" opacity="0.5" />
+  </svg>
+)}
+{id === 'inno-network-eff-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.22" />
+    <line x1="6.5" y1="4.5" x2="20.5" y2="17.5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.4" />
+    <line x1="10" y1="3" x2="22" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="9.3" x2="15.8" y2="9.3" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <line x1="15.8" y1="20" x2="15.8" y2="9.3" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <circle cx="15.8" cy="9.3" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* 9. PLATFORM — both S and D shift outward (two-sided market) */}
+{id === 'inno-platform' && (
+  <svg {...common}>
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="9" y1="22" x2="22" y2="8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12.5" cy="12.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="15.5" cy="12" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+{id === 'inno-platform-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="9" y1="22" x2="22" y2="8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="12" x2="15.5" y2="12" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <line x1="15.5" y1="20" x2="15.5" y2="12" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <circle cx="15.5" cy="12" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* 10. CONVERGE — two markets' equilibria moving toward each other */}
+{id === 'inno-converge' && (
+  <svg {...common}>
+    {/* market A (lower-left) */}
+    <line x1="4" y1="14" x2="11" y2="7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="7" x2="11" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="7.5" cy="10.5" r={sw * 1.1} fill="currentColor" />
+    {/* market B (upper-right) */}
+    <line x1="13" y1="20" x2="20" y2="13" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="13" y1="13" x2="20" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="16.5" cy="16.5" r={sw * 1.1} fill="currentColor" />
+    {/* convergence arrows */}
+    <path d="M9.5 12 L 14.5 15" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-dasharray="1.2 1.4" opacity="0.6" />
+  </svg>
+)}
+{id === 'inno-converge-ax' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="5" y1="13" x2="11" y2="7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="7" x2="11" y2="13" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="8" cy="10" r={sw * 1.1} fill="currentColor" />
+    <line x1="13" y1="19" x2="20" y2="13" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="13" y1="13" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="16.5" cy="16" r={sw * 1.1} fill="currentColor" />
+    <path d="M9.5 11.5 L 14.5 14.5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-dasharray="1.2 1.4" opacity="0.6" />
   </svg>
 )}
