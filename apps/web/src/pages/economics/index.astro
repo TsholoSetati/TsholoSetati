@@ -28,13 +28,24 @@ const models = [
     title: 'Adoption Curves',
     description: 'Four overlaid technology adoption trajectories with annotated milestones. Read off the velocity at which infrastructure, AI, and platforms ship into operating models.',
   },
-];
-
-const v2 = [
-  { title: 'Capital flow direction', detail: 'Sankey of AI VC dollar flow between regions. Quarterly Briter + Partech.' },
-  { title: 'Policy gap stacked bars', detail: 'Draft / Passed / In-force segments per jurisdiction. OECD AI Policy Observatory.' },
-  { title: 'Productivity deltas', detail: 'Citation cards from BCG-Harvard, MIT NBER, GitHub, McKinsey studies.' },
-  { title: 'Innovation Phillips curve', detail: 'Deployment velocity vs. governance overhead. Provocative, defensible, original.' },
+  {
+    slug: 'capital-flow',
+    eyebrow: 'SANKEY · CAPITAL FLOWS',
+    title: 'Capital Flow Direction',
+    description: 'Trailing twelve months of disclosed AI funding mapped from source region to destination bucket. Ribbon widths scale to dollar volume; three patterns are immediately legible.',
+  },
+  {
+    slug: 'productivity-deltas',
+    eyebrow: 'CITATION · PRODUCTIVITY',
+    title: 'Productivity Deltas',
+    description: 'Five canonical AI productivity studies, plotted side by side, with the methodology meta-row that decides whether you should believe them. The 14% bar and the 45% bar are not the same claim.',
+  },
+  {
+    slug: 'phillips-curve',
+    eyebrow: 'SCATTER · GOVERNANCE × VELOCITY',
+    title: 'Innovation Phillips Curve',
+    description: 'Deployment velocity vs governance overhead across ten jurisdictions, with a fitted curve and a sweet-spot zone. The most important policy job in 2026 is moving every jurisdiction toward the inflection.',
+  },
 ];
 ---
 
@@ -67,18 +78,6 @@ const v2 = [
         </li>
       ))}
     </ul>
-
-    <section class="backlog" data-reveal>
-      <p class="eyebrow">Up next</p>
-      <h3>Visualisations on the v2 backlog</h3>
-      <ul class="backlog-list">
-        {v2.map((b) => (
-          <li>
-            <strong>{b.title}.</strong> <span class="muted">{b.detail}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
   </section>
 </BaseLayout>
 
@@ -95,10 +94,4 @@ const v2 = [
   .card h2 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; margin: 0; line-height: 1.2; color: var(--color-ink-primary); }
   .muted { color: var(--color-ink-secondary); margin: 0; line-height: 1.55; font-size: 0.95rem; }
   .cta { color: var(--color-accent); font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; margin: auto 0 0; }
-
-  .backlog { padding-top: 3rem; border-top: 1px solid var(--color-border-subtle); }
-  .backlog h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.4rem; margin: 0 0 1.25rem; }
-  .backlog-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; }
-  .backlog-list li { line-height: 1.55; }
-  .backlog-list strong { color: var(--color-ink-primary); }
 </style>

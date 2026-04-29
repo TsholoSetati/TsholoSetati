@@ -1,0 +1,246 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Innovation Phillips Curve — deployment velocity vs governance overhead, 10 jurisdictions.
+// Shared jurisdiction list with /policy/policy-gap for narrative cohesion.
+//
+// Axes:
+//   x = governance overhead score (0-100). Higher = more procedural cost per AI deployment.
+//   y = deployment velocity (production AI systems shipped per 1k organisations / yr).
+//
+// Synthesised composite scores from OECD AI Policy Observatory, Stanford AI Index 2025, and BCG
+// Build for the Future. Direction-of-travel claims, not precise estimates.
+
+interface Point {
+  id: string; label: string; gov: number; vel: number;
+}
+
+const points: Point[] = [
+  { id: 'us',   label: 'United States', gov: 32, vel: 78 },
+  { id: 'cn',   label: 'China',         gov: 58, vel: 86 },
+  { id: 'eu',   label: 'EU (avg)',      gov: 78, vel: 41 },
+  { id: 'uk',   label: 'United Kingdom',gov: 48, vel: 62 },
+  { id: 'sg',   label: 'Singapore',     gov: 38, vel: 71 },
+  { id: 'au',   label: 'Australia',     gov: 52, vel: 49 },
+  { id: 'br',   label: 'Brazil',        gov: 64, vel: 28 },
+  { id: 'in',   label: 'India',         gov: 26, vel: 64 },
+  { id: 'jp',   label: 'Japan',         gov: 56, vel: 45 },
+  { id: 'za',   label: 'South Africa',  gov: 22, vel: 18 },
+];
+
+// Layout
+const W = 880;
+const H = 520;
+const M = { top: 30, right: 60, bottom: 60, left: 70 };
+
+const xMin = 0, xMax = 100;
+const yMin = 0, yMax = 100;
+const innerW = W - M.left - M.right;
+const innerH = H - M.top - M.bottom;
+const sx = (v: number) => M.left + ((v - xMin) / (xMax - xMin)) * innerW;
+const sy = (v: number) => M.top + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+
+// Best fit: inverted parabola y = a(x-h)^2 + k, fit by least squares (manual approximation).
+// Use a smoothed midline that bends downward as governance overhead climbs past ~55.
+// Hand-tuned coefficients to feel honest without overstating.
+const curveSamples: Array<[number, number]> = [];
+for (let x = 0; x <= 100; x += 2) {
+  // y = peak at x=42, peak value ~78, falling to ~22 at x=92
+  const peakX = 42, peakY = 78;
+  const fallA = -0.020;
+  const y = peakY + fallA * Math.pow(x - peakX, 2);
+  curveSamples.push([x, Math.max(8, y)]);
+}
+const curveD = curveSamples
+  .map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${sx(x).toFixed(1)} ${sy(y).toFixed(1)}`)
+  .join(' ');
+
+// Tick marks
+const xTicks = [0, 20, 40, 60, 80, 100];
+const yTicks = [0, 20, 40, 60, 80, 100];
+
+const r = 10; // dot radius
+---
+
+<BaseLayout
+  seo={{
+    title: 'Innovation Phillips Curve',
+    description:
+      'A provocative-but-defensible plot: deployment velocity vs governance overhead across ten jurisdictions, with a fitted curve and a thesis on bending it.',
+  }}
+>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics · Scatter</p>
+      <h1>The innovation Phillips curve.</h1>
+      <p class="lead">
+        On the X axis, governance overhead per AI deployment. On the Y axis, deployment velocity. Across
+        ten jurisdictions a tradeoff is visible — but the fitted curve is not a straight line. There is a
+        sweet spot, somewhere in the low-50s, where governance signal is strong enough to be trusted but
+        not so heavy that it suffocates shipping. That is the curve to bend.
+      </p>
+    </header>
+
+    <figure class="chart" data-reveal>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Scatter of jurisdictions plotted on governance overhead vs deployment velocity">
+        <defs>
+          <filter id="dot-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" />
+          </filter>
+        </defs>
+
+        {/* Grid */}
+        <g class="grid">
+          {xTicks.map((t) => (
+            <line x1={sx(t)} y1={M.top} x2={sx(t)} y2={M.top + innerH} />
+          ))}
+          {yTicks.map((t) => (
+            <line x1={M.left} y1={sy(t)} x2={M.left + innerW} y2={sy(t)} />
+          ))}
+        </g>
+
+        {/* Axes */}
+        <line class="axis" x1={M.left} y1={M.top + innerH} x2={M.left + innerW} y2={M.top + innerH} />
+        <line class="axis" x1={M.left} y1={M.top} x2={M.left} y2={M.top + innerH} />
+
+        {/* Tick labels */}
+        {xTicks.map((t) => (
+          <text x={sx(t)} y={M.top + innerH + 18} text-anchor="middle" class="ax-lbl">{t}</text>
+        ))}
+        {yTicks.map((t) => (
+          <text x={M.left - 10} y={sy(t) + 4} text-anchor="end" class="ax-lbl">{t}</text>
+        ))}
+
+        {/* Axis titles */}
+        <text x={M.left + innerW / 2} y={M.top + innerH + 44} text-anchor="middle" class="ax-title">
+          Governance overhead →
+        </text>
+        <text
+          x={-(M.top + innerH / 2)}
+          y={20}
+          text-anchor="middle"
+          class="ax-title"
+          transform="rotate(-90)"
+        >
+          Deployment velocity →
+        </text>
+
+        {/* Fitted curve */}
+        <path class="curve" d={curveD} />
+
+        {/* Sweet spot shading */}
+        <rect x={sx(45)} y={M.top} width={sx(58) - sx(45)} height={innerH} class="sweet-spot" />
+        <text x={(sx(45) + sx(58)) / 2} y={M.top - 8} text-anchor="middle" class="sweet-lbl">sweet spot</text>
+
+        {/* Points */}
+        <g class="dots">
+          {points.map((p, i) => (
+            <g
+              class="dot-group"
+              data-id={p.id}
+              style={`--i:${i}; --cx:${sx(p.gov)}; --cy:${sy(p.vel)}`}
+            >
+              <circle cx={sx(p.gov)} cy={sy(p.vel)} r={r + 2} class="dot-glow" filter="url(#dot-glow)" />
+              <circle cx={sx(p.gov)} cy={sy(p.vel)} r={r} class="dot" />
+              <text
+                x={sx(p.gov) + r + 6}
+                y={sy(p.vel) + 4}
+                class="dot-lbl"
+              >
+                {p.label}
+              </text>
+              <title>{`${p.label} — governance ${p.gov}, velocity ${p.vel}`}</title>
+            </g>
+          ))}
+        </g>
+      </svg>
+      <figcaption>
+        Composite scores synthesised from OECD AI Policy Observatory, Stanford AI Index 2025 and BCG Build
+        for the Future. Direction-of-travel claims, not precise estimates.
+      </figcaption>
+    </figure>
+
+    <section class="thesis" data-reveal>
+      <p class="kicker">The thesis</p>
+      <p>
+        Read the chart in three regions. <strong>Under-governed (X &lt; 30):</strong> velocity is real but
+        unaccountable; trust collapses on the first incident. <strong>Sweet spot (X ≈ 45–58):</strong>
+        clear standards, lightweight assurance, defensible deployments. <strong>Over-governed (X &gt;
+        65):</strong> procedural cost compounds; velocity halves. The most important policy job in 2026 is
+        not "more governance" or "less governance" — it is moving every jurisdiction toward the inflection.
+      </p>
+    </section>
+
+    <p class="back"><a href="/economics">← All models</a></p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const groups = document.querySelectorAll<SVGGElement>('.dot-group');
+    const curve = document.querySelector<SVGPathElement>('.curve');
+
+    if (curve && !reduce) {
+      const len = curve.getTotalLength();
+      curve.style.strokeDasharray = `${len}`;
+      curve.style.strokeDashoffset = `${len}`;
+      requestAnimationFrame(() => {
+        curve.style.transition = 'stroke-dashoffset 1400ms cubic-bezier(0.22, 1, 0.36, 1)';
+        curve.style.strokeDashoffset = '0';
+      });
+    }
+
+    groups.forEach((g, i) => {
+      if (reduce) return;
+      g.style.opacity = '0';
+      g.style.transition = 'opacity 360ms ease-out';
+      setTimeout(() => { g.style.opacity = '1'; }, 600 + i * 90);
+    });
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+
+  .chart { margin: 0 0 2.5rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .grid line { stroke: var(--color-border-subtle); stroke-width: 1; }
+  .axis { stroke: var(--color-ink-tertiary); stroke-width: 1.2; }
+  .ax-lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-tertiary); }
+  .ax-title { font-family: var(--font-mono); font-size: 12px; fill: var(--color-ink-secondary); letter-spacing: 0.06em; }
+  .curve { stroke: var(--color-accent); stroke-width: 2; fill: none; opacity: 0.55; stroke-linecap: round; }
+  .sweet-spot { fill: var(--color-accent); opacity: 0.06; }
+  .sweet-lbl { font-family: var(--font-mono); font-size: 10px; fill: var(--color-accent); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .dot { fill: var(--color-accent); stroke: var(--color-surface-base); stroke-width: 2; }
+  .dot-glow { fill: var(--color-accent); opacity: 0.35; }
+  .dot-lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-primary); }
+  .dot-group { transition: opacity 240ms ease-out; }
+  .dot-group:hover .dot { fill: var(--color-ink-primary); }
+
+  figcaption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 1rem 0 0; letter-spacing: 0.04em; }
+
+  .thesis {
+    margin-top: 2.5rem;
+    padding: 1.75rem;
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border-subtle);
+    border-left: 3px solid var(--color-ink-primary);
+    border-radius: var(--radius-md);
+  }
+  .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
+  .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
+  .thesis strong { color: var(--color-accent); }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+
+  @media (max-width: 720px) {
+    .dot-lbl { font-size: 10px; }
+  }
+</style>

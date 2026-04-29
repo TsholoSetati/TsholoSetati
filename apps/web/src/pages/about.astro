@@ -57,6 +57,27 @@ import { site } from '~/config/site';
         <p><a class="link-arrow" href="/contact">Start a conversation →</a></p>
       </div>
     </div>
+
+    <aside class="career-arc" data-reveal>
+      <div class="career-arc-inner">
+        <div class="career-arc-copy">
+          <p class="eyebrow">Career arc</p>
+          <h3>Quantitative research → Big 4 consulting → enterprise AI leadership.</h3>
+          <p class="muted">
+            A career that started in economic research at South African policy think-tanks, moved through
+            end-to-end digital transformation programmes at a Big 4 firm, and now sits at the C-suite end
+            of frontier AI engagements at a global hyperscaler across Middle East and Africa.
+          </p>
+          <p><a class="link-arrow" href="/experience">Read the full timeline →</a></p>
+        </div>
+        <ol class="career-arc-rail">
+          <li><span class="rail-dot"></span><span>Economic & quantitative research</span></li>
+          <li><span class="rail-dot"></span><span>Technology consulting (Big 4)</span></li>
+          <li><span class="rail-dot"></span><span>Cross-Solution Architect, Africa</span></li>
+          <li><span class="rail-dot rail-dot-active"></span><span>Senior Cloud & AI Solution Engineer, MEA</span></li>
+        </ol>
+      </div>
+    </aside>
   </section>
 </BaseLayout>
 
@@ -76,5 +97,26 @@ import { site } from '~/config/site';
   @media (max-width: 640px) {
     .about-head { grid-template-columns: 1fr; text-align: center; }
     .portrait { margin: 0 auto; width: 140px; height: 140px; }
+  }
+
+  .career-arc {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-md);
+  }
+  .career-arc-inner { display: grid; grid-template-columns: 1.4fr 1fr; gap: 2.5rem; align-items: center; }
+  .career-arc-copy h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.4rem; line-height: 1.25; margin: 0 0 0.85rem; color: var(--color-ink-primary); }
+  .career-arc-copy .muted { color: var(--color-ink-secondary); line-height: 1.6; margin: 0 0 1rem; }
+  .career-arc-rail { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; position: relative; }
+  .career-arc-rail::before { content: ''; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 1px; background: var(--color-border-default); }
+  .career-arc-rail li { display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; align-items: center; font-size: 0.92rem; color: var(--color-ink-secondary); }
+  .rail-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--color-surface-base); border: 2px solid var(--color-border-default); position: relative; z-index: 1; }
+  .rail-dot-active { background: var(--color-accent); border-color: var(--color-accent); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12); }
+  .career-arc-rail li:last-child { color: var(--color-ink-primary); font-weight: 500; }
+  @media (max-width: 720px) {
+    .career-arc-inner { grid-template-columns: 1fr; gap: 1.5rem; }
   }
 </style>

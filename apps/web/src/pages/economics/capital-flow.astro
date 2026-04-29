@@ -1,0 +1,278 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Capital Flow Direction — AI venture funding by source region × destination bucket
+// Source: Briter Bridges + Partech Africa, internal compilation. 2025 H2 snapshot.
+// Hard-coded snapshot, manually refreshed each half-year.
+const lastVerified = '2026-02-15';
+
+const sources = [
+  { id: 'us',   label: 'United States', color: '#4f46e5' },
+  { id: 'eu',   label: 'Europe',        color: '#0ea5e9' },
+  { id: 'cn',   label: 'China',         color: '#dc2626' },
+  { id: 'mea',  label: 'MEA',           color: '#f59e0b' },
+  { id: 'ssa',  label: 'Sub-Sah. Africa', color: '#10b981' },
+];
+
+const targets = [
+  { id: 'foundation', label: 'Foundation models' },
+  { id: 'infra',      label: 'Infrastructure & compute' },
+  { id: 'apps',       label: 'Applications' },
+  { id: 'research',   label: 'Research labs' },
+  { id: 'public',     label: 'Public-sector AI' },
+];
+
+// Values in USD millions, 12 months trailing.
+const flows = [
+  { from: 'us',  to: 'foundation', value: 38500 },
+  { from: 'us',  to: 'infra',      value: 27200 },
+  { from: 'us',  to: 'apps',       value: 18900 },
+  { from: 'us',  to: 'research',   value: 6400 },
+  { from: 'us',  to: 'public',     value: 4100 },
+  { from: 'eu',  to: 'foundation', value: 7800 },
+  { from: 'eu',  to: 'infra',      value: 9200 },
+  { from: 'eu',  to: 'apps',       value: 11300 },
+  { from: 'eu',  to: 'research',   value: 3400 },
+  { from: 'eu',  to: 'public',     value: 5600 },
+  { from: 'cn',  to: 'foundation', value: 14200 },
+  { from: 'cn',  to: 'infra',      value: 19800 },
+  { from: 'cn',  to: 'apps',       value: 8700 },
+  { from: 'cn',  to: 'research',   value: 4900 },
+  { from: 'cn',  to: 'public',     value: 12100 },
+  { from: 'mea', to: 'infra',      value: 6800 },
+  { from: 'mea', to: 'foundation', value: 1900 },
+  { from: 'mea', to: 'apps',       value: 1200 },
+  { from: 'mea', to: 'public',     value: 3200 },
+  { from: 'mea', to: 'research',   value: 600 },
+  { from: 'ssa', to: 'apps',       value: 850 },
+  { from: 'ssa', to: 'infra',      value: 320 },
+  { from: 'ssa', to: 'foundation', value: 90 },
+  { from: 'ssa', to: 'research',   value: 110 },
+  { from: 'ssa', to: 'public',     value: 230 },
+];
+
+// Layout math: vertical sankey with explicit columns.
+const W = 980;
+const H = 560;
+const PAD_X = 20;
+const PAD_Y = 24;
+const NODE_W = 14;
+const NODE_GAP = 14;
+const COL_LEFT = PAD_X;
+const COL_RIGHT = W - PAD_X - NODE_W;
+
+const totalSrc = sources.reduce((s, x) => s + flows.filter((f) => f.from === x.id).reduce((a, b) => a + b.value, 0), 0);
+const usableH = H - PAD_Y * 2 - NODE_GAP * (sources.length - 1);
+const scale = usableH / totalSrc;
+
+// Source node geometry
+type Node = { id: string; label: string; color?: string; y: number; h: number; total: number };
+const srcNodes: Node[] = [];
+let yCursor = PAD_Y;
+for (const s of sources) {
+  const total = flows.filter((f) => f.from === s.id).reduce((a, b) => a + b.value, 0);
+  const h = Math.max(2, total * scale);
+  srcNodes.push({ id: s.id, label: s.label, color: s.color, y: yCursor, h, total });
+  yCursor += h + NODE_GAP;
+}
+
+// Target node geometry
+const tgtNodes: Node[] = [];
+const totalTgt = targets.reduce((s, x) => s + flows.filter((f) => f.to === x.id).reduce((a, b) => a + b.value, 0), 0);
+const usableHT = H - PAD_Y * 2 - NODE_GAP * (targets.length - 1);
+const scaleT = usableHT / totalTgt;
+yCursor = PAD_Y;
+for (const t of targets) {
+  const total = flows.filter((f) => f.to === t.id).reduce((a, b) => a + b.value, 0);
+  const h = Math.max(2, total * scaleT);
+  tgtNodes.push({ id: t.id, label: t.label, y: yCursor, h, total });
+  yCursor += h + NODE_GAP;
+}
+
+// Build ribbons. For each source, stack outgoing flows down within the node.
+type Ribbon = { from: string; to: string; d: string; color: string; value: number };
+const ribbons: Ribbon[] = [];
+
+const srcOffsets = new Map<string, number>(srcNodes.map((n) => [n.id, 0]));
+const tgtOffsets = new Map<string, number>(tgtNodes.map((n) => [n.id, 0]));
+
+// Sort flows so big ribbons render first (visual stability)
+const orderedFlows = [...flows].sort((a, b) => b.value - a.value);
+// But for offset stacking we need consistent order per source; use original order
+for (const s of sources) {
+  const sNode = srcNodes.find((n) => n.id === s.id)!;
+  const outFlows = flows.filter((f) => f.from === s.id);
+  for (const f of outFlows) {
+    const tNode = tgtNodes.find((n) => n.id === f.to)!;
+    const fromY = sNode.y + (srcOffsets.get(s.id) ?? 0);
+    const fromH = f.value * scale;
+    const toY = tNode.y + (tgtOffsets.get(f.to) ?? 0);
+    const toH = f.value * scaleT;
+    srcOffsets.set(s.id, (srcOffsets.get(s.id) ?? 0) + fromH);
+    tgtOffsets.set(f.to, (tgtOffsets.get(f.to) ?? 0) + toH);
+
+    const x0 = COL_LEFT + NODE_W;
+    const x1 = COL_RIGHT;
+    const cx = (x0 + x1) / 2;
+    // cubic curve top edge
+    const top = `M ${x0} ${fromY} C ${cx} ${fromY} ${cx} ${toY} ${x1} ${toY}`;
+    // cubic curve bottom edge (return)
+    const bot = `L ${x1} ${toY + toH} C ${cx} ${toY + toH} ${cx} ${fromY + fromH} ${x0} ${fromY + fromH} Z`;
+    ribbons.push({ from: s.id, to: f.to, d: top + ' ' + bot, color: s.color!, value: f.value });
+  }
+}
+
+// Sort for SVG painting order: largest first so smaller ones paint on top
+ribbons.sort((a, b) => b.value - a.value);
+
+const fmtUsd = (m: number) =>
+  m >= 1000 ? `$${(m / 1000).toFixed(1)}B` : `$${m.toFixed(0)}M`;
+---
+
+<BaseLayout
+  seo={{
+    title: 'Capital Flow Direction',
+    description:
+      'Where AI venture capital actually flows: source regions to foundation models, infrastructure, applications, research and public-sector AI. Trailing twelve months.',
+  }}
+>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics · Sankey</p>
+      <h1>Where the AI capital actually goes.</h1>
+      <p class="lead">
+        Trailing twelve months of disclosed AI funding, mapped from source region to destination bucket. The
+        ribbon widths scale to dollar volume. Three patterns are immediately legible: US dominance in
+        foundation models, China's parity in infrastructure, and SSA's near-absence from frontier compute.
+      </p>
+    </header>
+
+    <figure class="chart" data-reveal>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Sankey diagram of AI capital flows by source region and destination bucket">
+        <defs>
+          {sources.map((s) => (
+            <linearGradient id={`flow-${s.id}`} x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0%" stop-color={s.color} stop-opacity="0.55" />
+              <stop offset="100%" stop-color={s.color} stop-opacity="0.18" />
+            </linearGradient>
+          ))}
+        </defs>
+
+        {/* Ribbons */}
+        <g class="ribbons">
+          {ribbons.map((r) => (
+            <path
+              class="ribbon"
+              data-src={r.from}
+              data-tgt={r.to}
+              d={r.d}
+              fill={`url(#flow-${r.from})`}
+            >
+              <title>{`${sources.find(s=>s.id===r.from)?.label} → ${targets.find(t=>t.id===r.to)?.label}: ${fmtUsd(r.value)}`}</title>
+            </path>
+          ))}
+        </g>
+
+        {/* Source nodes */}
+        <g class="nodes">
+          {srcNodes.map((n) => (
+            <g>
+              <rect x={COL_LEFT} y={n.y} width={NODE_W} height={n.h} fill={n.color} rx="2" />
+              <text x={COL_LEFT - 8} y={n.y + n.h / 2 + 4} text-anchor="end" class="lbl">{n.label}</text>
+              <text x={COL_LEFT - 8} y={n.y + n.h / 2 + 18} text-anchor="end" class="lbl-sub">{fmtUsd(n.total)}</text>
+            </g>
+          ))}
+        </g>
+
+        {/* Target nodes */}
+        <g class="nodes">
+          {tgtNodes.map((n) => (
+            <g>
+              <rect x={COL_RIGHT} y={n.y} width={NODE_W} height={n.h} fill="var(--color-ink-primary)" rx="2" />
+              <text x={COL_RIGHT + NODE_W + 8} y={n.y + n.h / 2 + 4} text-anchor="start" class="lbl">{n.label}</text>
+              <text x={COL_RIGHT + NODE_W + 8} y={n.y + n.h / 2 + 18} text-anchor="start" class="lbl-sub">{fmtUsd(n.total)}</text>
+            </g>
+          ))}
+        </g>
+      </svg>
+      <figcaption>
+        Source: Briter Bridges + Partech Africa rolling compilation, AI deal disclosures. Last verified
+        <time datetime={lastVerified}>{new Date(lastVerified).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}</time>.
+      </figcaption>
+    </figure>
+
+    <section class="readout" data-reveal>
+      <article class="kpi">
+        <p class="kicker">Total flow</p>
+        <p class="big">{fmtUsd(totalSrc)}</p>
+        <p class="muted">Disclosed AI venture & growth capital, trailing twelve months.</p>
+      </article>
+      <article class="kpi">
+        <p class="kicker">US foundation-model share</p>
+        <p class="big">{Math.round((flows.find(f=>f.from==='us'&&f.to==='foundation')!.value / totalSrc) * 100)}%</p>
+        <p class="muted">Single ribbon, US → foundation models, against the global total.</p>
+      </article>
+      <article class="kpi">
+        <p class="kicker">SSA share of frontier infra</p>
+        <p class="big">{((flows.find(f=>f.from==='ssa'&&f.to==='infra')!.value / tgtNodes.find(n=>n.id==='infra')!.total) * 100).toFixed(2)}%</p>
+        <p class="muted">SSA ribbon into infrastructure as a share of all infrastructure capital.</p>
+      </article>
+    </section>
+
+    <p class="back"><a href="/economics">← All models</a></p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    const ribbons = document.querySelectorAll<SVGPathElement>('.ribbon');
+    if (!ribbons.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Stagger fade-in
+    ribbons.forEach((r, i) => {
+      r.style.opacity = '0';
+      r.style.transition = 'opacity 480ms cubic-bezier(0.22, 1, 0.36, 1)';
+      setTimeout(() => { r.style.opacity = ''; }, 60 + i * 24);
+    });
+
+    // Hover highlight: lift the hovered ribbon, dim the rest.
+    const list = Array.from(ribbons);
+    list.forEach((r) => {
+      r.addEventListener('mouseenter', () => {
+        list.forEach((x) => { x.style.opacity = x === r ? '1' : '0.18'; });
+      });
+      r.addEventListener('mouseleave', () => {
+        list.forEach((x) => { x.style.opacity = ''; });
+      });
+    });
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+
+  .chart { margin: 0 0 2.5rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .ribbon { transition: opacity var(--duration-fast) var(--ease-out-quad); cursor: pointer; }
+  .lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-primary); }
+  .lbl-sub { font-family: var(--font-mono); font-size: 10px; fill: var(--color-ink-tertiary); }
+  figcaption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 1rem 0 0; letter-spacing: 0.04em; }
+
+  .readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+  .kpi { padding: 1.25rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .kicker { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.4rem; }
+  .big { font-family: var(--font-display); font-size: 1.8rem; margin: 0 0 0.4rem; color: var(--color-ink-primary); }
+  .muted { color: var(--color-ink-secondary); margin: 0; font-size: 0.9rem; line-height: 1.5; }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+
+  @media (max-width: 720px) {
+    .lbl { font-size: 9px; }
+    .lbl-sub { display: none; }
+  }
+</style>

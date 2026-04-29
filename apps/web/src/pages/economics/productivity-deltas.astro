@@ -1,0 +1,202 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Productivity Deltas — five canonical AI productivity studies, plotted as horizontal bars.
+// Each bar: % productivity uplift (pp) on the focal task. Citation row beneath.
+
+interface Study {
+  org: string;
+  title: string;
+  uplift: number;        // percentage points
+  domain: string;
+  n: number;
+  year: number;
+  blinded: boolean;
+  url: string;
+  note: string;
+}
+
+const studies: Study[] = [
+  {
+    org: 'BCG × Harvard',
+    title: 'Navigating the Jagged Frontier',
+    uplift: 12.2,
+    domain: 'Management consultants, complex tasks',
+    n: 758,
+    year: 2023,
+    blinded: true,
+    url: 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4573321',
+    note: 'GPT-4 inside the frontier. Lower uplift, even quality decline, on tasks beyond it.',
+  },
+  {
+    org: 'MIT NBER',
+    title: 'Generative AI at Work',
+    uplift: 14,
+    domain: 'Customer support agents',
+    n: 5179,
+    year: 2023,
+    blinded: false,
+    url: 'https://www.nber.org/papers/w31161',
+    note: 'Largest gains accrued to the lowest-tenure agents. Compresses the experience curve.',
+  },
+  {
+    org: 'GitHub × Microsoft',
+    title: 'Quantifying Copilot impact',
+    uplift: 55,
+    domain: 'Software engineers, narrow task',
+    n: 95,
+    year: 2022,
+    blinded: false,
+    url: 'https://github.blog/news-insights/research/research-quantifying-github-copilots-impact-on-developer-productivity-and-happiness/',
+    note: 'Time-to-complete on a narrow JS authoring task. Self-reported satisfaction also up.',
+  },
+  {
+    org: 'McKinsey Global Institute',
+    title: 'The economic potential of generative AI',
+    uplift: 45,
+    domain: 'Knowledge work, modelled scenario',
+    n: 0,
+    year: 2023,
+    blinded: false,
+    url: 'https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-economic-potential-of-generative-ai-the-next-productivity-frontier',
+    note: 'Top-of-range modelled estimate. Treat as upper bound, not measured outcome.',
+  },
+  {
+    org: 'Stanford × MIT',
+    title: 'Generative AI at Work (call centre)',
+    uplift: 14,
+    domain: 'Call centre operators',
+    n: 5179,
+    year: 2024,
+    blinded: false,
+    url: 'https://www.nber.org/papers/w31161',
+    note: 'Same dataset as MIT NBER, follow-up analysis. Skill ceiling effect for top performers.',
+  },
+];
+
+const max = Math.max(...studies.map((s) => s.uplift));
+---
+
+<BaseLayout
+  seo={{
+    title: 'Productivity Deltas',
+    description:
+      'Five canonical AI productivity studies plotted side by side, with the methodology meta-row that decides whether you should believe them.',
+  }}
+>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics · Citation chart</p>
+      <h1>How much do the canonical productivity studies actually claim?</h1>
+      <p class="lead">
+        Five studies, one chart. The bar is the headline percentage uplift. The row beneath is the
+        methodology meta — sample size, study year, whether the experiment was blinded — because the
+        difference between a 14% measured field experiment and a 45% modelled scenario is the entire
+        argument.
+      </p>
+    </header>
+
+    <ul class="bars" data-reveal>
+      {studies.map((s, i) => (
+        <li class="row" style={`--bar-w:${(s.uplift / max) * 100}%; --i:${i};`}>
+          <div class="row-head">
+            <span class="org">{s.org}</span>
+            <span class="domain">{s.domain}</span>
+          </div>
+          <div class="bar-wrap" aria-hidden="true">
+            <div class="bar"></div>
+            <span class="value">{s.uplift}%</span>
+          </div>
+          <div class="meta-row">
+            <span class={'pill' + (s.blinded ? ' pill-strong' : '')}>{s.blinded ? 'Blinded' : 'Not blinded'}</span>
+            <span class="pill">N = {s.n === 0 ? 'modelled' : s.n.toLocaleString('en-US')}</span>
+            <span class="pill">{s.year}</span>
+            <a class="cite" href={s.url} target="_blank" rel="noopener noreferrer">{s.title} ↗</a>
+          </div>
+          <p class="note">{s.note}</p>
+        </li>
+      ))}
+    </ul>
+
+    <section class="thesis" data-reveal>
+      <p class="kicker">Read the chart this way</p>
+      <p>
+        Field experiments cluster at <strong>12–14%</strong>. Narrow vendor-conducted demos and modelled
+        scenarios reach <strong>45–55%</strong>. The defensible expectation for an enterprise rollout is
+        the lower band, conditional on the work falling inside the model's frontier and the workflow being
+        rebuilt around it. The upper band is what shows up in board decks; the lower band is what shows up
+        on the income statement.
+      </p>
+    </section>
+
+    <p class="back"><a href="/economics">← All models</a></p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const rows = document.querySelectorAll<HTMLElement>('.row');
+    rows.forEach((r) => {
+      const bar = r.querySelector<HTMLElement>('.bar');
+      if (!bar) return;
+      const target = getComputedStyle(r).getPropertyValue('--bar-w').trim() || '0%';
+      if (reduce) { bar.style.width = target; return; }
+      bar.style.width = '0%';
+      const i = parseInt(getComputedStyle(r).getPropertyValue('--i').trim() || '0', 10);
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          bar.style.transition = 'width 720ms cubic-bezier(0.22, 1, 0.36, 1)';
+          bar.style.width = target;
+        }, 80 + i * 110);
+      });
+    });
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 3rem; line-height: 1.6; }
+
+  .bars { list-style: none; padding: 0; margin: 0 0 3rem; display: grid; gap: 1.25rem; }
+  .row {
+    padding: 1.25rem 1.5rem;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-md);
+  }
+  .row-head { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; flex-wrap: wrap; margin-bottom: 0.6rem; }
+  .org { font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; color: var(--color-ink-primary); }
+  .domain { color: var(--color-ink-secondary); font-size: 0.88rem; }
+
+  .bar-wrap { position: relative; height: 32px; background: var(--color-surface-sunken); border-radius: var(--radius-sm); overflow: hidden; display: flex; align-items: center; }
+  .bar { height: 100%; background: linear-gradient(90deg, var(--color-accent), color-mix(in srgb, var(--color-accent), white 35%)); border-radius: var(--radius-sm); }
+  .value { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; color: var(--color-ink-primary); }
+
+  .meta-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin: 0.85rem 0 0.4rem; }
+  .pill { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; padding: 0.2rem 0.55rem; background: var(--color-surface-sunken); color: var(--color-ink-tertiary); border-radius: var(--radius-sm); }
+  .pill-strong { background: color-mix(in srgb, var(--color-accent), transparent 88%); color: var(--color-accent); }
+  .cite { color: var(--color-accent); font-family: var(--font-mono); font-size: 0.7rem; text-decoration: none; margin-left: auto; }
+  .cite:hover { text-decoration: underline; }
+
+  .note { color: var(--color-ink-secondary); margin: 0.5rem 0 0; font-size: 0.92rem; line-height: 1.55; }
+
+  .thesis {
+    margin-top: 3rem;
+    padding: 1.75rem;
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border-subtle);
+    border-left: 3px solid var(--color-ink-primary);
+    border-radius: var(--radius-md);
+  }
+  .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
+  .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
+  .thesis strong { color: var(--color-accent); }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+</style>

@@ -28,11 +28,10 @@ export const site = {
 
 export const nav = [
   { label: 'About', href: '/about' },
-  { label: 'Experience', href: '/experience' },
   { label: 'Expertise', href: '/expertise' },
-  { label: 'Insights', href: '/insights' },
-  { label: 'Tech + Policy', href: '/policy' },
   { label: 'Economics', href: '/economics' },
+  { label: 'Tech + Policy', href: '/policy' },
+  { label: 'Insights', href: '/insights' },
   { label: 'Demos', href: '/demos' },
   { label: 'Contact', href: '/contact' },
 ] as const;

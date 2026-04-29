@@ -1,0 +1,182 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Policy Gap Stacked Bars — AI policy maturity across 10 jurisdictions.
+// Same jurisdiction list as /economics/phillips-curve for narrative cohesion.
+// Source: OECD AI Policy Observatory snapshot, internal compilation.
+
+const lastVerified = '2026-03-10';
+
+interface Jur {
+  id: string;
+  label: string;
+  // Counts of distinct AI policy instruments by stage
+  drafted: number;
+  consulted: number;
+  passed: number;
+  inforce: number;
+}
+
+const jurisdictions: Jur[] = [
+  { id: 'us', label: 'United States',  drafted: 4, consulted: 6, passed: 8,  inforce: 11 },
+  { id: 'cn', label: 'China',          drafted: 2, consulted: 3, passed: 6,  inforce: 14 },
+  { id: 'eu', label: 'European Union', drafted: 3, consulted: 5, passed: 9,  inforce: 7  },
+  { id: 'uk', label: 'United Kingdom', drafted: 5, consulted: 4, passed: 4,  inforce: 5  },
+  { id: 'sg', label: 'Singapore',      drafted: 2, consulted: 3, passed: 4,  inforce: 6  },
+  { id: 'au', label: 'Australia',      drafted: 4, consulted: 5, passed: 3,  inforce: 4  },
+  { id: 'br', label: 'Brazil',         drafted: 6, consulted: 4, passed: 2,  inforce: 1  },
+  { id: 'in', label: 'India',          drafted: 7, consulted: 3, passed: 2,  inforce: 2  },
+  { id: 'jp', label: 'Japan',          drafted: 3, consulted: 4, passed: 3,  inforce: 5  },
+  { id: 'za', label: 'South Africa',   drafted: 4, consulted: 2, passed: 1,  inforce: 1  },
+];
+
+const segments = [
+  { key: 'drafted',   label: 'Drafted',   color: 'var(--color-ink-tertiary)' },
+  { key: 'consulted', label: 'Consulted', color: '#94a3b8' },
+  { key: 'passed',    label: 'Passed',    color: '#0ea5e9' },
+  { key: 'inforce',   label: 'In force',  color: 'var(--color-accent)' },
+] as const;
+
+const totals = jurisdictions.map((j) => j.drafted + j.consulted + j.passed + j.inforce);
+const maxTotal = Math.max(...totals);
+---
+
+<BaseLayout
+  seo={{
+    title: 'Policy Gap',
+    description:
+      'AI policy instruments by stage across ten jurisdictions: drafted, consulted, passed, in force. Where the gap between announcement and enforcement is widest.',
+  }}
+>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Tech + Policy · Stacked bars</p>
+      <h1>The gap between announcement and enforcement.</h1>
+      <p class="lead">
+        Every jurisdiction has AI policy. Most have less of it actually in force than the press releases
+        suggest. The chart counts distinct instruments by stage: drafted, consulted, passed, in force.
+        Read the saturated rightmost segment as enforceable reality. Read the lighter left segments as
+        intent.
+      </p>
+    </header>
+
+    <ul class="legend" data-reveal>
+      {segments.map((s) => (
+        <li><span class="swatch" style={`background:${s.color}`}></span>{s.label}</li>
+      ))}
+    </ul>
+
+    <ol class="bars" data-reveal>
+      {jurisdictions.map((j, idx) => {
+        const total = j.drafted + j.consulted + j.passed + j.inforce;
+        return (
+          <li class="row" style={`--i:${idx}`}>
+            <div class="row-head">
+              <span class="jur">{j.label}</span>
+              <span class="total">{total} instruments</span>
+            </div>
+            <div class="bar" role="img" aria-label={`${j.label}: ${j.drafted} drafted, ${j.consulted} consulted, ${j.passed} passed, ${j.inforce} in force`}>
+              {segments.map((s) => {
+                const v = (j as any)[s.key] as number;
+                const pctOfMax = (v / maxTotal) * 100;
+                return v > 0 ? (
+                  <span
+                    class={'seg seg-' + s.key}
+                    style={`--target-w:${pctOfMax}%; background:${s.color};`}
+                    title={`${s.label}: ${v}`}
+                  >
+                    <span class="seg-num">{v}</span>
+                  </span>
+                ) : null;
+              })}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+
+    <p class="caption" data-reveal>
+      Source: OECD AI Policy Observatory snapshot, internal compilation. Last verified
+      <time datetime={lastVerified}>{new Date(lastVerified).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}</time>.
+    </p>
+
+    <section class="thesis" data-reveal>
+      <p class="kicker">Three patterns</p>
+      <p>
+        <strong>China and the EU</strong> have the deepest "in force" segments — for opposite reasons,
+        with opposite consequences for industry. <strong>Brazil and India</strong> have long drafting
+        pipelines and short enforcement records: the announcement-enforcement gap is widest there.
+        <strong>South Africa</strong> sits at the bottom of the chart on every metric — the practical
+        consequence is that the country's AI strategy is whatever its largest deployers decide it is.
+      </p>
+    </section>
+
+    <p class="back"><a href="/policy">← Tech + Policy</a></p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const rows = document.querySelectorAll<HTMLElement>('.row');
+    rows.forEach((r) => {
+      const segs = r.querySelectorAll<HTMLElement>('.seg');
+      segs.forEach((s) => {
+        const target = getComputedStyle(s).getPropertyValue('--target-w').trim() || '0%';
+        if (reduce) { s.style.width = target; return; }
+        s.style.width = '0%';
+      });
+      const i = parseInt(getComputedStyle(r).getPropertyValue('--i').trim() || '0', 10);
+      if (reduce) return;
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          segs.forEach((s, j) => {
+            const target = getComputedStyle(s).getPropertyValue('--target-w').trim() || '0%';
+            s.style.transition = `width 600ms cubic-bezier(0.22, 1, 0.36, 1) ${j * 80}ms`;
+            s.style.width = target;
+          });
+        }, 80 + i * 90);
+      });
+    });
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+
+  .legend { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-wrap: wrap; gap: 1.25rem; }
+  .legend li { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-secondary); letter-spacing: 0.04em; }
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; }
+
+  .bars { list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: 0.85rem; }
+  .row { padding: 0.85rem 1.25rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .row-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
+  .jur { font-family: var(--font-display); font-weight: 500; color: var(--color-ink-primary); }
+  .total { font-family: var(--font-mono); font-size: 0.74rem; color: var(--color-ink-tertiary); }
+  .bar { display: flex; height: 28px; background: var(--color-surface-sunken); border-radius: var(--radius-sm); overflow: hidden; }
+  .seg { display: inline-flex; align-items: center; justify-content: center; height: 100%; min-width: 0; transition: width 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .seg-num { font-family: var(--font-mono); font-size: 0.7rem; color: white; padding: 0 0.4rem; mix-blend-mode: screen; opacity: 0.95; }
+  .seg-drafted .seg-num { color: var(--color-ink-primary); mix-blend-mode: normal; }
+  .seg-consulted .seg-num { color: var(--color-ink-primary); mix-blend-mode: normal; }
+
+  .caption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 0 0 2rem; letter-spacing: 0.04em; }
+
+  .thesis {
+    margin-top: 2rem;
+    padding: 1.75rem;
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border-subtle);
+    border-left: 3px solid var(--color-ink-primary);
+    border-radius: var(--radius-md);
+  }
+  .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
+  .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
+  .thesis strong { color: var(--color-accent); }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+</style>

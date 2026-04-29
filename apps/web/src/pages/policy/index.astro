@@ -50,6 +50,19 @@ const allTopics = Array.from(new Set(posts.flatMap((p) => p.data.topics))).sort(
       <p class="empty muted">Briefs are in draft. The explorer below is live.</p>
     )}
     <p id="policy-empty" class="muted" hidden>No briefs match your filters.</p>
+
+    <a class="callout" href="/policy/policy-gap" data-reveal>
+      <div class="callout-copy">
+        <p class="callout-eyebrow">Interactive · Stacked bars</p>
+        <h2>The policy gap, ten jurisdictions</h2>
+        <p class="callout-lead">
+          Drafted, consulted, passed, in force — distinct AI policy instruments by stage across ten
+          countries. The saturated rightmost segment is enforceable reality. The lighter segments to its
+          left are intent. Read the gap.
+        </p>
+        <p class="callout-cta">Open the chart <span aria-hidden="true">→</span></p>
+      </div>
+    </a>
   </section>
 
   <section class="explorer-section">
@@ -164,6 +177,24 @@ const allTopics = Array.from(new Set(posts.flatMap((p) => p.data.topics))).sort(
   .meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: var(--font-xs); color: var(--color-ink-tertiary); margin: 0.75rem 0 0; }
 
   .empty { padding: 1.5rem 0; }
+
+  .callout {
+    display: block;
+    margin: 2.5rem 0 0;
+    padding: 1.75rem 2rem;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--duration-fast) var(--ease-out-quad);
+  }
+  .callout:hover { border-color: var(--color-accent); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .callout-eyebrow { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin: 0; }
+  .callout h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.4rem; margin: 0.4rem 0 0.6rem; color: var(--color-ink-primary); }
+  .callout-lead { color: var(--color-ink-secondary); margin: 0; line-height: 1.6; max-width: 65ch; }
+  .callout-cta { color: var(--color-accent); font-family: var(--font-mono); font-size: 0.78rem; margin: 0.85rem 0 0; }
 
   .explorer-section { padding: 4rem 0 6rem; background: var(--color-surface-sunken); margin-top: 4rem; }
   .explorer-head { max-width: 70ch; margin-bottom: 2.5rem; }
