@@ -2,568 +2,178 @@
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import Mark from '~/components/Mark.astro';
 
-// Scratch page — preview four candidate site marks side-by-side.
-// Unlisted (underscore prefix). Delete after concept is locked.
+type WaveId =
+  | 'wave-trio' | 'wave-quad' | 'wave-quintet' | 'wave-fade' | 'wave-bold'
+  | 'wave-arrow' | 'wave-time' | 'wave-eq-trail' | 'wave-axes' | 'wave-spread'
+  | 'wave-scurve' | 'wave-scurve-fade' | 'wave-bell' | 'wave-bell-stack' | 'wave-logistic'
+  | 'wave-skew' | 'wave-arch' | 'wave-dome' | 'wave-hill' | 'wave-crescent'
+  | 'wave-ripple' | 'wave-pulse' | 'wave-sonar' | 'wave-halo' | 'wave-orbit'
+  | 'wave-radial' | 'wave-burst' | 'wave-echo' | 'wave-shock' | 'wave-broadcast'
+  | 'wave-sine' | 'wave-sine-stack' | 'wave-sine-grow' | 'wave-sine-freq' | 'wave-cycle'
+  | 'wave-double' | 'wave-pulse-train' | 'wave-zigzag' | 'wave-damped' | 'wave-beat'
+  | 'wave-tsunami' | 'wave-strata' | 'wave-mountain' | 'wave-tide' | 'wave-crest'
+  | 'wave-spectrum' | 'wave-cascade' | 'wave-river' | 'wave-pillar' | 'wave-pulse-dot';
 
-type Id =
-  | 'prism' | 'monogram' | 'inflection' | 'aperture'
-  | 'cross' | 'compound' | 'network' | 'lattice' | 'jcurve'
-  | 'wavefront' | 'threshold' | 'arbitrage' | 'frontier' | 'sprout'
-  | 'cross-axes' | 'cross-shift' | 'cross-wedge' | 'cross-arrows' | 'cross-halo'
-  | 'inflection-tangent' | 'inflection-twin' | 'inflection-grid' | 'inflection-ribbon' | 'inflection-mirror'
-  | 'lattice-path' | 'lattice-spread' | 'lattice-hex' | 'lattice-ring' | 'lattice-pulse'
-  | 'frontier-ticks' | 'frontier-dual' | 'frontier-radial' | 'frontier-segments' | 'frontier-shaded'
-  | 'cross-shift-axes' | 'cross-double-shift' | 'cross-supply-shift'
-  | 'cross-elastic' | 'cross-inelastic' | 'cross-tax-wedge'
-  | 'cross-ceiling' | 'cross-floor' | 'cross-trace' | 'cross-monopoly'
-  | 'inno-sigmoid' | 'inno-leap' | 'inno-fork' | 'inno-recombine' | 'inno-disrupt'
-  | 'fin-yield' | 'fin-candle' | 'fin-volatility' | 'fin-spread' | 'fin-drawdown'
-  | 'econ-scatter' | 'econ-ci' | 'econ-residual' | 'econ-iv' | 'econ-did'
-  | 'beh-loss' | 'beh-anchor' | 'beh-hyperbolic' | 'beh-frame' | 'beh-herd'
-  | 'prob-bell' | 'prob-bayes' | 'prob-tree' | 'prob-walk' | 'prob-tail'
-  | 'econ-rdd' | 'econ-panel' | 'econ-fe' | 'econ-loglog' | 'econ-quantile'
-  | 'econ-fan' | 'econ-acf' | 'econ-roc' | 'econ-event' | 'econ-irf'
-  | 'inno-expand' | 'inno-expand-ax'
-  | 'inno-flatten' | 'inno-flatten-ax'
-  | 'inno-cheapen' | 'inno-cheapen-ax'
-  | 'inno-create' | 'inno-create-ax'
-  | 'inno-wave' | 'inno-wave-ax'
-  | 'inno-paradigm' | 'inno-paradigm-ax'
-  | 'inno-ratchet' | 'inno-ratchet-ax'
-  | 'inno-network-eff' | 'inno-network-eff-ax'
-  | 'inno-platform' | 'inno-platform-ax'
-  | 'inno-converge' | 'inno-converge-ax';
-
-const concepts: { id: Id; name: string; note: string }[] = [
+const families: { name: string; intro: string; items: { id: WaveId; name: string; note: string }[] }[] = [
   {
-    id: 'prism',
-    name: 'Refracting prism',
-    note: 'Triangle splits an input line into three short beams. Echoes PolicyPrism + the "one input, many readings" thesis.',
-  },
-  {
-    id: 'monogram',
-    name: 'TS monogram',
-    note: 'Geometric stacked T·S. Editorial-classical, reads as a personal mark.',
-  },
-  {
-    id: 'inflection',
-    name: 'Curve inflection',
-    note: 'S-curve with a single dot at the inflection point. Analytical, references the Phillips / adoption / J-curves.',
-  },
-  {
-    id: 'aperture',
-    name: 'Aperture',
-    note: 'Four overlapping arcs forming a soft eye with a focal dot. Quiet cousin of the prism — about focus rather than refraction.',
-  },
-  // ── Round 2: economics + innovation ──
-  {
-    id: 'cross',
-    name: 'Supply · demand cross',
-    note: 'The first chart in every economics textbook. Two crossing lines, equilibrium dot at the centre. Direct, almost cheeky.',
-  },
-  {
-    id: 'compound',
-    name: 'Compounding curve',
-    note: 'Exponential rise with three milestone dots. Innovation, growth, learning effects — the things that look flat for a long time and then aren\'t.',
-  },
-  {
-    id: 'network',
-    name: 'Triangle network',
-    note: 'Three connected nodes. Diffusion, peer effects, networked production — the idea that ideas travel along ties.',
-  },
-  {
-    id: 'lattice',
-    name: 'Frontier lattice',
-    note: '3×3 lattice with a brighter top-right node. Technology frontier, Solow-style — adoption marching across a grid.',
-  },
-  {
-    id: 'jcurve',
-    name: 'J-curve',
-    note: 'Reform J: dip, then long climb. Captures the political economy of doing the right hard thing.',
-  },
-  {
-    id: 'wavefront',
-    name: 'Diffusion wavefront',
-    note: 'Point source emitting three concentric arcs. Ideas, prices, shocks propagating outward.',
-  },
-  {
-    id: 'threshold',
-    name: 'Threshold step',
-    note: 'A step function with the tipping point dotted. Regime change, policy threshold, phase shift.',
-  },
-  {
-    id: 'arbitrage',
-    name: 'Arbitrage spread',
-    note: 'Two parallel rails bridged by a diagonal arrow. Price discovery, closing the gap, the work of moving things from where they cost less to where they cost more.',
-  },
-  {
-    id: 'frontier',
-    name: 'PPF frontier',
-    note: 'Convex production possibility frontier with one efficient point. Trade-offs, scarcity, the shape of every constraint.',
-  },
-  {
-    id: 'sprout',
-    name: 'Breakout sprout',
-    note: 'Arrow growing up from a baseline. Bottom-up innovation, leapfrogging, new entry. Optimistic without being saccharine.',
-  },
-];
-
-const sizes = [16, 28, 64, 200];
-
-// ── Round 3: variations on four favourites ──
-const variations: { family: string; baseId: Id; intro: string; items: { id: Id; name: string; note: string }[] }[] = [
-  {
-    family: 'Cross variations',
-    baseId: 'cross',
-    intro: 'Five takes on the supply · demand X — adding axes, motion, area, arrowheads, or a halo.',
+    name: 'A · Shift variants',
+    intro: 'Innovation as successive demand shifts. Each new wave moves the curve outward; older waves linger as faded predecessors. The classical S/D reading.',
     items: [
-      { id: 'cross-axes', name: 'Axes + dotted equilibrium', note: 'Adds price/quantity axes and dotted guides dropping to the equilibrium point. Closest to a real chart.' },
-      { id: 'cross-shift', name: 'Demand shift', note: 'A faded original demand line and a shifted solid one with a tiny shift arrow. Captures change, not just state.' },
-      { id: 'cross-wedge', name: 'Wedge fill', note: 'Faint triangular fill behind the X — surplus, deadweight, the area-under-the-curve idea.' },
-      { id: 'cross-arrows', name: 'Arrowed forces', note: 'Both lines become arrows meeting at the centre. Reads as opposing forces resolving into a price.' },
-      { id: 'cross-halo', name: 'Equilibrium halo', note: 'A faint ring around the equilibrium dot. Quietly emphasises the meeting point.' },
+      { id: 'wave-trio', name: 'Trio', note: 'Three demand curves, opacity ramping faint→solid. The canonical reading.' },
+      { id: 'wave-quad', name: 'Quartet', note: 'Four demand shifts. Denser stack, more historical depth.' },
+      { id: 'wave-quintet', name: 'Quintet', note: 'Five waves with stroke-weight also growing. Adds weight gradient on top of opacity.' },
+      { id: 'wave-fade', name: 'Long fade', note: 'Eight curves trailing into the past. Reads as deep history of innovation, not just three generations.' },
+      { id: 'wave-bold', name: 'Bold trio', note: 'Three equal-weight curves. Reads as confident peer waves rather than a hierarchy.' },
+      { id: 'wave-arrow', name: 'Trio + arrow', note: 'Three shifts with a horizontal directional arrow above. Spells out the direction of travel.' },
+      { id: 'wave-time', name: 'Trio + timeline', note: 'Three shifts plus tick marks below. Anchors the waves to time explicitly.' },
+      { id: 'wave-eq-trail', name: 'Equilibrium trail', note: 'Three curves with three equilibrium dots connected by a dotted path. The eye follows the equilibrium walking outward.' },
+      { id: 'wave-axes', name: 'On full axes', note: 'Three shifts framed by P/Q axes. Most chart-like, most academic.' },
+      { id: 'wave-spread', name: 'Fan from origin', note: 'Three lines fanning from one point. Reads as divergent futures from a common starting condition.' },
     ],
   },
   {
-    family: 'Inflection variations',
-    baseId: 'inflection',
-    intro: 'Five takes on the S-curve at the moment it changes direction.',
+    name: 'B · Curves & bells',
+    intro: 'Wave-shaped demand: not just a line shift, a different functional form. S-curves, bell curves, logistics — the actual functions used to model adoption.',
     items: [
-      { id: 'inflection-tangent', name: 'Tangent line', note: 'Dashed tangent through the inflection point. Reads as derivative / slope analysis.' },
-      { id: 'inflection-twin', name: 'Twin S', note: 'Two mirrored S-curves crossing at the inflection — symmetry, equilibrium of opposing trends.' },
-      { id: 'inflection-grid', name: 'On grid', note: 'S-curve over a faint chart grid. Looks like a real plot.' },
-      { id: 'inflection-ribbon', name: 'Ribbon', note: 'Main S between two faint parallel guide curves. A confidence band, almost.' },
-      { id: 'inflection-mirror', name: 'Mirrored arms', note: 'Three S-arms branching from the central node. Reads as forking futures from a turning point.' },
+      { id: 'wave-scurve', name: 'S-curves', note: 'Three Rogers/Bass adoption curves stacked. Each generation completes its diffusion before the next begins.' },
+      { id: 'wave-scurve-fade', name: 'S-curves long fade', note: 'Four S-curves with the deepest faded. History of adoption cycles.' },
+      { id: 'wave-bell', name: 'Bell curves rightward', note: 'Three bell curves marching right with growing height. Each wave wider, taller, later.' },
+      { id: 'wave-bell-stack', name: 'Bell curves stacked', note: 'Three bells centered on the same x — successive waves all peaking on the present.' },
+      { id: 'wave-logistic', name: 'Logistics rightward', note: 'Three logistic adoption curves shifted right. Each wave\'s saturation comes later.' },
+      { id: 'wave-skew', name: 'Skewed adoption', note: 'Two right-skewed curves — fast peak, long tail. The realistic shape of innovation diffusion.' },
+      { id: 'wave-arch', name: 'Receding arches', note: 'Three concentric semicircles. Architectural, monumental — innovation as a built form.' },
+      { id: 'wave-dome', name: 'Concentric domes', note: 'Three nested domes; tallest is widest. Reads as canopy or aurora.' },
+      { id: 'wave-hill', name: 'Receding hills', note: 'Three rolling hill silhouettes. Pastoral, organic, geological time.' },
+      { id: 'wave-crescent', name: 'Crescent waves', note: 'Three rising crescents. Lyrical, almost calligraphic.' },
     ],
   },
   {
-    family: 'Lattice variations',
-    baseId: 'lattice',
-    intro: 'Five arrangements of dots — different stories about adoption, diffusion, and frontier.',
+    name: 'C · Concentric & radial',
+    intro: 'Innovation as something that radiates from a source. Ripples, sonar pings, broadcast arcs — the metaphor of diffusion through space.',
     items: [
-      { id: 'lattice-path', name: 'Diagonal path', note: 'Faint full lattice with a lit BL→TR diagonal. The frontier as a path you walk.' },
-      { id: 'lattice-spread', name: 'Spread from origin', note: 'Brightness fades from BL outward — diffusion across a population.' },
-      { id: 'lattice-hex', name: 'Hex with centre', note: 'Hexagonal cluster, central node bright. Honeycomb — Christaller / market areas.' },
-      { id: 'lattice-ring', name: 'Ring + centre', note: 'Six nodes on a ring with one bright node + centre. Network with a pivot.' },
-      { id: 'lattice-pulse', name: 'Central pulse', note: 'Lattice grid with a haloed central node. A shock, a regional centre, a hub.' },
+      { id: 'wave-ripple', name: 'Ripple from edge', note: 'Three half-arcs opening rightward from a source dot. Pure ripple imagery.' },
+      { id: 'wave-pulse', name: 'Pulse from centre', note: 'Concentric circles around a central dot. Symmetric, broadcast in all directions.' },
+      { id: 'wave-sonar', name: 'Sonar ping', note: 'Quarter-arcs from the bottom-left corner. Active scanning, exploration.' },
+      { id: 'wave-halo', name: 'Concentric halo', note: 'Nested ellipses — a vertical halo. Reads as aura, light source.' },
+      { id: 'wave-orbit', name: 'Orbit', note: 'Three rotated orbits crossing through a central node. Reads as atom, planetary motion, hub.' },
+      { id: 'wave-radial', name: 'Radial fan', note: 'Five lines fanning from a corner point. Reads as searchlight, lighthouse, attention.' },
+      { id: 'wave-burst', name: 'Sunburst', note: 'Twelve rays from centre, alternating weight. Maximum dispersal, maximum energy.' },
+      { id: 'wave-echo', name: 'Echo trail', note: 'Four overlapping circles marching rightward; opacity ramps up. Reads as motion blur, echo.' },
+      { id: 'wave-shock', name: 'Shockwave', note: 'Central dot with concentric shock rings, dashed. Reads as detonation, sudden impact.' },
+      { id: 'wave-broadcast', name: 'Broadcast antenna', note: 'Vertical antenna with three radiating arcs above. Literal broadcast metaphor.' },
     ],
   },
   {
-    family: 'Frontier (PPF) variations',
-    baseId: 'frontier',
-    intro: 'Five takes on the production possibility frontier.',
+    name: 'D · Sine & oscillating',
+    intro: 'Innovation as oscillation, cycle, frequency. Schumpeter, Kondratiev, signal processing.',
     items: [
-      { id: 'frontier-ticks', name: 'Ticked axes', note: 'PPF arc with proper axis ticks. Reads more textbook-like than the bare version.' },
-      { id: 'frontier-dual', name: 'Inner + outer', note: 'Two frontiers, the outer expanded — captures growth / technology improvement, not static trade-off.' },
-      { id: 'frontier-radial', name: 'Radial guide', note: 'Dashed line from origin out to the chosen point — emphasises the choice on the frontier.' },
-      { id: 'frontier-segments', name: 'Segmented', note: 'Polyline of three segments with a node at the kink. Reads as discrete options rather than a smooth curve.' },
-      { id: 'frontier-shaded', name: 'Shaded feasible region', note: 'Faint fill under the frontier — the feasible set, with the chosen efficient point on the boundary.' },
-    ],
-  },
-];
-
-// ── Round 4: more cross + new families ──
-const round4: { family: string; intro: string; items: { id: Id; name: string; note: string }[] }[] = [
-  {
-    family: 'Cross — 10 more',
-    intro: 'Building on your two favourites — shift and axes — plus the rest of the chartroom: tax wedges, price controls, elasticity, cobweb adjustment, and the monopoly diagram.',
-    items: [
-      { id: 'cross-shift-axes', name: 'Shift on full axes', note: 'Combines the two you liked: full P/Q axes, dotted equilibrium guides for both old and new equilibria, faded original demand and a solid shifted one.' },
-      { id: 'cross-double-shift', name: 'Both curves shift', note: 'Supply and demand both shift right. Two equilibria — old (faded) and new (bright). The general-equilibrium move.' },
-      { id: 'cross-supply-shift', name: 'Supply shock', note: 'Supply curve shifts left (cost shock); demand stays. New equilibrium up and to the left.' },
-      { id: 'cross-elastic', name: 'Elastic demand', note: 'Steep supply meets a nearly flat demand — small price moves, large quantity response.' },
-      { id: 'cross-inelastic', name: 'Inelastic demand', note: 'Flat supply meets a near-vertical demand — necessities, addiction, tax-policy favourite.' },
-      { id: 'cross-tax-wedge', name: 'Tax wedge', note: 'Vertical bracket between the two curves at equilibrium quantity. Captures incidence in one stroke.' },
-      { id: 'cross-ceiling', name: 'Price ceiling', note: 'Dashed horizontal line below the equilibrium with a downward cap tick — rent control, price caps.' },
-      { id: 'cross-floor', name: 'Price floor', note: 'Dashed horizontal line above the equilibrium with an upward floor tick — minimum wage, agricultural floors.' },
-      { id: 'cross-trace', name: 'Cobweb adjustment', note: 'A faint stair-step path spiralling into the equilibrium dot. Dynamic adjustment, expectations.' },
-      { id: 'cross-monopoly', name: 'Monopoly diagram', note: 'Demand, marginal revenue, marginal cost, and the monopoly price — the textbook market-power picture.' },
+      { id: 'wave-sine', name: 'Sine wave', note: 'A single clean sine. The most abstract, the most universal.' },
+      { id: 'wave-sine-stack', name: 'Three sines stacked', note: 'Three parallel sines. Layered cycles — short, medium, long waves co-existing.' },
+      { id: 'wave-sine-grow', name: 'Growing amplitude', note: 'Sine with amplitude rising left→right. Each cycle larger than the last.' },
+      { id: 'wave-sine-freq', name: 'Rising frequency', note: 'Sine with frequency increasing rightward. Acceleration of innovation cycles — the Kurzweil reading.' },
+      { id: 'wave-cycle', name: 'Long wave', note: 'One full Kondratiev cycle — peak, trough — with phase markers. Schumpeterian.' },
+      { id: 'wave-double', name: 'Double sine', note: 'Two interleaved sines. Two competing or complementary cycles.' },
+      { id: 'wave-pulse-train', name: 'Square pulses', note: 'Square-wave pulses. Digital, on/off, binary-paradigm waves.' },
+      { id: 'wave-zigzag', name: 'Sawtooth', note: 'Three sawtooth peaks. Sharp rises, instant resets — boom-bust pattern.' },
+      { id: 'wave-damped', name: 'Damped oscillation', note: 'Big amplitude left, decaying right. Innovation that overshoots then settles.' },
+      { id: 'wave-beat', name: 'Beat pattern', note: 'Two close-frequency sines superimposed. Interference between competing waves.' },
     ],
   },
   {
-    family: 'Innovation',
-    intro: 'Adoption, generations, branching, recombination, disruption.',
+    name: 'E · Metaphorical',
+    intro: 'Pictorial readings: tsunami, strata, mountain, tide, river, spectrum. Less chart, more icon.',
     items: [
-      { id: 'inno-sigmoid', name: 'Adoption S-curve', note: 'Classic Bass / Rogers diffusion S with three phase markers. Slow start, takeoff, saturation.' },
-      { id: 'inno-leap', name: 'Generational leaps', note: 'Three rising plateaus — each generation a step change, not a smooth gradient.' },
-      { id: 'inno-fork', name: 'Branching tree', note: 'Path dependence: a trunk forks into options that fork again. Spinoffs, lineages.' },
-      { id: 'inno-recombine', name: 'Recombination', note: 'Two streams merge into one. Innovation as combinatorial — old ideas joined in new ways.' },
-      { id: 'inno-disrupt', name: 'Disruption crossover', note: 'Flat incumbent line crossed by a rising entrant curve. Christensen in one diagram.' },
-    ],
-  },
-  {
-    family: 'Financial',
-    intro: 'Yield curves, candlesticks, volatility, spreads, drawdowns.',
-    items: [
-      { id: 'fin-yield', name: 'Yield curve', note: 'Concave-rising curve with three tenor dots. Term structure of rates.' },
-      { id: 'fin-candle', name: 'Candlesticks', note: 'Three OHLC candles — hollow down, solid up. The trader\'s native chart.' },
-      { id: 'fin-volatility', name: 'Volatility zigzag', note: 'Sharp oscillation around a dotted mean. Risk, dispersion, the unhelpful day.' },
-      { id: 'fin-spread', name: 'Bid-ask spread', note: 'Two rails — ask above, bid below — diverging in the middle and converging at the edges.' },
-      { id: 'fin-drawdown', name: 'Drawdown', note: 'Peak, trough, partial recovery. Dotted lines mark the maximum drop.' },
-    ],
-  },
-  {
-    family: 'Econometric',
-    intro: 'OLS, confidence intervals, residuals, IV, diff-in-diff.',
-    items: [
-      { id: 'econ-scatter', name: 'OLS regression', note: 'Scatter plot with a fitted line through it. The first thing you draw in any empirical paper.' },
-      { id: 'econ-ci', name: 'Coefficients with CIs', note: 'Three point estimates with whisker confidence intervals against a null line. The core of any results table.' },
-      { id: 'econ-residual', name: 'Residuals', note: 'Vertical sticks above and below the zero line — model fit, heteroskedasticity, white noise.' },
-      { id: 'econ-iv', name: 'Instrumental variable', note: 'Z → X → Y arrows with a dashed unobserved confounder arc. Causal identification in one glyph.' },
-      { id: 'econ-did', name: 'Difference-in-differences', note: 'Parallel pre-treatment lines, kink at treatment, gap arrow at the right edge. The treatment effect made visible.' },
-    ],
-  },
-  {
-    family: 'Behavioural',
-    intro: 'Loss aversion, anchoring, hyperbolic discounting, framing, herding.',
-    items: [
-      { id: 'beh-loss', name: 'Prospect-theory value', note: 'Concave on gains, convex and steeper on losses. Kahneman & Tversky in one curve.' },
-      { id: 'beh-anchor', name: 'Anchoring', note: 'A dashed anchor line and a point pulled toward it from below. Judgement biased by the suggested value.' },
-      { id: 'beh-hyperbolic', name: 'Hyperbolic discounting', note: 'Two discount curves — exponential faded, hyperbolic solid. Why we choose differently for "today" than "tomorrow".' },
-      { id: 'beh-frame', name: 'Framing', note: 'Two identical dots in two identical frames, labelled differently (+ vs −). Same outcome, different decision.' },
-      { id: 'beh-herd', name: 'Herding', note: 'A leader arrow with a cluster of follower dots trailing behind. Social proof, cascades, bubbles.' },
-    ],
-  },
-  {
-    family: 'Probability',
-    intro: 'Normal distribution, joint probability, decision tree, random walk, tail risk.',
-    items: [
-      { id: 'prob-bell', name: 'Bell curve', note: 'Standard normal with a mean tick. The most-drawn curve in statistics.' },
-      { id: 'prob-bayes', name: 'Joint probability', note: 'Two overlapping circles with a shaded lens — Venn for P(A∩B), Bayes\' update.' },
-      { id: 'prob-tree', name: 'Decision tree', note: 'Root → two branches → four leaves. Conditional probabilities, decision analysis.' },
-      { id: 'prob-walk', name: 'Random walk', note: 'Zigzag drifting away from a dashed origin line. Stochastic processes, efficient markets.' },
-      { id: 'prob-tail', name: 'Tail risk', note: 'Bell curve with a shaded right tail past a threshold tick. VaR, fat tails, the things that matter most.' },
-    ],
-  },
-];
-
-// ── Round 5: more econometric + 10 innovation-as-market-shift × {bare, axes} ──
-const round5: { family: string; intro: string; items: { id: Id; name: string; note: string }[] }[] = [
-  {
-    family: 'Econometric — 10 more',
-    intro: 'Beyond the basics: causal designs, panel structure, scale tricks, distributional fits, dynamic responses.',
-    items: [
-      { id: 'econ-rdd', name: 'Regression discontinuity', note: 'Cutoff line with a clean jump in the fitted means on either side. The cleanest natural experiment we have.' },
-      { id: 'econ-panel', name: 'Panel data', note: 'Three near-parallel time series — units tracked over time. The workhorse of micro-empirics.' },
-      { id: 'econ-fe', name: 'Fixed effects', note: 'Three unit-mean dashes with scatter around each. Within-variation only — the FE intuition in one glyph.' },
-      { id: 'econ-loglog', name: 'Log-log elasticity', note: 'Gridded box with a straight diagonal line. Constant-elasticity models live here.' },
-      { id: 'econ-quantile', name: 'Quantile regression', note: 'Three fitted lines through one cloud — 10/50/90. Distributional, not just mean effects.' },
-      { id: 'econ-fan', name: 'Forecast fan chart', note: 'History rises into a widening cone. Bank-of-England-style uncertainty over time.' },
-      { id: 'econ-acf', name: 'Autocorrelation function', note: 'Lollipop spikes with dashed CI bounds — decaying autocorrelation, the time-series first look.' },
-      { id: 'econ-roc', name: 'ROC curve', note: 'Unit-square curve bowed up-left of the diagonal. Classifier evaluation, sensitivity vs specificity.' },
-      { id: 'econ-event', name: 'Event study', note: 'Coefficients per period with whiskers; vertical line at t=0. Pre-trends flat, post-treatment lifts.' },
-      { id: 'econ-irf', name: 'Impulse response', note: 'Spike then a damped, oscillating tail. The VAR macro lens for shock propagation.' },
-    ],
-  },
-  {
-    family: 'Innovation as market shift — without axes',
-    intro: 'Ten ways innovation reshapes a market, drawn as supply/demand moves. Bare versions read as compact glyphs.',
-    items: [
-      { id: 'inno-expand', name: 'Expand demand', note: 'D shifts outward in parallel — innovation grows the market without changing slope. New product, new customers.' },
-      { id: 'inno-flatten', name: 'Flatten demand', note: 'D pivots flatter — substitutes, transparency, commoditisation make consumers more elastic.' },
-      { id: 'inno-cheapen', name: 'Cheapen supply', note: 'S shifts down — process innovation lowers cost, lower price, more quantity.' },
-      { id: 'inno-create', name: 'Create market', note: 'Equilibrium pops into being where there was no curve before. Category creation; spark detail.' },
-      { id: 'inno-wave', name: 'Innovation waves', note: 'Three D positions, faintest oldest. Successive innovations push demand outward over time.' },
-      { id: 'inno-paradigm', name: 'Paradigm shift', note: 'Linear D fades; a curved D replaces it. Not just a shift — a different shape entirely.' },
-      { id: 'inno-ratchet', name: 'Cost ratchet', note: 'Three S positions falling like a ratchet. Continuous process improvement, learning curves.' },
-      { id: 'inno-network-eff', name: 'Network effects', note: 'D shifts outward with accelerating gap; equilibrium becomes a hub of small linked nodes.' },
-      { id: 'inno-platform', name: 'Two-sided platform', note: 'Both S and D shift outward together — platforms unlock supply and demand simultaneously.' },
-      { id: 'inno-converge', name: 'Market convergence', note: 'Two markets, two equilibria, dotted arrow pulling them toward each other. Cross-industry innovation.' },
-    ],
-  },
-  {
-    family: 'Innovation as market shift — with axes',
-    intro: 'Same ten concepts, drawn as full P/Q charts with dotted equilibrium guides. Reads as textbook figure rather than glyph.',
-    items: [
-      { id: 'inno-expand-ax', name: 'Expand demand · axes', note: 'Parallel D shift with both equilibria projected to the axes.' },
-      { id: 'inno-flatten-ax', name: 'Flatten demand · axes', note: 'D pivots flatter; new equilibrium at lower P, higher Q.' },
-      { id: 'inno-cheapen-ax', name: 'Cheapen supply · axes', note: 'S shifts down; new equilibrium drops along D to lower P, higher Q.' },
-      { id: 'inno-create-ax', name: 'Create market · axes', note: 'A single equilibrium dropped onto a fresh chart with axis projections.' },
-      { id: 'inno-wave-ax', name: 'Innovation waves · axes', note: 'Three D positions inside a clean P/Q frame.' },
-      { id: 'inno-paradigm-ax', name: 'Paradigm shift · axes', note: 'Curved replacement D with new equilibrium projected to axes.' },
-      { id: 'inno-ratchet-ax', name: 'Cost ratchet · axes', note: 'Stair-step S falls; equilibrium walks along D and projects to axes.' },
-      { id: 'inno-network-eff-ax', name: 'Network effects · axes', note: 'Accelerating D shifts inside the chart frame, with axis projection.' },
-      { id: 'inno-platform-ax', name: 'Two-sided platform · axes', note: 'Both curves shift outward; new equilibrium projected to axes.' },
-      { id: 'inno-converge-ax', name: 'Market convergence · axes', note: 'Two mini-equilibria with the convergence arrow inside a single P/Q frame.' },
+      { id: 'wave-tsunami', name: 'Tsunami', note: 'Trough then towering crest. Disruptive innovation as a single overwhelming wave.' },
+      { id: 'wave-strata', name: 'Geological strata', note: 'Four horizontal bands. Innovation as sedimentary layers, history accumulating.' },
+      { id: 'wave-mountain', name: 'Mountain ranges', note: 'Three receding ridge lines. Depth-of-field landscape — past waves still visible.' },
+      { id: 'wave-tide', name: 'Tide ridges', note: 'Three gentle horizontal sine ridges. Calm, reliable, periodic.' },
+      { id: 'wave-crest', name: 'Breaking crests', note: 'Three breaking-wave shapes rising. Surfer-friendly, kinetic.' },
+      { id: 'wave-spectrum', name: 'Spectrum bars', note: 'Seven vertical bars rising left→right. Equaliser, audio-spectrum, energy bands.' },
+      { id: 'wave-cascade', name: 'Cascade staircase', note: 'Descending step function. Innovation as cost staircase falling over time.' },
+      { id: 'wave-river', name: 'Meandering river', note: 'A single sinuous line. Innovation as a flow with a memory of its path.' },
+      { id: 'wave-pillar', name: 'Rising pillars', note: 'Four bars of growing height with a dashed trendline. Reads as forecast, accumulated capacity.' },
+      { id: 'wave-pulse-dot', name: 'Pulse + traveller', note: 'Flatline, then a single ECG-style pulse, then a dot continuing. Innovation as a single discrete event in a stream.' },
     ],
   },
 ];
 ---
 
-<BaseLayout
-  seo={{ title: 'Mark sketches · scratch', description: 'Internal preview, not for navigation.' }}
->
-  <Fragment slot="head"><meta name="robots" content="noindex,nofollow" /></Fragment>
+<BaseLayout seo={{ title: 'Marks · waves', description: 'Scratch page exploring 50 logo variations of the innovation-waves concept.' }}>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex,nofollow" />
+  </Fragment>
 
   <section class="container section">
     <header data-reveal>
-      <p class="eyebrow">Scratch · internal preview</p>
-      <h1>Site mark candidates.</h1>
+      <p class="eyebrow">Round 6 · innovation waves, 50 ways</p>
+      <h1>Fifty variations on a single idea: innovation arrives in waves.</h1>
       <p class="lead">
-        Four concepts at four sizes, on light and dark, with header pairing. Pick one and the next round
-        rolls it out to the header, footer, favicon, OG image, and 404. All marks are monochrome and
-        inherit <code>currentColor</code>; the &ldquo;dark&rdquo; preview just sets a dark background.
+        Same concept — innovation as successive market shifts — fifty visual treatments. Five families
+        of ten: classical S/D shifts, function-shape curves, concentric/radial diffusion,
+        sine/oscillation, and metaphorical icons. Reply with any <code>id</code> to lock or hybridise.
       </p>
     </header>
 
-    {concepts.map((c) => (
-      <section class="block" data-reveal>
-        <header class="block-head">
-          <p class="block-eyebrow">Candidate · <code>{c.id}</code></p>
-          <h2>{c.name}</h2>
-          <p class="block-note">{c.note}</p>
+    {families.map((fam) => (
+      <section class="family" data-reveal>
+        <header class="family-head">
+          <p class="block-eyebrow">{fam.name}</p>
+          <p class="family-intro">{fam.intro}</p>
         </header>
 
-        <div class="row">
-          <div class="surface light">
-            <p class="surface-label">Light · ink</p>
-            <div class="sizes">
-              {sizes.map((s) => (
-                <div class="size-cell">
-                  <Mark id={c.id} size={s} />
-                  <span class="size-label">{s}px</span>
+        <div class="grid">
+          {fam.items.map((it) => (
+            <article class="card">
+              <div class="hero light">
+                <Mark id={it.id} size={72} />
+              </div>
+              <div class="meta">
+                <p class="name">{it.name}</p>
+                <p class="id"><code>{it.id}</code></p>
+                <p class="note">{it.note}</p>
+                <div class="sizes">
+                  <Mark id={it.id} size={16} />
+                  <Mark id={it.id} size={28} />
+                  <span class="dark"><Mark id={it.id} size={28} /></span>
                 </div>
-              ))}
-            </div>
-            <div class="pair">
-              <Mark id={c.id} size={28} />
-              <span class="wordmark">Tsholo Setati</span>
-            </div>
-          </div>
-
-          <div class="surface dark">
-            <p class="surface-label">Dark · paper</p>
-            <div class="sizes">
-              {sizes.map((s) => (
-                <div class="size-cell">
-                  <Mark id={c.id} size={s} />
-                  <span class="size-label">{s}px</span>
-                </div>
-              ))}
-            </div>
-            <div class="pair">
-              <Mark id={c.id} size={28} />
-              <span class="wordmark">Tsholo Setati</span>
-            </div>
-          </div>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
     ))}
 
-    <section class="round" data-reveal>
-      <header class="round-head">
-        <p class="eyebrow">Round 3 · variations</p>
-        <h2>Five takes each on cross, inflection, lattice, and frontier.</h2>
-        <p class="round-lead">
-          Same four families, pushed in different directions — adding axes, motion, area fills,
-          shifts, halos, grids. Reply with the id of any variant you want me to refine, combine, or take to Phase 2.
-        </p>
-      </header>
-
-      {variations.map((v) => (
-        <div class="family">
-          <header class="family-head">
-            <p class="block-eyebrow">{v.family} · base <code>{v.baseId}</code></p>
-            <p class="family-intro">{v.intro}</p>
-          </header>
-
-          <div class="variant-grid">
-            {v.items.map((vi) => (
-              <article class="variant">
-                <div class="variant-surface light">
-                  <Mark id={vi.id} size={64} />
-                </div>
-                <div class="variant-meta">
-                  <p class="variant-name">{vi.name}</p>
-                  <p class="variant-id"><code>{vi.id}</code></p>
-                  <p class="variant-note">{vi.note}</p>
-                  <div class="variant-sizes">
-                    <Mark id={vi.id} size={16} />
-                    <Mark id={vi.id} size={28} />
-                    <span class="dark-chip"><Mark id={vi.id} size={28} /></span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      ))}
-    </section>
-
-    <section class="round" data-reveal>
-      <header class="round-head">
-        <p class="eyebrow">Round 4 · cross deep-dive + new families</p>
-        <h2>Ten more cross variants, plus innovation, financial, econometric, behavioural, and probability sets.</h2>
-        <p class="round-lead">
-          Five each across five new families — 35 marks total. Reply with any id to lock in,
-          combine, or iterate further.
-        </p>
-      </header>
-
-      {round4.map((v) => (
-        <div class="family">
-          <header class="family-head">
-            <p class="block-eyebrow">{v.family}</p>
-            <p class="family-intro">{v.intro}</p>
-          </header>
-
-          <div class="variant-grid">
-            {v.items.map((vi) => (
-              <article class="variant">
-                <div class="variant-surface light">
-                  <Mark id={vi.id} size={64} />
-                </div>
-                <div class="variant-meta">
-                  <p class="variant-name">{vi.name}</p>
-                  <p class="variant-id"><code>{vi.id}</code></p>
-                  <p class="variant-note">{vi.note}</p>
-                  <div class="variant-sizes">
-                    <Mark id={vi.id} size={16} />
-                    <Mark id={vi.id} size={28} />
-                    <span class="dark-chip"><Mark id={vi.id} size={28} /></span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      ))}
-    </section>
-
-    <section class="round" data-reveal>
-      <header class="round-head">
-        <p class="eyebrow">Round 5 · econometric depth + market-shift innovation</p>
-        <h2>Ten more econometric, plus innovation drawn as market shifts — bare and with axes.</h2>
-        <p class="round-lead">
-          Ten more econometric tools (RDD, panel, FE, log-log, quantile, fan, ACF, ROC, event study, IRF).
-          Then ten ways innovation reshapes a market — each in two flavours: clean glyph and full chart.
-        </p>
-      </header>
-
-      {round5.map((v) => (
-        <div class="family">
-          <header class="family-head">
-            <p class="block-eyebrow">{v.family}</p>
-            <p class="family-intro">{v.intro}</p>
-          </header>
-
-          <div class="variant-grid">
-            {v.items.map((vi) => (
-              <article class="variant">
-                <div class="variant-surface light">
-                  <Mark id={vi.id} size={64} />
-                </div>
-                <div class="variant-meta">
-                  <p class="variant-name">{vi.name}</p>
-                  <p class="variant-id"><code>{vi.id}</code></p>
-                  <p class="variant-note">{vi.note}</p>
-                  <div class="variant-sizes">
-                    <Mark id={vi.id} size={16} />
-                    <Mark id={vi.id} size={28} />
-                    <span class="dark-chip"><Mark id={vi.id} size={28} /></span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      ))}
-    </section>
-
     <p class="hint">
-      <code>/marks-preview</code> is unlisted (noindex, not in nav). Reply with the chosen concept id and I&rsquo;ll roll it out.
+      <code>/marks-preview</code> is unlisted (noindex, not in nav). Reply with the chosen id and I&rsquo;ll roll it out.
     </p>
   </section>
 </BaseLayout>
 
 <style>
-  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
   h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
   .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 3rem; line-height: 1.6; }
   code { font-family: var(--font-mono); font-size: 0.88em; background: var(--color-surface-sunken); padding: 0.05em 0.35em; border-radius: var(--radius-xs); }
 
-  .block { margin: 0 0 3rem; padding: 0 0 3rem; border-bottom: 1px solid var(--color-border-subtle); }
-  .block:last-of-type { border-bottom: 0; }
-  .block-head { margin: 0 0 1.5rem; }
-  .block-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.4rem; }
-  .block h2 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 500; margin: 0 0 0.5rem; line-height: 1.2; }
-  .block-note { color: var(--color-ink-secondary); margin: 0; line-height: 1.55; max-width: 65ch; font-size: 0.95rem; }
+  .family { margin: 0 0 4rem; }
+  .family-head { margin: 0 0 1.5rem; padding: 0 0 1rem; border-bottom: 1px solid var(--color-border-subtle); }
+  .block-eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-accent); margin: 0 0 0.4rem; }
+  .family-intro { color: var(--color-ink-secondary); margin: 0; max-width: 70ch; line-height: 1.55; font-size: var(--font-sm); }
 
-  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.25rem; }
-  .surface { padding: 1.5rem; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
-  .surface.light { background: var(--color-surface-base); color: var(--color-ink-primary); }
-  .surface.dark { background: #0f172a; color: #fafafa; border-color: rgba(250,250,250,0.08); }
-  .surface-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.55; margin: 0 0 1.25rem; }
+  .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 
-  .sizes {
-    display: flex;
-    align-items: flex-end;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    padding: 0 0 1.25rem;
-    border-bottom: 1px dashed color-mix(in oklab, currentColor 18%, transparent);
-    margin-bottom: 1.25rem;
-  }
-  .size-cell { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
-  .size-label { font-family: var(--font-mono); font-size: 0.66rem; opacity: 0.55; }
+  .card { display: flex; flex-direction: column; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); overflow: hidden; background: var(--color-surface); }
 
-  .pair { display: flex; align-items: center; gap: 0.7rem; }
-  .wordmark { font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; letter-spacing: -0.01em; }
+  .hero { display: flex; align-items: center; justify-content: center; padding: 1.5rem; min-height: 110px; }
+  .hero.light { background: #fafaf7; color: #111; }
 
-  .hint { margin-top: 3rem; color: var(--color-ink-tertiary); font-size: 0.9rem; }
+  .meta { padding: 0.85rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .name { font-family: var(--font-display); font-size: var(--font-md); margin: 0; }
+  .id { font-size: var(--font-xs); color: var(--color-ink-tertiary); margin: 0; }
+  .note { font-size: var(--font-xs); color: var(--color-ink-secondary); margin: 0.2rem 0 0.6rem; line-height: 1.45; }
 
-  /* Round 3 — variations */
-  .round { margin-top: 4rem; padding-top: 3rem; border-top: 2px solid var(--color-border-strong, var(--color-border-subtle)); }
-  .round-head { margin: 0 0 2.5rem; }
-  .round-head h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 500; margin: 0.4rem 0 0.75rem; line-height: 1.2; }
-  .round-lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0; line-height: 1.6; }
+  .sizes { display: flex; align-items: center; gap: 0.6rem; margin-top: auto; padding-top: 0.4rem; border-top: 1px dashed var(--color-border-subtle); color: var(--color-ink-secondary); }
+  .dark { display: inline-flex; padding: 0.25rem 0.4rem; background: #111; color: #fafaf7; border-radius: var(--radius-xs); }
 
-  .family { margin: 0 0 3rem; }
-  .family-head { margin: 0 0 1.25rem; }
-  .family-intro { color: var(--color-ink-secondary); margin: 0.4rem 0 0; line-height: 1.55; max-width: 65ch; font-size: 0.95rem; }
-
-  .variant-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1rem;
-  }
-  .variant {
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    background: var(--color-surface-base);
-    color: var(--color-ink-primary);
-    display: flex;
-    flex-direction: column;
-  }
-  .variant-surface {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.75rem 1rem;
-    background: var(--color-surface-sunken);
-    border-bottom: 1px solid var(--color-border-subtle);
-    min-height: 120px;
-  }
-  .variant-meta { padding: 1rem 1.1rem 1.1rem; display: flex; flex-direction: column; gap: 0.4rem; }
-  .variant-name { font-family: var(--font-display); font-weight: 500; font-size: 1rem; margin: 0; }
-  .variant-id { margin: 0; font-size: 0.75rem; color: var(--color-ink-tertiary); }
-  .variant-note { margin: 0.2rem 0 0.6rem; color: var(--color-ink-secondary); font-size: 0.85rem; line-height: 1.5; }
-  .variant-sizes {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    padding-top: 0.75rem;
-    border-top: 1px dashed var(--color-border-subtle);
-  }
-  .dark-chip {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: var(--radius-sm);
-    background: #0f172a;
-    color: #fafafa;
-  }
+  .hint { margin: 3rem 0 0; color: var(--color-ink-tertiary); font-size: var(--font-sm); }
 </style>

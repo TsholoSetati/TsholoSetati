@@ -51,7 +51,18 @@ type MarkId =
   | 'inno-ratchet' | 'inno-ratchet-ax'
   | 'inno-network-eff' | 'inno-network-eff-ax'
   | 'inno-platform' | 'inno-platform-ax'
-  | 'inno-converge' | 'inno-converge-ax';
+  | 'inno-converge' | 'inno-converge-ax'
+  // Round 6 — 50 innovation wave variations
+  | 'wave-trio' | 'wave-quad' | 'wave-quintet' | 'wave-fade' | 'wave-bold'
+  | 'wave-arrow' | 'wave-time' | 'wave-eq-trail' | 'wave-axes' | 'wave-spread'
+  | 'wave-scurve' | 'wave-scurve-fade' | 'wave-bell' | 'wave-bell-stack' | 'wave-logistic'
+  | 'wave-skew' | 'wave-arch' | 'wave-dome' | 'wave-hill' | 'wave-crescent'
+  | 'wave-ripple' | 'wave-pulse' | 'wave-sonar' | 'wave-halo' | 'wave-orbit'
+  | 'wave-radial' | 'wave-burst' | 'wave-echo' | 'wave-shock' | 'wave-broadcast'
+  | 'wave-sine' | 'wave-sine-stack' | 'wave-sine-grow' | 'wave-sine-freq' | 'wave-cycle'
+  | 'wave-double' | 'wave-pulse-train' | 'wave-zigzag' | 'wave-damped' | 'wave-beat'
+  | 'wave-tsunami' | 'wave-strata' | 'wave-mountain' | 'wave-tide' | 'wave-crest'
+  | 'wave-spectrum' | 'wave-cascade' | 'wave-river' | 'wave-pillar' | 'wave-pulse-dot';
 
 interface Props {
   id: MarkId;
@@ -1538,5 +1549,468 @@ const common = {
     <line x1="13" y1="13" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
     <circle cx="16.5" cy="16" r={sw * 1.1} fill="currentColor" />
     <path d="M9.5 11.5 L 14.5 14.5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-dasharray="1.2 1.4" opacity="0.6" />
+  </svg>
+)}
+
+{/* ═══════════════════════════════════════════════════════════════
+    Round 6 — 50 Innovation Wave variations
+    50 takes on the same idea: innovation arrives in successive waves.
+    Categories: A. Shifts · B. Curves & bells · C. Concentric/radial
+                D. Sine/oscillating · E. Metaphorical
+    ═══════════════════════════════════════════════════════════════ */}
+
+{/* ─── A. Shift variants (10) ─── */}
+
+{id === 'wave-trio' && (
+  <svg {...common}>
+    <line x1="3" y1="7" x2="16" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.22" />
+    <line x1="6" y1="5" x2="19" y2="18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="15.4" cy="9.6" r={sw * 1.2} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-quad' && (
+  <svg {...common}>
+    <line x1="1" y1="9" x2="13" y2="21" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.15" />
+    <line x1="4" y1="7" x2="16" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="7" y1="5" x2="19" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.55" />
+    <line x1="10" y1="3" x2="22" y2="15" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'wave-quintet' && (
+  <svg {...common}>
+    <line x1="-1" y1="11" x2="11" y2="23" stroke="currentColor" stroke-width={sw * 0.85} stroke-linecap="round" opacity="0.12" />
+    <line x1="2" y1="9" x2="14" y2="21" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" opacity="0.25" />
+    <line x1="5" y1="7" x2="17" y2="19" stroke="currentColor" stroke-width={sw * 0.95} stroke-linecap="round" opacity="0.45" />
+    <line x1="8" y1="5" x2="20" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.7" />
+    <line x1="11" y1="3" x2="23" y2="15" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'wave-fade' && (
+  <svg {...common}>
+    <line x1="-2" y1="13" x2="9" y2="24" stroke="currentColor" stroke-width={sw * 0.85} stroke-linecap="round" opacity="0.08" />
+    <line x1="0" y1="11" x2="11" y2="22" stroke="currentColor" stroke-width={sw * 0.85} stroke-linecap="round" opacity="0.14" />
+    <line x1="2" y1="9" x2="13" y2="20" stroke="currentColor" stroke-width={sw * 0.85} stroke-linecap="round" opacity="0.22" />
+    <line x1="4" y1="7" x2="15" y2="18" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" opacity="0.32" />
+    <line x1="6" y1="5" x2="17" y2="16" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" opacity="0.45" />
+    <line x1="8" y1="3" x2="19" y2="14" stroke="currentColor" stroke-width={sw * 0.95} stroke-linecap="round" opacity="0.6" />
+    <line x1="10" y1="2" x2="21" y2="13" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.8" />
+    <line x1="12" y1="1" x2="23" y2="12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'wave-bold' && (
+  <svg {...common}>
+    <line x1="3" y1="7" x2="16" y2="20" stroke="currentColor" stroke-width={sw * 1.15} stroke-linecap="round" />
+    <line x1="6" y1="5" x2="19" y2="18" stroke="currentColor" stroke-width={sw * 1.15} stroke-linecap="round" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw * 1.15} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'wave-arrow' && (
+  <svg {...common}>
+    <line x1="3" y1="7" x2="16" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.3" />
+    <line x1="6" y1="5" x2="19" y2="18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.55" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="6" y1="2" x2="20" y2="2" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.75" />
+    <path d="M18.5 0.7 L 20 2 L 18.5 3.3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.75" />
+  </svg>
+)}
+
+{id === 'wave-time' && (
+  <svg {...common}>
+    <line x1="3" y1="7" x2="14" y2="18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.3" />
+    <line x1="6" y1="5" x2="17" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.55" />
+    <line x1="9" y1="3" x2="20" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="3" y1="22" x2="21" y2="22" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.5" />
+    <line x1="7" y1="21" x2="7" y2="23" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.5" />
+    <line x1="13" y1="21" x2="13" y2="23" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.5" />
+    <line x1="19" y1="21" x2="19" y2="23" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.5" />
+  </svg>
+)}
+
+{id === 'wave-eq-trail' && (
+  <svg {...common}>
+    <line x1="3" y1="7" x2="16" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.25" />
+    <line x1="6" y1="5" x2="19" y2="18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="9" y1="3" x2="22" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <path d="M9.5 13.5 L 12.5 11.5 L 15.4 9.6" stroke="currentColor" stroke-width="0.6" stroke-linecap="round" stroke-dasharray="0.8 1.2" opacity="0.55" fill="none" />
+    <circle cx="9.5" cy="13.5" r={sw * 0.7} fill="currentColor" opacity="0.35" />
+    <circle cx="12.5" cy="11.5" r={sw * 0.9} fill="currentColor" opacity="0.6" />
+    <circle cx="15.4" cy="9.6" r={sw * 1.2} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-axes' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.35" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.35" />
+    <line x1="5" y1="9" x2="16" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.3" />
+    <line x1="7" y1="6" x2="18" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.55" />
+    <line x1="10" y1="3" x2="21" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="14.5" cy="7.5" r={sw * 1.2} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-spread' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="22" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.3" />
+    <line x1="4" y1="20" x2="22" y2="9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.55" />
+    <line x1="4" y1="20" x2="22" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="4" cy="20" r={sw * 1.2} fill="currentColor" />
+  </svg>
+)}
+
+{/* ─── B. Curves & bells (10) ─── */}
+
+{id === 'wave-scurve' && (
+  <svg {...common}>
+    <path d="M2 19 C 7 19, 8 14, 13 14 C 18 14, 19 9, 22 9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.3" />
+    <path d="M2 17 C 7 17, 8 11, 13 11 C 18 11, 19 6, 22 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.55" />
+    <path d="M2 15 C 7 15, 8 8, 13 8 C 18 8, 19 3, 22 3" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-scurve-fade' && (
+  <svg {...common}>
+    <path d="M2 21 C 7 21, 8 17, 13 17 C 18 17, 19 13, 22 13" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" fill="none" opacity="0.15" />
+    <path d="M2 19 C 7 19, 8 14, 13 14 C 18 14, 19 10, 22 10" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" fill="none" opacity="0.3" />
+    <path d="M2 17 C 7 17, 8 11, 13 11 C 18 11, 19 7, 22 7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.55" />
+    <path d="M2 15 C 7 15, 8 7, 13 7 C 18 7, 19 3, 22 3" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-bell' && (
+  <svg {...common}>
+    <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M1 20 C 4 20, 5 14, 8 14 C 11 14, 12 20, 15 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.3" />
+    <path d="M5 20 C 8 20, 9 11, 12 11 C 15 11, 16 20, 19 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.6" />
+    <path d="M9 20 C 12 20, 13 6, 16 6 C 19 6, 20 20, 23 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-bell-stack' && (
+  <svg {...common}>
+    <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 20 C 6 20, 8 14, 12 14 C 16 14, 18 20, 22 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.3" />
+    <path d="M2 20 C 6 20, 8 10, 12 10 C 16 10, 18 20, 22 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.55" />
+    <path d="M2 20 C 6 20, 8 5, 12 5 C 16 5, 18 20, 22 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-logistic' && (
+  <svg {...common}>
+    <path d="M2 20 C 5 20, 7 18, 9 13 C 11 8, 13 6, 16 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.3" />
+    <path d="M3 20 C 6 20, 8 18, 11 13 C 14 8, 16 6, 19 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.55" />
+    <path d="M5 20 C 8 20, 10 18, 13 13 C 16 8, 18 6, 21 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-skew' && (
+  <svg {...common}>
+    <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 20 C 4 20, 5 13, 7 11 C 9 13, 11 17, 14 19 C 17 19.7, 19 19.9, 22 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.4" />
+    <path d="M2 20 C 5 20, 7 8, 9 6 C 11 8, 13 14, 16 18 C 18 19, 20 19.6, 22 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-arch' && (
+  <svg {...common}>
+    <path d="M3 20 A 9 9 0 0 1 21 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.3" />
+    <path d="M5 20 A 7 7 0 0 1 19 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.55" />
+    <path d="M7 20 A 5 5 0 0 1 17 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-dome' && (
+  <svg {...common}>
+    <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 20 A 10 10 0 0 1 22 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    <path d="M5 20 A 7 7 0 0 1 19 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.6" />
+    <path d="M8 20 A 4 4 0 0 1 16 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.35" />
+  </svg>
+)}
+
+{id === 'wave-hill' && (
+  <svg {...common}>
+    <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 20 Q 6 14, 10 18 T 22 16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.3" />
+    <path d="M2 20 Q 7 11, 12 16 T 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.55" />
+    <path d="M2 20 Q 8 6, 13 12 T 22 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-crescent' && (
+  <svg {...common}>
+    <path d="M3 18 Q 8 8, 13 18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.3" />
+    <path d="M6 14 Q 11 4, 16 14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.55" />
+    <path d="M10 12 Q 15 2, 20 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{/* ─── C. Concentric & radial (10) ─── */}
+
+{id === 'wave-ripple' && (
+  <svg {...common}>
+    <path d="M3 7 A 5 5 0 0 1 3 17" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.3" />
+    <path d="M3 3 A 9 9 0 0 1 3 21" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.55" />
+    <path d="M3 -1 A 13 13 0 0 1 3 25" stroke="currentColor" stroke-width={sw} fill="none" />
+    <circle cx="3" cy="12" r={sw * 1.2} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-pulse' && (
+  <svg {...common}>
+    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.85" />
+    <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.55" />
+    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.3" />
+    <circle cx="12" cy="12" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-sonar' && (
+  <svg {...common}>
+    <path d="M3 16 A 5 5 0 0 0 8 21" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.85" />
+    <path d="M3 12 A 9 9 0 0 0 12 21" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.55" />
+    <path d="M3 8 A 13 13 0 0 0 16 21" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.3" />
+    <circle cx="3" cy="21" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-halo' && (
+  <svg {...common}>
+    <ellipse cx="12" cy="12" rx="3" ry="6" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.85" />
+    <ellipse cx="12" cy="12" rx="6" ry="9" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.55" />
+    <ellipse cx="12" cy="12" rx="9" ry="11" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.3" />
+  </svg>
+)}
+
+{id === 'wave-orbit' && (
+  <svg {...common}>
+    <ellipse cx="12" cy="12" rx="9" ry="3" stroke="currentColor" stroke-width={sw} fill="none" transform="rotate(-30 12 12)" opacity="0.4" />
+    <ellipse cx="12" cy="12" rx="9" ry="3" stroke="currentColor" stroke-width={sw} fill="none" transform="rotate(30 12 12)" opacity="0.7" />
+    <ellipse cx="12" cy="12" rx="9" ry="3" stroke="currentColor" stroke-width={sw} fill="none" />
+    <circle cx="12" cy="12" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-radial' && (
+  <svg {...common}>
+    <line x1="3" y1="21" x2="21" y2="21" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="3" y1="21" x2="20" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.85" />
+    <line x1="3" y1="21" x2="18" y2="8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.6" />
+    <line x1="3" y1="21" x2="14" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.4" />
+    <line x1="3" y1="21" x2="6" y2="3" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.25" />
+    <circle cx="3" cy="21" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-burst' && (
+  <svg {...common}>
+    <line x1="12" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="12" y1="12" x2="20.66" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="12" y1="12" x2="17" y2="20.66" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="12" y1="12" x2="12" y2="22" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="12" y1="12" x2="7" y2="20.66" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="12" y1="12" x2="3.34" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="12" y1="12" x2="2" y2="12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="12" y1="12" x2="3.34" y2="7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="12" y1="12" x2="7" y2="3.34" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="12" y1="12" x2="12" y2="2" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="12" y1="12" x2="17" y2="3.34" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="12" y1="12" x2="20.66" y2="7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <circle cx="12" cy="12" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-echo' && (
+  <svg {...common}>
+    <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width={sw * 0.85} fill="none" opacity="0.2" />
+    <circle cx="10" cy="12" r="3" stroke="currentColor" stroke-width={sw * 0.9} fill="none" opacity="0.4" />
+    <circle cx="14" cy="12" r="3" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.65" />
+    <circle cx="18" cy="12" r="3" stroke="currentColor" stroke-width={sw} fill="none" />
+    <circle cx="18" cy="12" r={sw} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-shock' && (
+  <svg {...common}>
+    <circle cx="12" cy="12" r="10.5" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.2" stroke-dasharray="1 2" />
+    <circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.4" stroke-dasharray="1.5 1" />
+    <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.7" />
+    <circle cx="12" cy="12" r={sw * 1.4} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wave-broadcast' && (
+  <svg {...common}>
+    <line x1="12" y1="14" x2="12" y2="22" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12" cy="14" r={sw * 1.2} fill="currentColor" />
+    <path d="M8 12 A 4 4 0 0 1 16 12" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.85" />
+    <path d="M5 12 A 7 7 0 0 1 19 12" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.55" />
+    <path d="M2 12 A 10 10 0 0 1 22 12" stroke="currentColor" stroke-width={sw} fill="none" opacity="0.3" />
+  </svg>
+)}
+
+{/* ─── D. Sine & oscillating (10) ─── */}
+
+{id === 'wave-sine' && (
+  <svg {...common}>
+    <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 12 Q 6 4, 10 12 T 18 12 T 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-sine-stack' && (
+  <svg {...common}>
+    <path d="M2 7 Q 6 3, 10 7 T 18 7 T 22 7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    <path d="M2 12 Q 6 8, 10 12 T 18 12 T 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.6" />
+    <path d="M2 17 Q 6 13, 10 17 T 18 17 T 22 17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.35" />
+  </svg>
+)}
+
+{id === 'wave-sine-grow' && (
+  <svg {...common}>
+    <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 12 C 3 11, 4 11, 5 12 C 6 13, 7 13, 8 12 C 9.5 9, 11 9, 12.5 12 C 14 15, 15.5 15, 17 12 C 19 6, 21 6, 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-sine-freq' && (
+  <svg {...common}>
+    <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 12 C 4 6, 7 18, 10 12 C 11.5 8, 13 16, 14.5 12 C 15.5 9, 16.5 15, 17.5 12 C 18.25 9.5, 19 14.5, 19.75 12 C 20.4 10, 21.1 14, 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-cycle' && (
+  <svg {...common}>
+    <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 12 C 6 4, 12 4, 12 12 C 12 20, 18 20, 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    <circle cx="7" cy="6" r={sw} fill="currentColor" />
+    <circle cx="17" cy="18" r={sw} fill="currentColor" opacity="0.6" />
+  </svg>
+)}
+
+{id === 'wave-double' && (
+  <svg {...common}>
+    <path d="M2 12 Q 7 4, 12 12 T 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    <path d="M2 12 Q 7 20, 12 12 T 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.55" />
+  </svg>
+)}
+
+{id === 'wave-pulse-train' && (
+  <svg {...common}>
+    <path d="M2 16 L 5 16 L 5 8 L 9 8 L 9 16 L 13 16 L 13 8 L 17 8 L 17 16 L 21 16 L 21 8 L 22 8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-zigzag' && (
+  <svg {...common}>
+    <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 17 L 7 7 L 7 17 L 12 7 L 12 17 L 17 7 L 17 17 L 22 7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-damped' && (
+  <svg {...common}>
+    <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 4 Q 5 12, 8 20 Q 11 12, 14 8 Q 16 12, 18 14 Q 20 12, 22 11" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-beat' && (
+  <svg {...common}>
+    <path d="M2 12 Q 6 5, 10 12 T 18 12 T 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.55" />
+    <path d="M2 12 Q 5.5 5, 9 12 T 16 12 T 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{/* ─── E. Metaphorical (10) ─── */}
+
+{id === 'wave-tsunami' && (
+  <svg {...common}>
+    <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 18 L 8 19 Q 12 20, 14 16 C 16 8, 18 4, 22 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-strata' && (
+  <svg {...common}>
+    <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.7" />
+    <line x1="3" y1="14" x2="21" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.3" />
+  </svg>
+)}
+
+{id === 'wave-mountain' && (
+  <svg {...common}>
+    <path d="M2 18 L 7 12 L 12 16 L 17 10 L 22 18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <path d="M2 16 L 6 10 L 10 13 L 14 8 L 18 12 L 22 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.55" />
+    <path d="M2 14 L 5 8 L 9 11 L 13 6 L 17 9 L 22 4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.3" />
+  </svg>
+)}
+
+{id === 'wave-tide' && (
+  <svg {...common}>
+    <path d="M2 17 Q 7 14, 12 17 T 22 17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    <path d="M2 12 Q 7 9, 12 12 T 22 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.7" />
+    <path d="M2 7 Q 7 4, 12 7 T 22 7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.45" />
+  </svg>
+)}
+
+{id === 'wave-crest' && (
+  <svg {...common}>
+    <path d="M3 18 Q 5 10, 8 12 Q 11 14, 12 18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.5" />
+    <path d="M9 14 Q 11 6, 14 8 Q 17 10, 18 14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.75" />
+    <path d="M14 10 Q 16 2, 19 4 Q 22 6, 23 10" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-spectrum' && (
+  <svg {...common}>
+    <line x1="3" y1="20" x2="3" y2="17" stroke="currentColor" stroke-width={sw * 1.3} stroke-linecap="round" opacity="0.3" />
+    <line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" stroke-width={sw * 1.3} stroke-linecap="round" opacity="0.45" />
+    <line x1="9" y1="20" x2="9" y2="11" stroke="currentColor" stroke-width={sw * 1.3} stroke-linecap="round" opacity="0.6" />
+    <line x1="12" y1="20" x2="12" y2="9" stroke="currentColor" stroke-width={sw * 1.3} stroke-linecap="round" opacity="0.75" />
+    <line x1="15" y1="20" x2="15" y2="6" stroke="currentColor" stroke-width={sw * 1.3} stroke-linecap="round" opacity="0.85" />
+    <line x1="18" y1="20" x2="18" y2="4" stroke="currentColor" stroke-width={sw * 1.3} stroke-linecap="round" />
+    <line x1="21" y1="20" x2="21" y2="3" stroke="currentColor" stroke-width={sw * 1.3} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'wave-cascade' && (
+  <svg {...common}>
+    <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <path d="M2 6 L 6 6 L 6 10 L 10 10 L 10 14 L 14 14 L 14 17 L 18 17 L 18 19 L 22 19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-river' && (
+  <svg {...common}>
+    <path d="M2 18 C 5 14, 5 10, 9 9 C 13 8, 14 13, 18 12 C 21 11, 21 6, 22 4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-pillar' && (
+  <svg {...common}>
+    <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.3" />
+    <line x1="4" y1="20" x2="4" y2="16" stroke="currentColor" stroke-width={sw * 1.4} stroke-linecap="round" />
+    <line x1="9" y1="20" x2="9" y2="11" stroke="currentColor" stroke-width={sw * 1.4} stroke-linecap="round" />
+    <line x1="14" y1="20" x2="14" y2="7" stroke="currentColor" stroke-width={sw * 1.4} stroke-linecap="round" />
+    <line x1="19" y1="20" x2="19" y2="3" stroke="currentColor" stroke-width={sw * 1.4} stroke-linecap="round" />
+    <path d="M4 16 L 9 11 L 14 7 L 19 3" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-dasharray="1.2 1.2" opacity="0.7" fill="none" />
+  </svg>
+)}
+
+{id === 'wave-pulse-dot' && (
+  <svg {...common}>
+    <line x1="2" y1="14" x2="10" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.5" />
+    <path d="M10 14 L 12 4 L 14 24 L 16 14 L 22 14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <circle cx="22" cy="14" r={sw * 1.2} fill="currentColor" />
   </svg>
 )}
