@@ -263,6 +263,119 @@
     }
     .trust b { color: var(--primary); }
 
+    /* ---------- State machine stepper ---------- */
+    .stepper {
+      display: flex; align-items: center; gap: 6px;
+      margin: 14px 0 4px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .stepper::-webkit-scrollbar { display: none; }
+    .step {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 10px; font-weight: 700; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--muted);
+      flex: 0 0 auto;
+    }
+    .step-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--border); flex: 0 0 auto;
+      transition: var(--transition);
+    }
+    .step.is-done .step-dot { background: var(--primary); }
+    .step.is-current .step-dot {
+      background: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-soft);
+    }
+    .step.is-done, .step.is-current { color: var(--ink); }
+    .step-bar { width: 16px; height: 2px; background: var(--border); flex: 0 0 auto; }
+    .step-bar.is-done { background: var(--primary); }
+
+    /* ---------- Trust chip ---------- */
+    .trust-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 9px; border-radius: 999px;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 11px; font-weight: 700; margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .trust-chip.is-low { background: rgba(214,69,69,.12); color: var(--bad); }
+    .trust-chip.is-mid { background: rgba(217,119,6,.15); color: var(--accent); }
+    .trust-chip svg { width: 11px; height: 11px; }
+
+    /* ---------- Escrow card ---------- */
+    .escrow {
+      background: linear-gradient(135deg, #fffbf2, var(--surface));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      display: grid; gap: 12px;
+    }
+    [data-theme="dark"] .escrow {
+      background: linear-gradient(135deg, #2a1f0e, var(--surface));
+    }
+    .escrow-head {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .escrow-title {
+      font-family: var(--font-display); font-weight: 700; font-size: 15px;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .escrow-title svg { width: 16px; height: 16px; color: var(--accent); }
+    .escrow-amt {
+      font-family: var(--font-mono); font-size: 18px; font-weight: 700;
+      color: var(--accent); font-variant-numeric: tabular-nums;
+    }
+    .escrow-meta { font-size: 11px; color: var(--muted); }
+    .escrow-bar {
+      height: 6px; border-radius: 3px; background: var(--border);
+      overflow: hidden; position: relative;
+    }
+    .escrow-bar-fill {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      transform-origin: left;
+      transition: transform 600ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    /* ---------- Audit log ---------- */
+    .audit-log {
+      max-height: 280px; overflow-y: auto;
+      margin: -4px 0;
+    }
+    .audit-row {
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 4px 12px; padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .audit-row:last-child { border-bottom: none; }
+    .audit-action {
+      font-weight: 600; color: var(--ink);
+      font-family: var(--font-mono); font-size: 11px;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .audit-amt {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--primary); font-weight: 600; text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .audit-detail { color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .audit-meta { font-size: 10px; color: var(--muted); text-align: right; font-family: var(--font-mono); }
+    .audit-empty { color: var(--muted); font-size: 12px; padding: 12px 0; text-align: center; }
+
+    /* ---------- Counter modal extras ---------- */
+    .quick-amts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .quick-amt {
+      padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--ink); font: inherit; font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: var(--transition);
+      font-family: var(--font-mono);
+    }
+    .quick-amt:hover { border-color: var(--primary); color: var(--primary); }
+
     @keyframes fadeIn { from { opacity: 0; } }
     @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } }
 
@@ -335,15 +448,39 @@
       <section class="nego" id="negoPanel">
         <div class="nego-head">
           <div>
-            <div class="nego-title">Rent — Apr 2026</div>
-            <div class="nego-counter">With Mr. Dlamini · ZAR 7,500/mo</div>
+            <div class="nego-title" id="negoTitle">Rent — Apr 2026</div>
+            <div class="nego-counter" id="negoCounterparty">With Mr. Dlamini · ZAR 7,500/mo</div>
+            <span class="trust-chip" id="trustChip" title="Counterparty trust score">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg>
+              <span id="trustValue">72</span> trust
+            </span>
           </div>
           <span class="nego-state" id="negoState">Counter-offered</span>
         </div>
+
+        <div class="stepper" id="negoStepper" aria-label="Negotiation progress"></div>
+
         <div class="timeline" id="negoTimeline"></div>
+        <div class="nego-actions" id="negoActions">
+          <button class="btn" id="negoCounter">Counter-offer</button>
+          <button class="btn primary" id="negoAccept">Accept</button>
+        </div>
+      </section>
+
+      <!-- Escrow (shown when funds are held) -->
+      <section class="escrow" id="escrowCard" hidden aria-live="polite">
+        <div class="escrow-head">
+          <div class="escrow-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Escrow held</span>
+          </div>
+          <div class="escrow-amt" id="escrowAmt">R 0</div>
+        </div>
+        <div class="escrow-meta" id="escrowMeta">Funds held until both parties confirm settlement.</div>
+        <div class="escrow-bar" aria-hidden="true"><div class="escrow-bar-fill" id="escrowBarFill" style="transform: scaleX(0);"></div></div>
         <div class="nego-actions">
-          <button class="btn" id="negoCounter">Counter R 7,200</button>
-          <button class="btn primary" id="negoAccept">Accept R 7,500</button>
+          <button class="btn" id="escrowCancel">Cancel & refund</button>
+          <button class="btn primary" id="escrowRelease">Confirm settlement</button>
         </div>
       </section>
 
@@ -351,6 +488,15 @@
       <section class="card">
         <div class="section-h"><h2>Recent Payments</h2><a href="#" class="link">View all</a></div>
         <div id="paymentList"></div>
+      </section>
+
+      <!-- Audit log -->
+      <section class="card">
+        <div class="section-h">
+          <h2>Audit Trail</h2>
+          <button class="link" id="auditClear" style="background:none;border:0;cursor:pointer;font:inherit;">Clear log</button>
+        </div>
+        <div class="audit-log" id="auditLog" aria-live="polite"></div>
       </section>
 
       <div class="trust">
@@ -385,6 +531,29 @@
     </div>
   </div>
 
+  <!-- Counter-offer modal -->
+  <div class="modal-bg" id="counterModalBg" role="dialog" aria-modal="true" aria-labelledby="counterModalTitle">
+    <div class="modal">
+      <h3 id="counterModalTitle">Send a counter-offer</h3>
+      <p class="muted" id="counterModalSub">Latest offer on the table is <b id="counterCurrent">R 7,500</b>. Set your terms below.</p>
+      <form id="counterForm">
+        <div class="field">
+          <label>Your counter (ZAR)</label>
+          <input type="number" id="cAmount" min="1" step="50" required />
+          <div class="quick-amts" id="quickAmts"></div>
+        </div>
+        <div class="field">
+          <label>Reason (optional)</label>
+          <input type="text" id="cReason" placeholder="e.g. Early settlement bonus" maxlength="80" />
+        </div>
+        <div class="nego-actions">
+          <button type="button" class="btn" id="counterCancel">Cancel</button>
+          <button type="submit" class="btn primary">Send counter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
@@ -396,32 +565,125 @@
     })();
 
     // ---------- State ----------
-    const STORAGE_KEY = 'payper-prototype-v1';
-    const state = loadState() || {
-      score: 678,
-      payments: [
-        { id: 1, kind: 'rent', label: 'Rent · Mar 2026', counter: 'Mr. Dlamini', amount: 7500, status: 'paid', date: '2026-03-01' },
-        { id: 2, kind: 'stokvel', label: 'Stokvel · Lerato', counter: 'Lerato Mahlangu', amount: 1200, status: 'paid', date: '2026-03-15' },
-        { id: 3, kind: 'electricity', label: 'Electricity · City Power', counter: 'City Power', amount: 980, status: 'pending', date: '2026-04-30' },
-        { id: 4, kind: 'remittance', label: 'Remittance · Family', counter: 'Mrs. Setati', amount: 2000, status: 'paid', date: '2026-04-05' },
-      ],
-      negotiation: {
-        proposed: 7500,
-        counter: 7200,
-        state: 'countered',
-        history: [
-          { who: 'them', text: 'Proposed R 7,500 for April rent', when: '2 days ago' },
-          { who: 'you',  text: 'Countered with R 7,200 — early settlement bonus', when: '1 day ago' },
-          { who: 'them', text: 'Holding firm at R 7,500', when: 'Today' },
-        ]
-      }
+    const STORAGE_KEY = 'payper-prototype-v2';
+    const LEGACY_KEY  = 'payper-prototype-v1';
+
+    // State machine definition.
+    // Allowed transitions per state (used as a guard at runtime).
+    const TRANSITIONS = {
+      proposed:  ['countered', 'accepted', 'rejected', 'expired'],
+      countered: ['countered', 'accepted', 'rejected', 'expired'],
+      accepted:  ['escrowed',  'rejected'],
+      escrowed:  ['settled',   'refunded'],
+      settled:   [],
+      rejected:  [],
+      refunded:  [],
+      expired:   [],
     };
+    const STATE_LABEL = {
+      proposed:  'Proposed',
+      countered: 'Counter-offered',
+      accepted:  'Accepted',
+      escrowed:  'In escrow',
+      settled:   'Settled',
+      rejected:  'Rejected',
+      refunded:  'Refunded',
+      expired:   'Expired',
+    };
+    const STEPS = ['proposed', 'countered', 'accepted', 'escrowed', 'settled'];
+
+    const state = loadState() || seedState();
+
+    function seedState() {
+      return {
+        score: 678,
+        payments: [
+          { id: 1, kind: 'rent',        label: 'Rent · Mar 2026',          counter: 'Mr. Dlamini',     amount: 7500, status: 'paid',    date: '2026-03-01' },
+          { id: 2, kind: 'stokvel',     label: 'Stokvel · Lerato',         counter: 'Lerato Mahlangu', amount: 1200, status: 'paid',    date: '2026-03-15' },
+          { id: 3, kind: 'electricity', label: 'Electricity · City Power', counter: 'City Power',      amount: 980,  status: 'pending', date: '2026-04-30' },
+          { id: 4, kind: 'remittance',  label: 'Remittance · Family',      counter: 'Mrs. Setati',     amount: 2000, status: 'paid',    date: '2026-04-05' },
+        ],
+        negotiation: {
+          id:               'n_apr2026_rent',
+          item:             'Rent — Apr 2026',
+          counterparty:     'Mr. Dlamini',
+          counterpartyTrust: 72,
+          proposed:         7500,
+          counter:          7200,
+          lastOfferBy:      'them',
+          lastOfferAmount:  7500,
+          state:            'countered',
+          rounds:           3,
+          escrow:           null,
+          history: [
+            { who: 'them', text: 'Proposed R 7,500 for April rent',                  when: '2 days ago' },
+            { who: 'you',  text: 'Countered with R 7,200 — early settlement bonus', when: '1 day ago' },
+            { who: 'them', text: 'Holding firm at R 7,500',                          when: 'Today' },
+          ],
+        },
+        audit: [
+          { ts: Date.now() - 2 * 86400000, action: 'OFFER',     actor: 'them', detail: 'Proposed Apr 2026 rent',     amount: 7500 },
+          { ts: Date.now() - 1 * 86400000, action: 'COUNTER',   actor: 'you',  detail: 'Lowered to early-settle',    amount: 7200 },
+          { ts: Date.now() - 4 * 3600000,  action: 'COUNTER',   actor: 'them', detail: 'Held firm on original price', amount: 7500 },
+        ],
+      };
+    }
 
     function loadState() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }
-      catch { return null; }
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        // Forward-migrate v1 → v2.
+        if (!parsed.audit) parsed.audit = [];
+        if (parsed.negotiation && parsed.negotiation.counterpartyTrust == null) {
+          parsed.negotiation.counterpartyTrust = 70;
+        }
+        if (parsed.negotiation && !parsed.negotiation.id) {
+          parsed.negotiation.id = 'n_legacy';
+          parsed.negotiation.item = 'Rent — Apr 2026';
+          parsed.negotiation.counterparty = 'Mr. Dlamini';
+          parsed.negotiation.lastOfferBy = 'them';
+          parsed.negotiation.lastOfferAmount = parsed.negotiation.proposed;
+          parsed.negotiation.rounds = parsed.negotiation.history?.length || 0;
+          parsed.negotiation.escrow = null;
+        }
+        return parsed;
+      } catch { return null; }
     }
-    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    function saveState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+    }
+
+    // ---------- Audit + transitions ----------
+    function addAudit(action, actor, detail, amount) {
+      state.audit.unshift({ ts: Date.now(), action, actor, detail, amount });
+      // Cap log length to keep storage bounded.
+      if (state.audit.length > 60) state.audit.length = 60;
+    }
+    function transition(to, reason) {
+      const from = state.negotiation.state;
+      const allowed = TRANSITIONS[from] || [];
+      if (!allowed.includes(to)) {
+        console.warn(`Blocked transition ${from} → ${to}`);
+        return false;
+      }
+      state.negotiation.state = to;
+      addAudit('STATE', 'system', `${from.toUpperCase()} → ${to.toUpperCase()}${reason ? ' — ' + reason : ''}`);
+      return true;
+    }
+
+    // ---------- Trust score ----------
+    function adjustTrust(delta, reason) {
+      const before = state.negotiation.counterpartyTrust;
+      state.negotiation.counterpartyTrust = Math.max(0, Math.min(100, before + delta));
+      addAudit('TRUST', 'system', `${reason} (${delta > 0 ? '+' : ''}${delta})`);
+    }
+    function trustClass(v) {
+      if (v < 40) return 'is-low';
+      if (v < 65) return 'is-mid';
+      return '';
+    }
 
     // ---------- Score gauge ----------
     function paintScore() {
@@ -432,7 +694,6 @@
       const offset = dash * (1 - pct);
       const fill = document.getElementById('gaugeFill');
       const valEl = document.getElementById('scoreValue');
-      // Animate counter
       const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduced) {
         fill.style.strokeDashoffset = offset;
@@ -477,35 +738,146 @@
       }
     }
 
-    // ---------- Negotiation timeline ----------
+    // ---------- Stepper ----------
+    function paintStepper() {
+      const wrap = document.getElementById('negoStepper');
+      wrap.innerHTML = '';
+      const cur = state.negotiation.state;
+      // Find effective index. Rejected/refunded/expired don't sit on the main path.
+      const idx = STEPS.indexOf(cur);
+      const terminal = ['settled', 'rejected', 'refunded', 'expired'].includes(cur);
+      STEPS.forEach((label, i) => {
+        const el = document.createElement('span');
+        el.className = 'step';
+        if (idx === -1 && i === 0) {} // terminal off-path: highlight nothing
+        else if (i < idx) el.classList.add('is-done');
+        else if (i === idx) el.classList.add('is-current');
+        el.innerHTML = `<span class="step-dot"></span><span>${STATE_LABEL[label]}</span>`;
+        wrap.appendChild(el);
+        if (i < STEPS.length - 1) {
+          const bar = document.createElement('span');
+          bar.className = 'step-bar' + (i < idx ? ' is-done' : '');
+          wrap.appendChild(bar);
+        }
+      });
+      if (terminal && cur !== 'settled') {
+        const el = document.createElement('span');
+        el.className = 'step is-current';
+        el.innerHTML = `<span class="step-dot" style="background:var(--bad);box-shadow:0 0 0 4px rgba(214,69,69,.15);"></span><span>${STATE_LABEL[cur]}</span>`;
+        wrap.appendChild(el);
+      }
+    }
+
+    // ---------- Negotiation panel ----------
     function paintNego() {
-      const tl = document.getElementById('negoTimeline');
+      const tl   = document.getElementById('negoTimeline');
       const stEl = document.getElementById('negoState');
+      const titleEl   = document.getElementById('negoTitle');
+      const partyEl   = document.getElementById('negoCounterparty');
+      const trustEl   = document.getElementById('trustChip');
+      const trustVal  = document.getElementById('trustValue');
       const acceptBtn = document.getElementById('negoAccept');
       const counterBtn = document.getElementById('negoCounter');
+      const actions   = document.getElementById('negoActions');
+      const n = state.negotiation;
+
+      titleEl.textContent = n.item;
+      partyEl.textContent = `With ${n.counterparty} · ZAR ${n.lastOfferAmount.toLocaleString('en-ZA')} on the table`;
+      trustVal.textContent = n.counterpartyTrust;
+      trustEl.className = 'trust-chip ' + trustClass(n.counterpartyTrust);
+      stEl.textContent = STATE_LABEL[n.state] || n.state;
+
+      // Timeline.
       tl.innerHTML = '';
-      for (const h of state.negotiation.history) {
+      for (const h of n.history) {
         const item = document.createElement('div');
         item.className = 'tl-item';
         item.innerHTML = `<div class="tl-dot${h.who === 'them' ? ' muted' : ''}"></div>
           <div class="tl-content">${escapeHtml(h.text)}<div class="tl-meta">${escapeHtml(h.when)} · ${h.who === 'you' ? 'You' : 'Counterparty'}</div></div>`;
         tl.appendChild(item);
       }
-      const labelMap = { countered: 'Counter-offered', accepted: 'Accepted', settled: 'Settled' };
-      stEl.textContent = labelMap[state.negotiation.state] || state.negotiation.state;
-      const finished = state.negotiation.state !== 'countered';
-      acceptBtn.disabled = finished;
-      counterBtn.disabled = finished;
-      if (state.negotiation.state === 'accepted') {
-        acceptBtn.textContent = 'Pay R ' + state.negotiation.proposed.toLocaleString('en-ZA');
+
+      // Action buttons reflect current state.
+      const isOpen = n.state === 'proposed' || n.state === 'countered';
+      counterBtn.style.display = isOpen ? '' : 'none';
+      acceptBtn.style.display  = isOpen || n.state === 'accepted' ? '' : 'none';
+      counterBtn.disabled = !isOpen;
+      counterBtn.textContent = `Counter (R ${n.lastOfferAmount.toLocaleString('en-ZA')})`;
+
+      if (isOpen) {
         acceptBtn.disabled = false;
+        acceptBtn.textContent = `Accept R ${n.lastOfferAmount.toLocaleString('en-ZA')}`;
+      } else if (n.state === 'accepted') {
+        acceptBtn.disabled = false;
+        acceptBtn.textContent = `Fund escrow · R ${n.lastOfferAmount.toLocaleString('en-ZA')}`;
+      } else {
+        actions.style.display = 'none';
+        return;
       }
-      if (state.negotiation.state === 'settled') {
-        acceptBtn.textContent = 'Settled';
+      actions.style.display = '';
+
+      paintStepper();
+    }
+
+    // ---------- Escrow ----------
+    function paintEscrow() {
+      const card = document.getElementById('escrowCard');
+      const n = state.negotiation;
+      if (n.state !== 'escrowed' || !n.escrow) {
+        card.hidden = true;
+        return;
+      }
+      card.hidden = false;
+      document.getElementById('escrowAmt').textContent = 'R ' + n.escrow.amount.toLocaleString('en-ZA');
+      const fundedAt = new Date(n.escrow.fundedAt).toLocaleString('en-ZA');
+      document.getElementById('escrowMeta').textContent =
+        `Held since ${fundedAt}. Released on mutual confirmation.`;
+      // Bar pulses to 70% to signal "awaiting confirmation".
+      requestAnimationFrame(() => {
+        document.getElementById('escrowBarFill').style.transform = 'scaleX(0.7)';
+      });
+    }
+
+    // ---------- Audit log ----------
+    const ACTION_LABELS = {
+      OFFER:    'Offer',
+      COUNTER:  'Counter',
+      ACCEPT:   'Accept',
+      REJECT:   'Reject',
+      ESCROW:   'Escrow',
+      RELEASE:  'Release',
+      REFUND:   'Refund',
+      STATE:    'State',
+      TRUST:    'Trust',
+      PAYMENT:  'Payment',
+      SCORE:    'Score',
+    };
+    function paintAudit() {
+      const log = document.getElementById('auditLog');
+      log.innerHTML = '';
+      if (!state.audit.length) {
+        log.innerHTML = '<div class="audit-empty">No events yet.</div>';
+        return;
+      }
+      for (const ev of state.audit.slice(0, 30)) {
+        const row = document.createElement('div');
+        row.className = 'audit-row';
+        const when = new Date(ev.ts).toLocaleString('en-ZA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        row.innerHTML = `
+          <div>
+            <div class="audit-action">${ACTION_LABELS[ev.action] || ev.action} · ${ev.actor}</div>
+            <div class="audit-detail">${escapeHtml(ev.detail)}</div>
+          </div>
+          <div>
+            ${ev.amount != null ? `<div class="audit-amt">R ${ev.amount.toLocaleString('en-ZA')}</div>` : '<div></div>'}
+            <div class="audit-meta">${when}</div>
+          </div>
+        `;
+        log.appendChild(row);
       }
     }
 
-    // ---------- Actions ----------
+    // ---------- Toast ----------
     function toast(msg) {
       const el = document.getElementById('toast');
       el.textContent = msg;
@@ -514,16 +886,16 @@
       toast._t = setTimeout(() => el.classList.remove('show'), 2400);
     }
 
+    // ---------- Add payment modal ----------
     document.querySelectorAll('.action').forEach((btn) => {
       btn.addEventListener('click', () => openAddModal(btn.dataset.action));
     });
-
     function openAddModal(kind) {
       const labels = {
-        rent: ['Add rent payment', 'On-time rent boosts your score the most.'],
-        stokvel: ['Track a stokvel contribution', 'Build credit history through your group savings.'],
-        remittance: ['Send remittance', 'Cross-border family transfers, FX-locked at entry.'],
-        electricity: ['Add electricity payment', 'Prepaid or postpaid — both count.'],
+        rent:        ['Add rent payment',         'On-time rent boosts your score the most.'],
+        stokvel:     ['Track a stokvel contribution', 'Build credit history through your group savings.'],
+        remittance:  ['Send remittance',           'Cross-border family transfers, FX-locked at entry.'],
+        electricity: ['Add electricity payment',   'Prepaid or postpaid — both count.'],
       };
       const [t, sub] = labels[kind] || ['Add Payment', ''];
       document.getElementById('modalTitle').textContent = t;
@@ -536,7 +908,7 @@
     function closeAddModal() { document.getElementById('modalBg').classList.remove('open'); }
     document.getElementById('cancelAdd').addEventListener('click', closeAddModal);
     document.getElementById('modalBg').addEventListener('click', (e) => { if (e.target.id === 'modalBg') closeAddModal(); });
-    addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAddModal(); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeAddModal(); closeCounterModal(); } });
 
     document.getElementById('addForm').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -551,47 +923,193 @@
         label: `${labelKind} · ${counter}`,
       });
       state.score = Math.min(850, state.score + 3);
+      addAudit('PAYMENT', 'you', `Scheduled ${labelKind.toLowerCase()} for ${counter} (due ${date})`, amount);
+      addAudit('SCORE', 'system', 'Projected uplift from new on-time obligation', null);
       saveState();
-      paintPayments();
-      paintScore();
+      paintPayments(); paintScore(); paintAudit();
       closeAddModal();
       e.target.reset();
       toast('Payment scheduled · +3 projected score');
     });
 
-    // ---------- Negotiation actions ----------
-    document.getElementById('negoCounter').addEventListener('click', () => {
-      if (state.negotiation.state !== 'countered') return;
-      const newOffer = state.negotiation.counter - 100;
-      state.negotiation.counter = newOffer;
-      state.negotiation.history.push({ who: 'you', text: `Lowered counter to R ${newOffer.toLocaleString('en-ZA')}`, when: 'Just now' });
-      document.getElementById('negoCounter').textContent = `Counter R ${newOffer.toLocaleString('en-ZA')}`;
-      saveState();
-      paintNego();
-      toast('Counter-offer sent');
+    // ---------- Counter-offer modal ----------
+    function openCounterModal() {
+      const n = state.negotiation;
+      if (n.state !== 'proposed' && n.state !== 'countered') return;
+      document.getElementById('counterCurrent').textContent = 'R ' + n.lastOfferAmount.toLocaleString('en-ZA');
+      const input = document.getElementById('cAmount');
+      // Suggest 4% below the current offer, rounded to nearest 50.
+      input.value = Math.max(50, Math.round((n.lastOfferAmount * 0.96) / 50) * 50);
+      // Quick-amount chips.
+      const chips = document.getElementById('quickAmts');
+      chips.innerHTML = '';
+      const baseline = n.lastOfferAmount;
+      [-0.10, -0.05, -0.02, 0].forEach((delta) => {
+        const v = Math.max(50, Math.round((baseline * (1 + delta)) / 50) * 50);
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'quick-amt';
+        b.textContent = (delta === 0 ? 'Match' : `${(delta * 100).toFixed(0)}%`) + ` · R ${v.toLocaleString('en-ZA')}`;
+        b.addEventListener('click', () => { input.value = v; });
+        chips.appendChild(b);
+      });
+      document.getElementById('cReason').value = '';
+      document.getElementById('counterModalBg').classList.add('open');
+      setTimeout(() => input.focus(), 50);
+    }
+    function closeCounterModal() {
+      document.getElementById('counterModalBg').classList.remove('open');
+    }
+    document.getElementById('counterCancel').addEventListener('click', closeCounterModal);
+    document.getElementById('counterModalBg').addEventListener('click', (e) => {
+      if (e.target.id === 'counterModalBg') closeCounterModal();
     });
+
+    document.getElementById('counterForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const n = state.negotiation;
+      const amt = parseInt(document.getElementById('cAmount').value, 10);
+      const reason = document.getElementById('cReason').value.trim();
+      if (!amt || amt <= 0) return;
+
+      const text = reason
+        ? `Countered with R ${amt.toLocaleString('en-ZA')} — ${reason}`
+        : `Countered with R ${amt.toLocaleString('en-ZA')}`;
+      n.history.push({ who: 'you', text, when: 'Just now' });
+      n.lastOfferBy = 'you';
+      n.lastOfferAmount = amt;
+      n.counter = amt;
+      n.rounds += 1;
+      addAudit('COUNTER', 'you', reason || 'Counter-offer sent', amt);
+      if (n.state === 'proposed') transition('countered', 'first counter');
+      // (already 'countered' otherwise)
+      saveState();
+      paintNego(); paintAudit();
+      closeCounterModal();
+      toast(`Counter R ${amt.toLocaleString('en-ZA')} sent`);
+      // Counterparty replies after a short delay.
+      simulateCounterpartyReply(amt);
+    });
+
+    document.getElementById('negoCounter').addEventListener('click', openCounterModal);
+
+    // ---------- Accept → fund escrow ----------
     document.getElementById('negoAccept').addEventListener('click', () => {
-      if (state.negotiation.state === 'countered') {
-        state.negotiation.state = 'accepted';
-        state.negotiation.history.push({ who: 'you', text: `Accepted R ${state.negotiation.proposed.toLocaleString('en-ZA')}`, when: 'Just now' });
+      const n = state.negotiation;
+      if (n.state === 'proposed' || n.state === 'countered') {
+        if (!transition('accepted', `accepted at R ${n.lastOfferAmount}`)) return;
+        n.history.push({ who: 'you', text: `Accepted R ${n.lastOfferAmount.toLocaleString('en-ZA')}`, when: 'Just now' });
+        addAudit('ACCEPT', 'you', `Locked terms with ${n.counterparty}`, n.lastOfferAmount);
         saveState();
-        paintNego();
-        toast('Deal accepted · ready to settle');
-      } else if (state.negotiation.state === 'accepted') {
-        state.negotiation.state = 'settled';
-        state.negotiation.history.push({ who: 'you', text: 'Settled in full · escrow released', when: 'Just now' });
-        state.score = Math.min(850, state.score + 8);
-        state.payments.push({
-          id: Date.now(), kind: 'rent', counter: 'Mr. Dlamini', amount: state.negotiation.proposed,
-          date: new Date().toISOString().slice(0, 10), status: 'paid',
-          label: 'Rent · Apr 2026',
-        });
-        saveState();
-        paintNego();
-        paintPayments();
-        paintScore();
-        toast('Settled · +8 score');
+        paintNego(); paintAudit();
+        toast('Accepted · fund escrow to lock the deal');
+        return;
       }
+      if (n.state === 'accepted') {
+        // Fund escrow.
+        if (!transition('escrowed', 'funds locked')) return;
+        n.escrow = { amount: n.lastOfferAmount, fundedAt: Date.now(), releasedAt: null };
+        addAudit('ESCROW', 'you', 'Funded escrow account', n.lastOfferAmount);
+        saveState();
+        paintNego(); paintEscrow(); paintAudit();
+        toast(`R ${n.lastOfferAmount.toLocaleString('en-ZA')} held in escrow`);
+      }
+    });
+
+    // ---------- Escrow actions ----------
+    document.getElementById('escrowRelease').addEventListener('click', () => {
+      const n = state.negotiation;
+      if (n.state !== 'escrowed' || !n.escrow) return;
+      if (!transition('settled', 'escrow released to counterparty')) return;
+      n.escrow.releasedAt = Date.now();
+      addAudit('RELEASE', 'you', `Released to ${n.counterparty}`, n.escrow.amount);
+      // Trust + score effects.
+      adjustTrust(+5, 'On-time settlement');
+      state.score = Math.min(850, state.score + 8);
+      addAudit('SCORE', 'system', 'Bureau-reported on-time settlement', null);
+      n.history.push({ who: 'you', text: 'Settled in full · escrow released', when: 'Just now' });
+      // Add to payments ledger.
+      state.payments.push({
+        id: Date.now(), kind: 'rent', counter: n.counterparty, amount: n.escrow.amount,
+        date: new Date().toISOString().slice(0, 10), status: 'paid',
+        label: n.item.replace(/\s—\s/, ' · '),
+      });
+      // Animate escrow bar to full before hide.
+      document.getElementById('escrowBarFill').style.transform = 'scaleX(1)';
+      setTimeout(() => { paintEscrow(); }, 700);
+      saveState();
+      paintNego(); paintPayments(); paintScore(); paintAudit();
+      toast('Settled · +8 score, +5 trust');
+    });
+    document.getElementById('escrowCancel').addEventListener('click', () => {
+      const n = state.negotiation;
+      if (n.state !== 'escrowed' || !n.escrow) return;
+      if (!confirm('Refund escrow and cancel the deal? This will reduce trust.')) return;
+      if (!transition('refunded', 'cancelled by user')) return;
+      addAudit('REFUND', 'you', `Refunded ${n.counterparty}`, n.escrow.amount);
+      adjustTrust(-8, 'Cancelled deal after escrow funded');
+      state.score = Math.max(300, state.score - 5);
+      n.escrow = null;
+      n.history.push({ who: 'you', text: 'Cancelled deal · escrow refunded', when: 'Just now' });
+      saveState();
+      paintNego(); paintEscrow(); paintScore(); paintAudit();
+      toast('Refunded · −5 score, −8 trust');
+    });
+
+    // ---------- Simulated counterparty AI ----------
+    // After our counter, the counterparty either accepts, counters back, or rejects.
+    // Behaviour is biased by trust score and how aggressive our counter is.
+    function simulateCounterpartyReply(yourOffer) {
+      const n = state.negotiation;
+      const original = n.proposed;
+      const discount = (original - yourOffer) / original; // e.g. 0.04 = 4% lower
+      const trustBoost = (n.counterpartyTrust - 50) / 200; // ±0.25
+      const acceptProb = Math.max(0, 0.6 - discount * 4 + trustBoost);
+      const counterProb = Math.max(0, Math.min(0.9, 1 - acceptProb - 0.05));
+      setTimeout(() => {
+        if (n.state !== 'countered') return; // user moved on
+        const r = Math.random();
+        if (r < acceptProb) {
+          // Counterparty accepts our number.
+          if (!transition('accepted', 'counterparty accepted our offer')) return;
+          n.lastOfferBy = 'them';
+          n.history.push({ who: 'them', text: `Accepted your R ${yourOffer.toLocaleString('en-ZA')}`, when: 'Just now' });
+          addAudit('ACCEPT', 'them', `${n.counterparty} accepted`, yourOffer);
+          adjustTrust(+2, 'Reached agreement quickly');
+          saveState(); paintNego(); paintAudit();
+          toast(`${n.counterparty} accepted · fund escrow next`);
+        } else if (r < acceptProb + counterProb) {
+          // Counter back somewhere between yourOffer and previous offer.
+          const previous = n.history.filter((h) => h.who === 'them').length
+            ? original
+            : original;
+          const split = yourOffer + Math.round((previous - yourOffer) * (0.4 + Math.random() * 0.3));
+          const rounded = Math.round(split / 50) * 50;
+          n.lastOfferBy = 'them';
+          n.lastOfferAmount = rounded;
+          n.counter = rounded;
+          n.rounds += 1;
+          n.history.push({ who: 'them', text: `Countered with R ${rounded.toLocaleString('en-ZA')}`, when: 'Just now' });
+          addAudit('COUNTER', 'them', `${n.counterparty} returned a counter`, rounded);
+          saveState(); paintNego(); paintAudit();
+          toast(`${n.counterparty} countered with R ${rounded.toLocaleString('en-ZA')}`);
+        } else {
+          // Reject.
+          transition('rejected', 'counterparty rejected');
+          n.history.push({ who: 'them', text: 'Walked away from the deal', when: 'Just now' });
+          addAudit('REJECT', 'them', `${n.counterparty} rejected`, yourOffer);
+          adjustTrust(-4, 'Negotiation broke down');
+          saveState(); paintNego(); paintAudit();
+          toast(`${n.counterparty} rejected the offer`);
+        }
+      }, 1400 + Math.random() * 800);
+    }
+
+    // ---------- Audit log clear ----------
+    document.getElementById('auditClear').addEventListener('click', () => {
+      if (!confirm('Clear the audit log? This is local-only data.')) return;
+      state.audit = [];
+      addAudit('STATE', 'you', 'Audit log cleared');
+      saveState(); paintAudit();
     });
 
     // ---------- Util ----------
@@ -604,6 +1122,8 @@
     // ---------- Boot ----------
     paintPayments();
     paintNego();
+    paintEscrow();
+    paintAudit();
     paintScore();
   </script>
 </body>
