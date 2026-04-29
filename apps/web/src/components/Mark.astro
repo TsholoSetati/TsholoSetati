@@ -23,7 +23,21 @@ type MarkId =
   | 'cross-axes' | 'cross-shift' | 'cross-wedge' | 'cross-arrows' | 'cross-halo'
   | 'inflection-tangent' | 'inflection-twin' | 'inflection-grid' | 'inflection-ribbon' | 'inflection-mirror'
   | 'lattice-path' | 'lattice-spread' | 'lattice-hex' | 'lattice-ring' | 'lattice-pulse'
-  | 'frontier-ticks' | 'frontier-dual' | 'frontier-radial' | 'frontier-segments' | 'frontier-shaded';
+  | 'frontier-ticks' | 'frontier-dual' | 'frontier-radial' | 'frontier-segments' | 'frontier-shaded'
+  // Round 4 — more cross variants
+  | 'cross-shift-axes' | 'cross-double-shift' | 'cross-supply-shift'
+  | 'cross-elastic' | 'cross-inelastic' | 'cross-tax-wedge'
+  | 'cross-ceiling' | 'cross-floor' | 'cross-trace' | 'cross-monopoly'
+  // Round 4 — innovation
+  | 'inno-sigmoid' | 'inno-leap' | 'inno-fork' | 'inno-recombine' | 'inno-disrupt'
+  // Round 4 — financial
+  | 'fin-yield' | 'fin-candle' | 'fin-volatility' | 'fin-spread' | 'fin-drawdown'
+  // Round 4 — econometric
+  | 'econ-scatter' | 'econ-ci' | 'econ-residual' | 'econ-iv' | 'econ-did'
+  // Round 4 — behavioural
+  | 'beh-loss' | 'beh-anchor' | 'beh-hyperbolic' | 'beh-frame' | 'beh-herd'
+  // Round 4 — probability
+  | 'prob-bell' | 'prob-bayes' | 'prob-tree' | 'prob-walk' | 'prob-tail';
 
 interface Props {
   id: MarkId;
@@ -547,5 +561,546 @@ const common = {
     <path d="M4 4 C 14 4, 20 10, 20 20 L 4 20 Z" fill="currentColor" opacity="0.13" />
     <path d="M4 4 C 14 4, 20 10, 20 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
     <circle cx="14.2" cy="7.2" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* ───── Round 4 ───── */}
+
+{/* CROSS — 10 more */}
+{id === 'cross-shift-axes' && (
+  <svg {...common}>
+    {/* axes */}
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.9" opacity="0.35" stroke-linecap="round" />
+    {/* supply */}
+    <line x1="5" y1="19" x2="20" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* original demand (faded) + dotted equilibrium guides */}
+    <line x1="5" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="4" y1="13.5" x2="11.5" y2="13.5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.35" />
+    <line x1="11.5" y1="20" x2="11.5" y2="13.5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.35" />
+    {/* shifted demand (solid) */}
+    <line x1="9" y1="3" x2="22" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* new equilibrium dotted guides */}
+    <line x1="4" y1="9.6" x2="14.6" y2="9.6" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <line x1="14.6" y1="20" x2="14.6" y2="9.6" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    <circle cx="11.5" cy="13.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="14.6" cy="9.6" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'cross-double-shift' && (
+  <svg {...common}>
+    {/* original supply + demand (faded) */}
+    <line x1="4" y1="19" x2="19" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    <line x1="4" y1="6" x2="19" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    {/* shifted supply (right) */}
+    <line x1="9" y1="20" x2="22" y2="8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* shifted demand (right) */}
+    <line x1="9" y1="3" x2="22" y2="15" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* old & new equilibria */}
+    <circle cx="11.5" cy="12.5" r={sw * 0.9} fill="currentColor" opacity="0.4" />
+    <circle cx="15.5" cy="11.5" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'cross-supply-shift' && (
+  <svg {...common}>
+    {/* demand */}
+    <line x1="4" y1="6" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* original supply (faded) */}
+    <line x1="4" y1="19" x2="20" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.32" />
+    {/* shifted supply LEFT (cost shock) */}
+    <line x1="2" y1="22" x2="18" y2="3" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* shift arrow */}
+    <path d="M13.5 11 L 10.5 13.5" stroke="currentColor" stroke-width={sw * 0.8} stroke-linecap="round" />
+    <path d="M10.5 13.5 L 11.4 13.4 M10.5 13.5 L 10.6 12.5" stroke="currentColor" stroke-width={sw * 0.8} stroke-linecap="round" />
+    <circle cx="9.6" cy="10.4" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'cross-elastic' && (
+  <svg {...common}>
+    {/* axes */}
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* steep supply */}
+    <line x1="6" y1="20" x2="14" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* very flat demand (elastic) */}
+    <line x1="4" y1="10" x2="21" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="11.7" cy="12.4" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'cross-inelastic' && (
+  <svg {...common}>
+    {/* axes */}
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* flat supply */}
+    <line x1="4" y1="16" x2="21" y2="9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* near-vertical demand (inelastic) */}
+    <line x1="10" y1="3" x2="14" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12.2" cy="12.4" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'cross-tax-wedge' && (
+  <svg {...common}>
+    {/* supply + demand */}
+    <line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* vertical wedge bracket between two horizontals (tax) */}
+    <line x1="9.5" y1="9" x2="9.5" y2="15" stroke="currentColor" stroke-width={sw * 1.1} stroke-linecap="round" />
+    <line x1="8" y1="9" x2="11" y2="9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="8" y1="15" x2="11" y2="15" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12" cy="12" r={sw * 1.1} fill="currentColor" opacity="0.45" />
+  </svg>
+)}
+
+{id === 'cross-ceiling' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* equilibrium */}
+    <circle cx="12" cy="12" r={sw * 1.1} fill="currentColor" opacity="0.45" />
+    {/* horizontal price ceiling BELOW equilibrium */}
+    <line x1="3" y1="16" x2="21" y2="16" stroke="currentColor" stroke-width={sw * 1.1} stroke-dasharray="2 1.6" stroke-linecap="round" />
+    {/* small downward tick at left to denote "ceiling cap" */}
+    <path d="M5 16 L 5 14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'cross-floor' && (
+  <svg {...common}>
+    <line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12" cy="12" r={sw * 1.1} fill="currentColor" opacity="0.45" />
+    {/* horizontal floor ABOVE equilibrium */}
+    <line x1="3" y1="8" x2="21" y2="8" stroke="currentColor" stroke-width={sw * 1.1} stroke-dasharray="2 1.6" stroke-linecap="round" />
+    <path d="M5 8 L 5 10" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'cross-trace' && (
+  <svg {...common}>
+    {/* supply + demand */}
+    <line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* cobweb trace converging to equilibrium */}
+    <path d="M6 18 L 6 6 L 18 6 L 18 18 L 9 18 L 9 9 L 15 9 L 15 15 L 11 15 L 11 11" stroke="currentColor" stroke-width={sw * 0.8} stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.55" />
+    <circle cx="12" cy="12" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'cross-monopoly' && (
+  <svg {...common}>
+    {/* axes */}
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* demand */}
+    <line x1="4" y1="5" x2="20" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* MR (twice the slope, hits axis halfway) */}
+    <line x1="4" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.55" />
+    {/* MC flat */}
+    <line x1="4" y1="14" x2="20" y2="14" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* monopoly Q dotted up to demand */}
+    <line x1="9.15" y1="20" x2="9.15" y2="9.5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.55" />
+    {/* monopoly price dot ON demand at that Q */}
+    <circle cx="9.15" cy="9.5" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{/* INNOVATION (5) */}
+{id === 'inno-sigmoid' && (
+  <svg {...common}>
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* sigmoid */}
+    <path d="M3 19 C 8 19, 9 5, 14 5 C 18 5, 21 5, 21 5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* phase markers */}
+    <circle cx="6" cy="18.6" r={sw * 0.9} fill="currentColor" opacity="0.55" />
+    <circle cx="11" cy="11.5" r={sw * 1.3} fill="currentColor" />
+    <circle cx="17" cy="5.4" r={sw * 0.9} fill="currentColor" opacity="0.55" />
+  </svg>
+)}
+
+{id === 'inno-leap' && (
+  <svg {...common}>
+    {/* baseline */}
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* three rising plateaus (technological generations) */}
+    <path d="M3 17 L 8 17 L 8 12 L 14 12 L 14 6 L 21 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    {/* leap dots */}
+    <circle cx="8" cy="14.5" r={sw * 1.1} fill="currentColor" />
+    <circle cx="14" cy="9" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'inno-fork' && (
+  <svg {...common}>
+    {/* trunk */}
+    <line x1="4" y1="12" x2="11" y2="12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* first fork */}
+    <line x1="11" y1="12" x2="18" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="11" y1="12" x2="18" y2="18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* sub-fork upper */}
+    <line x1="18" y1="6" x2="22" y2="4" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" />
+    <line x1="18" y1="6" x2="22" y2="9" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" />
+    {/* sub-fork lower */}
+    <line x1="18" y1="18" x2="22" y2="20" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" />
+    <g fill="currentColor">
+      <circle cx="4" cy="12" r={sw * 1.2} />
+      <circle cx="11" cy="12" r={sw * 1.1} />
+      <circle cx="18" cy="6" r={sw} />
+      <circle cx="18" cy="18" r={sw} />
+    </g>
+  </svg>
+)}
+
+{id === 'inno-recombine' && (
+  <svg {...common}>
+    {/* two streams in */}
+    <path d="M3 6 C 8 6, 10 12, 14 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    <path d="M3 18 C 8 18, 10 12, 14 12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* merged stream out */}
+    <line x1="14" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width={sw * 1.15} stroke-linecap="round" />
+    <circle cx="14" cy="12" r={sw * 1.4} fill="currentColor" />
+    <g fill="currentColor" opacity="0.55">
+      <circle cx="3.5" cy="6" r={sw * 0.9} />
+      <circle cx="3.5" cy="18" r={sw * 0.9} />
+    </g>
+  </svg>
+)}
+
+{id === 'inno-disrupt' && (
+  <svg {...common}>
+    {/* incumbent — flat */}
+    <line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.55" />
+    {/* entrant — rising fast, crosses incumbent */}
+    <path d="M3 19 C 9 19, 12 14, 14 9 S 18 4, 21 3" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* crossing dot */}
+    <circle cx="14" cy="9" r={sw * 1.4} fill="currentColor" />
+  </svg>
+)}
+
+{/* FINANCIAL (5) */}
+{id === 'fin-yield' && (
+  <svg {...common}>
+    {/* axis */}
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    <line x1="3" y1="20" x2="3" y2="4" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* concave-rising yield curve */}
+    <path d="M3 17 C 8 13, 13 8, 21 6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* tenor dots */}
+    <g fill="currentColor">
+      <circle cx="6" cy="15.3" r={sw * 0.85} opacity="0.55" />
+      <circle cx="11" cy="11.5" r={sw * 1.1} />
+      <circle cx="17" cy="7.4" r={sw * 0.85} opacity="0.55" />
+    </g>
+  </svg>
+)}
+
+{id === 'fin-candle' && (
+  <svg {...common}>
+    {/* baseline */}
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.25" stroke-linecap="round" />
+    {/* three candles: down, up, up */}
+    {/* candle 1 (down, hollow) */}
+    <line x1="6.5" y1="5" x2="6.5" y2="18" stroke="currentColor" stroke-width={sw * 0.7} stroke-linecap="round" />
+    <rect x="5" y="9" width="3" height="6" stroke="currentColor" stroke-width={sw * 0.9} fill="none" />
+    {/* candle 2 (up, solid) */}
+    <line x1="12" y1="3" x2="12" y2="19" stroke="currentColor" stroke-width={sw * 0.7} stroke-linecap="round" />
+    <rect x="10.5" y="6" width="3" height="9" fill="currentColor" />
+    {/* candle 3 (up, smaller) */}
+    <line x1="17.5" y1="4" x2="17.5" y2="14" stroke="currentColor" stroke-width={sw * 0.7} stroke-linecap="round" />
+    <rect x="16" y="6" width="3" height="6" fill="currentColor" opacity="0.6" />
+  </svg>
+)}
+
+{id === 'fin-volatility' && (
+  <svg {...common}>
+    {/* mean line */}
+    <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-dasharray="1.4 1.6" stroke-linecap="round" />
+    {/* zigzag */}
+    <path d="M3 12 L 5 7 L 7 14 L 9 6 L 11 16 L 13 8 L 15 18 L 17 5 L 19 14 L 21 9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  </svg>
+)}
+
+{id === 'fin-spread' && (
+  <svg {...common}>
+    {/* upper rail (ask) — diverging then converging */}
+    <path d="M3 9 C 9 7, 15 5, 21 9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* lower rail (bid) */}
+    <path d="M3 15 C 9 17, 15 19, 21 15" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* mid mark */}
+    <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-dasharray="1.4 1.6" stroke-linecap="round" />
+    {/* widest spread arrows */}
+    <path d="M12 7 L 12 17" stroke="currentColor" stroke-width={sw * 0.8} stroke-linecap="round" />
+    <path d="M12 7 L 11 8 M12 7 L 13 8 M12 17 L 11 16 M12 17 L 13 16" stroke="currentColor" stroke-width={sw * 0.8} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'fin-drawdown' && (
+  <svg {...common}>
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* peak then trough then recovery */}
+    <path d="M3 14 C 6 11, 8 5, 11 5 C 14 5, 14 18, 17 18 C 19 18, 21 14, 21 11" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* peak + trough markers + dotted drop */}
+    <circle cx="11" cy="5" r={sw * 1.2} fill="currentColor" />
+    <circle cx="17" cy="18" r={sw * 1.2} fill="currentColor" />
+    <line x1="11" y1="5" x2="17" y2="5" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.45" />
+    <line x1="17" y1="5" x2="17" y2="18" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.4 1.6" opacity="0.45" />
+  </svg>
+)}
+
+{/* ECONOMETRIC (5) */}
+{id === 'econ-scatter' && (
+  <svg {...common}>
+    {/* axes */}
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* regression line */}
+    <line x1="5" y1="18" x2="20" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* scatter dots around it */}
+    <g fill="currentColor">
+      <circle cx="6" cy="17" r={sw * 0.7} opacity="0.7" />
+      <circle cx="8.5" cy="16.5" r={sw * 0.7} opacity="0.7" />
+      <circle cx="9" cy="14" r={sw * 0.7} opacity="0.7" />
+      <circle cx="12" cy="13" r={sw * 0.7} opacity="0.7" />
+      <circle cx="13.5" cy="11" r={sw * 0.7} opacity="0.7" />
+      <circle cx="16" cy="10" r={sw * 0.7} opacity="0.7" />
+      <circle cx="17" cy="7.5" r={sw * 0.7} opacity="0.7" />
+      <circle cx="19" cy="7" r={sw * 0.7} opacity="0.7" />
+    </g>
+  </svg>
+)}
+
+{id === 'econ-ci' && (
+  <svg {...common}>
+    {/* baseline (null effect) */}
+    <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-dasharray="1.4 1.6" stroke-linecap="round" />
+    {/* three point estimates with whiskers */}
+    {/* whisker 1: crosses zero */}
+    <line x1="6" y1="9" x2="6" y2="15" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4.5" y1="9" x2="7.5" y2="9" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="4.5" y1="15" x2="7.5" y2="15" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="6" cy="11" r={sw * 1.1} fill="currentColor" opacity="0.55" />
+    {/* whisker 2: significant positive */}
+    <line x1="12" y1="4" x2="12" y2="10" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="10.5" y1="4" x2="13.5" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="10.5" y1="10" x2="13.5" y2="10" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12" cy="7" r={sw * 1.4} fill="currentColor" />
+    {/* whisker 3: smaller, still positive */}
+    <line x1="18" y1="7" x2="18" y2="11" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="16.5" y1="7" x2="19.5" y2="7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="16.5" y1="11" x2="19.5" y2="11" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="18" cy="9" r={sw * 1.1} fill="currentColor" opacity="0.7" />
+  </svg>
+)}
+
+{id === 'econ-residual' && (
+  <svg {...common}>
+    {/* zero line */}
+    <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" />
+    {/* residuals as vertical sticks above and below */}
+    <g stroke="currentColor" stroke-width={sw * 0.7} stroke-linecap="round" opacity="0.7">
+      <line x1="5" y1="12" x2="5" y2="9" />
+      <line x1="7" y1="12" x2="7" y2="14" />
+      <line x1="9" y1="12" x2="9" y2="8" />
+      <line x1="11" y1="12" x2="11" y2="15" />
+      <line x1="13" y1="12" x2="13" y2="10" />
+      <line x1="15" y1="12" x2="15" y2="14" />
+      <line x1="17" y1="12" x2="17" y2="9" />
+      <line x1="19" y1="12" x2="19" y2="13" />
+    </g>
+    <g fill="currentColor">
+      <circle cx="5" cy="9" r={sw * 0.7} />
+      <circle cx="7" cy="14" r={sw * 0.7} />
+      <circle cx="9" cy="8" r={sw * 0.7} />
+      <circle cx="11" cy="15" r={sw * 0.7} />
+      <circle cx="13" cy="10" r={sw * 0.7} />
+      <circle cx="15" cy="14" r={sw * 0.7} />
+      <circle cx="17" cy="9" r={sw * 0.7} />
+      <circle cx="19" cy="13" r={sw * 0.7} />
+    </g>
+  </svg>
+)}
+
+{id === 'econ-iv' && (
+  <svg {...common}>
+    {/* three nodes Z, X, Y in a line */}
+    <g fill="currentColor">
+      <circle cx="4" cy="12" r={sw * 1.4} />
+      <circle cx="12" cy="12" r={sw * 1.4} />
+      <circle cx="20" cy="12" r={sw * 1.4} />
+    </g>
+    {/* arrow Z → X */}
+    <line x1="6" y1="12" x2="9.5" y2="12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <path d="M9.5 12 L 8.5 11 M9.5 12 L 8.5 13" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* arrow X → Y */}
+    <line x1="14" y1="12" x2="17.5" y2="12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <path d="M17.5 12 L 16.5 11 M17.5 12 L 16.5 13" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* unobserved confounder (dashed arc) */}
+    <path d="M12 9 C 14 5, 18 5, 20 9" stroke="currentColor" stroke-width={sw * 0.8} stroke-dasharray="1.6 1.8" fill="none" opacity="0.55" stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'econ-did' && (
+  <svg {...common}>
+    {/* axes */}
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* treatment time vertical */}
+    <line x1="12" y1="3" x2="12" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-dasharray="1.4 1.6" stroke-linecap="round" />
+    {/* control: parallel slope through */}
+    <line x1="3" y1="14" x2="21" y2="10" stroke="currentColor" stroke-width={sw} stroke-linecap="round" opacity="0.6" />
+    {/* treated: same slope before, then steeper after */}
+    <path d="M3 11 L 12 9 L 21 4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    {/* gap arrow at right edge */}
+    <path d="M21 6 L 21 9.5" stroke="currentColor" stroke-width={sw * 0.8} stroke-linecap="round" />
+    <path d="M21 6 L 20.3 6.8 M21 6 L 21.7 6.8 M21 9.5 L 20.3 8.7 M21 9.5 L 21.7 8.7" stroke="currentColor" stroke-width={sw * 0.8} stroke-linecap="round" />
+  </svg>
+)}
+
+{/* BEHAVIOURAL (5) */}
+{id === 'beh-loss' && (
+  <svg {...common}>
+    {/* axes through centre */}
+    <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    <line x1="12" y1="3" x2="12" y2="21" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* gain side: concave rising (diminishing) */}
+    <path d="M12 12 C 15 10, 18 7.5, 21 6.5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* loss side: steeper convex (loss aversion) */}
+    <path d="M12 12 C 11 13, 9 15, 6 21" stroke="currentColor" stroke-width={sw * 1.15} stroke-linecap="round" fill="none" />
+    <circle cx="12" cy="12" r={sw * 1.2} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'beh-anchor' && (
+  <svg {...common}>
+    {/* anchor line (the suggested value) */}
+    <line x1="3" y1="8" x2="21" y2="8" stroke="currentColor" stroke-width={sw * 1.1} stroke-dasharray="2 1.6" stroke-linecap="round" />
+    {/* small anchor tick */}
+    <line x1="5" y1="8" x2="5" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* the "true" point pulled UP toward the anchor */}
+    <circle cx="14" cy="11" r={sw * 1.4} fill="currentColor" />
+    {/* arrow from a lower position pointing up to where it ended */}
+    <path d="M14 17 L 14 11" stroke="currentColor" stroke-width={sw * 0.8} stroke-linecap="round" stroke-dasharray="1.4 1.6" />
+    <path d="M14 11 L 13 12 M14 11 L 15 12" stroke="currentColor" stroke-width={sw * 0.8} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'beh-hyperbolic' && (
+  <svg {...common}>
+    {/* axis */}
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    <line x1="3" y1="20" x2="3" y2="4" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* exponential discounting (faded) */}
+    <path d="M3 5 C 8 9, 14 14, 21 17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" opacity="0.4" />
+    {/* hyperbolic — much steeper drop early */}
+    <path d="M3 4 C 5 6, 7 14, 12 17 C 16 18.5, 18 19, 21 19.5" stroke="currentColor" stroke-width={sw * 1.1} stroke-linecap="round" fill="none" />
+    <circle cx="3" cy="4" r={sw * 1.2} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'beh-frame' && (
+  <svg {...common}>
+    {/* two side-by-side frames showing the same value labelled differently */}
+    <rect x="3" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width={sw} fill="none" />
+    <rect x="13" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width={sw} fill="none" />
+    {/* same dot in both frames */}
+    <circle cx="7" cy="12" r={sw * 1.4} fill="currentColor" />
+    <circle cx="17" cy="12" r={sw * 1.4} fill="currentColor" />
+    {/* tick differing labels: + above left, − above right */}
+    <path d="M5.5 4 L 8.5 4 M7 2.5 L 7 5.5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="15.5" y1="4" x2="18.5" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'beh-herd' && (
+  <svg {...common}>
+    {/* leader arrow */}
+    <line x1="3" y1="6" x2="13" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <path d="M13 6 L 11.5 4.8 M13 6 L 11.5 7.2" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="14" cy="6" r={sw * 1.4} fill="currentColor" />
+    {/* followers — cluster of dots trailing slightly behind */}
+    <g fill="currentColor" opacity="0.7">
+      <circle cx="9" cy="10" r={sw * 0.9} />
+      <circle cx="12" cy="11" r={sw * 0.9} />
+      <circle cx="6" cy="12" r={sw * 0.9} />
+      <circle cx="10" cy="14" r={sw * 0.9} />
+      <circle cx="13" cy="15" r={sw * 0.9} />
+      <circle cx="7" cy="16" r={sw * 0.9} />
+      <circle cx="11" cy="18" r={sw * 0.9} />
+      <circle cx="15" cy="13" r={sw * 0.9} />
+      <circle cx="16" cy="17" r={sw * 0.9} />
+    </g>
+  </svg>
+)}
+
+{/* PROBABILITY (5) */}
+{id === 'prob-bell' && (
+  <svg {...common}>
+    {/* baseline */}
+    <line x1="2" y1="19" x2="22" y2="19" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* bell curve */}
+    <path d="M3 19 C 7 19, 9 4, 12 4 C 15 4, 17 19, 21 19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* mean tick */}
+    <line x1="12" y1="19" x2="12" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'prob-bayes' && (
+  <svg {...common}>
+    {/* two overlapping circles */}
+    <circle cx="9" cy="12" r="6" stroke="currentColor" stroke-width={sw} fill="none" />
+    <circle cx="15" cy="12" r="6" stroke="currentColor" stroke-width={sw} fill="none" />
+    {/* shaded intersection (lens) */}
+    <path d="M12 6.7 A 6 6 0 0 1 12 17.3 A 6 6 0 0 1 12 6.7 Z" fill="currentColor" opacity="0.22" />
+  </svg>
+)}
+
+{id === 'prob-tree' && (
+  <svg {...common}>
+    {/* root */}
+    <circle cx="4" cy="12" r={sw * 1.3} fill="currentColor" />
+    {/* level-1 branches */}
+    <line x1="6" y1="12" x2="11" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="6" y1="12" x2="11" y2="18" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="11" cy="6" r={sw * 1.1} fill="currentColor" />
+    <circle cx="11" cy="18" r={sw * 1.1} fill="currentColor" />
+    {/* level-2 branches off top node */}
+    <line x1="13" y1="6" x2="20" y2="3" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" />
+    <line x1="13" y1="6" x2="20" y2="9" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" />
+    {/* level-2 off bottom */}
+    <line x1="13" y1="18" x2="20" y2="15" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" />
+    <line x1="13" y1="18" x2="20" y2="21" stroke="currentColor" stroke-width={sw * 0.9} stroke-linecap="round" />
+    <g fill="currentColor" opacity="0.7">
+      <circle cx="20" cy="3" r={sw * 0.85} />
+      <circle cx="20" cy="9" r={sw * 0.85} />
+      <circle cx="20" cy="15" r={sw * 0.85} />
+      <circle cx="20" cy="21" r={sw * 0.85} />
+    </g>
+  </svg>
+)}
+
+{id === 'prob-walk' && (
+  <svg {...common}>
+    {/* baseline */}
+    <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-dasharray="1.4 1.6" stroke-linecap="round" />
+    {/* random walk */}
+    <path d="M3 12 L 5 10 L 7 13 L 9 9 L 11 11 L 13 7 L 15 10 L 17 6 L 19 9 L 21 5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <circle cx="3" cy="12" r={sw * 1.2} fill="currentColor" opacity="0.55" />
+    <circle cx="21" cy="5" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'prob-tail' && (
+  <svg {...common}>
+    <line x1="2" y1="19" x2="22" y2="19" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* shaded right tail */}
+    <path d="M16 19 C 17 19, 18 14, 19 12 C 20 14, 20.5 17, 21 19 Z" fill="currentColor" opacity="0.4" />
+    {/* full bell */}
+    <path d="M3 19 C 7 19, 9 4, 12 4 C 15 4, 17 19, 21 19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* threshold tick */}
+    <line x1="16" y1="19" x2="16" y2="16" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
   </svg>
 )}

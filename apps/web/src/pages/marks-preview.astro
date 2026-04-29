@@ -12,7 +12,15 @@ type Id =
   | 'cross-axes' | 'cross-shift' | 'cross-wedge' | 'cross-arrows' | 'cross-halo'
   | 'inflection-tangent' | 'inflection-twin' | 'inflection-grid' | 'inflection-ribbon' | 'inflection-mirror'
   | 'lattice-path' | 'lattice-spread' | 'lattice-hex' | 'lattice-ring' | 'lattice-pulse'
-  | 'frontier-ticks' | 'frontier-dual' | 'frontier-radial' | 'frontier-segments' | 'frontier-shaded';
+  | 'frontier-ticks' | 'frontier-dual' | 'frontier-radial' | 'frontier-segments' | 'frontier-shaded'
+  | 'cross-shift-axes' | 'cross-double-shift' | 'cross-supply-shift'
+  | 'cross-elastic' | 'cross-inelastic' | 'cross-tax-wedge'
+  | 'cross-ceiling' | 'cross-floor' | 'cross-trace' | 'cross-monopoly'
+  | 'inno-sigmoid' | 'inno-leap' | 'inno-fork' | 'inno-recombine' | 'inno-disrupt'
+  | 'fin-yield' | 'fin-candle' | 'fin-volatility' | 'fin-spread' | 'fin-drawdown'
+  | 'econ-scatter' | 'econ-ci' | 'econ-residual' | 'econ-iv' | 'econ-did'
+  | 'beh-loss' | 'beh-anchor' | 'beh-hyperbolic' | 'beh-frame' | 'beh-herd'
+  | 'prob-bell' | 'prob-bayes' | 'prob-tree' | 'prob-walk' | 'prob-tail';
 
 const concepts: { id: Id; name: string; note: string }[] = [
   {
@@ -141,6 +149,81 @@ const variations: { family: string; baseId: Id; intro: string; items: { id: Id; 
     ],
   },
 ];
+
+// ── Round 4: more cross + new families ──
+const round4: { family: string; intro: string; items: { id: Id; name: string; note: string }[] }[] = [
+  {
+    family: 'Cross — 10 more',
+    intro: 'Building on your two favourites — shift and axes — plus the rest of the chartroom: tax wedges, price controls, elasticity, cobweb adjustment, and the monopoly diagram.',
+    items: [
+      { id: 'cross-shift-axes', name: 'Shift on full axes', note: 'Combines the two you liked: full P/Q axes, dotted equilibrium guides for both old and new equilibria, faded original demand and a solid shifted one.' },
+      { id: 'cross-double-shift', name: 'Both curves shift', note: 'Supply and demand both shift right. Two equilibria — old (faded) and new (bright). The general-equilibrium move.' },
+      { id: 'cross-supply-shift', name: 'Supply shock', note: 'Supply curve shifts left (cost shock); demand stays. New equilibrium up and to the left.' },
+      { id: 'cross-elastic', name: 'Elastic demand', note: 'Steep supply meets a nearly flat demand — small price moves, large quantity response.' },
+      { id: 'cross-inelastic', name: 'Inelastic demand', note: 'Flat supply meets a near-vertical demand — necessities, addiction, tax-policy favourite.' },
+      { id: 'cross-tax-wedge', name: 'Tax wedge', note: 'Vertical bracket between the two curves at equilibrium quantity. Captures incidence in one stroke.' },
+      { id: 'cross-ceiling', name: 'Price ceiling', note: 'Dashed horizontal line below the equilibrium with a downward cap tick — rent control, price caps.' },
+      { id: 'cross-floor', name: 'Price floor', note: 'Dashed horizontal line above the equilibrium with an upward floor tick — minimum wage, agricultural floors.' },
+      { id: 'cross-trace', name: 'Cobweb adjustment', note: 'A faint stair-step path spiralling into the equilibrium dot. Dynamic adjustment, expectations.' },
+      { id: 'cross-monopoly', name: 'Monopoly diagram', note: 'Demand, marginal revenue, marginal cost, and the monopoly price — the textbook market-power picture.' },
+    ],
+  },
+  {
+    family: 'Innovation',
+    intro: 'Adoption, generations, branching, recombination, disruption.',
+    items: [
+      { id: 'inno-sigmoid', name: 'Adoption S-curve', note: 'Classic Bass / Rogers diffusion S with three phase markers. Slow start, takeoff, saturation.' },
+      { id: 'inno-leap', name: 'Generational leaps', note: 'Three rising plateaus — each generation a step change, not a smooth gradient.' },
+      { id: 'inno-fork', name: 'Branching tree', note: 'Path dependence: a trunk forks into options that fork again. Spinoffs, lineages.' },
+      { id: 'inno-recombine', name: 'Recombination', note: 'Two streams merge into one. Innovation as combinatorial — old ideas joined in new ways.' },
+      { id: 'inno-disrupt', name: 'Disruption crossover', note: 'Flat incumbent line crossed by a rising entrant curve. Christensen in one diagram.' },
+    ],
+  },
+  {
+    family: 'Financial',
+    intro: 'Yield curves, candlesticks, volatility, spreads, drawdowns.',
+    items: [
+      { id: 'fin-yield', name: 'Yield curve', note: 'Concave-rising curve with three tenor dots. Term structure of rates.' },
+      { id: 'fin-candle', name: 'Candlesticks', note: 'Three OHLC candles — hollow down, solid up. The trader\'s native chart.' },
+      { id: 'fin-volatility', name: 'Volatility zigzag', note: 'Sharp oscillation around a dotted mean. Risk, dispersion, the unhelpful day.' },
+      { id: 'fin-spread', name: 'Bid-ask spread', note: 'Two rails — ask above, bid below — diverging in the middle and converging at the edges.' },
+      { id: 'fin-drawdown', name: 'Drawdown', note: 'Peak, trough, partial recovery. Dotted lines mark the maximum drop.' },
+    ],
+  },
+  {
+    family: 'Econometric',
+    intro: 'OLS, confidence intervals, residuals, IV, diff-in-diff.',
+    items: [
+      { id: 'econ-scatter', name: 'OLS regression', note: 'Scatter plot with a fitted line through it. The first thing you draw in any empirical paper.' },
+      { id: 'econ-ci', name: 'Coefficients with CIs', note: 'Three point estimates with whisker confidence intervals against a null line. The core of any results table.' },
+      { id: 'econ-residual', name: 'Residuals', note: 'Vertical sticks above and below the zero line — model fit, heteroskedasticity, white noise.' },
+      { id: 'econ-iv', name: 'Instrumental variable', note: 'Z → X → Y arrows with a dashed unobserved confounder arc. Causal identification in one glyph.' },
+      { id: 'econ-did', name: 'Difference-in-differences', note: 'Parallel pre-treatment lines, kink at treatment, gap arrow at the right edge. The treatment effect made visible.' },
+    ],
+  },
+  {
+    family: 'Behavioural',
+    intro: 'Loss aversion, anchoring, hyperbolic discounting, framing, herding.',
+    items: [
+      { id: 'beh-loss', name: 'Prospect-theory value', note: 'Concave on gains, convex and steeper on losses. Kahneman & Tversky in one curve.' },
+      { id: 'beh-anchor', name: 'Anchoring', note: 'A dashed anchor line and a point pulled toward it from below. Judgement biased by the suggested value.' },
+      { id: 'beh-hyperbolic', name: 'Hyperbolic discounting', note: 'Two discount curves — exponential faded, hyperbolic solid. Why we choose differently for "today" than "tomorrow".' },
+      { id: 'beh-frame', name: 'Framing', note: 'Two identical dots in two identical frames, labelled differently (+ vs −). Same outcome, different decision.' },
+      { id: 'beh-herd', name: 'Herding', note: 'A leader arrow with a cluster of follower dots trailing behind. Social proof, cascades, bubbles.' },
+    ],
+  },
+  {
+    family: 'Probability',
+    intro: 'Normal distribution, joint probability, decision tree, random walk, tail risk.',
+    items: [
+      { id: 'prob-bell', name: 'Bell curve', note: 'Standard normal with a mean tick. The most-drawn curve in statistics.' },
+      { id: 'prob-bayes', name: 'Joint probability', note: 'Two overlapping circles with a shaded lens — Venn for P(A∩B), Bayes\' update.' },
+      { id: 'prob-tree', name: 'Decision tree', note: 'Root → two branches → four leaves. Conditional probabilities, decision analysis.' },
+      { id: 'prob-walk', name: 'Random walk', note: 'Zigzag drifting away from a dashed origin line. Stochastic processes, efficient markets.' },
+      { id: 'prob-tail', name: 'Tail risk', note: 'Bell curve with a shaded right tail past a threshold tick. VaR, fat tails, the things that matter most.' },
+    ],
+  },
+];
 ---
 
 <BaseLayout
@@ -217,6 +300,46 @@ const variations: { family: string; baseId: Id; intro: string; items: { id: Id; 
         <div class="family">
           <header class="family-head">
             <p class="block-eyebrow">{v.family} · base <code>{v.baseId}</code></p>
+            <p class="family-intro">{v.intro}</p>
+          </header>
+
+          <div class="variant-grid">
+            {v.items.map((vi) => (
+              <article class="variant">
+                <div class="variant-surface light">
+                  <Mark id={vi.id} size={64} />
+                </div>
+                <div class="variant-meta">
+                  <p class="variant-name">{vi.name}</p>
+                  <p class="variant-id"><code>{vi.id}</code></p>
+                  <p class="variant-note">{vi.note}</p>
+                  <div class="variant-sizes">
+                    <Mark id={vi.id} size={16} />
+                    <Mark id={vi.id} size={28} />
+                    <span class="dark-chip"><Mark id={vi.id} size={28} /></span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section class="round" data-reveal>
+      <header class="round-head">
+        <p class="eyebrow">Round 4 · cross deep-dive + new families</p>
+        <h2>Ten more cross variants, plus innovation, financial, econometric, behavioural, and probability sets.</h2>
+        <p class="round-lead">
+          Five each across five new families — 35 marks total. Reply with any id to lock in,
+          combine, or iterate further.
+        </p>
+      </header>
+
+      {round4.map((v) => (
+        <div class="family">
+          <header class="family-head">
+            <p class="block-eyebrow">{v.family}</p>
             <p class="family-intro">{v.intro}</p>
           </header>
 
