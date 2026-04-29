@@ -34,6 +34,7 @@
   --color-signal-up-soft: rgba(22, 163, 74, 0.12);
   --color-signal-down: #dc2626;
   --color-signal-down-soft: rgba(220, 38, 38, 0.12);
+  --color-signal-down-quiet: #b91c1c;
   --color-signal-neutral: #64748b;
 
   --color-focus-ring: #4f46e5;

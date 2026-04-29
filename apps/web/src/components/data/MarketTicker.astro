@@ -186,11 +186,11 @@
     const items = quotes
       .map((q) => {
         const up = q.changePct >= 0;
-        const colorVar = up ? 'var(--color-signal-up)' : 'var(--color-signal-down)';
+        const colorVar = up ? 'var(--color-accent)' : 'var(--color-signal-down-quiet)';
         const arrow = up ? '▲' : '▼';
-        return `<span class="ticker-item" style="color:${colorVar}">
-             <span class="ticker-symbol" style="color:${colorVar}">${q.label}</span>
-             <span style="color:${colorVar}">${fmtPrice(q.price)}</span>
+        return `<span class="ticker-item">
+             <span class="ticker-symbol">${q.label}</span>
+             <span>${fmtPrice(q.price)}</span>
              <span style="color:${colorVar}">${arrow} ${fmtPct(q.changePct)}</span>
            </span>`;
       })

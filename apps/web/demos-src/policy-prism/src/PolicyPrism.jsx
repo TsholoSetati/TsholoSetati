@@ -1,26 +1,29 @@
 import React, { useState } from 'react';
 
 // ──────────────────────────────────────────────────────────────────────────
-// Palette
+// Palette — mirrors site tokens (apps/web/src/styles/tokens.css)
 // ──────────────────────────────────────────────────────────────────────────
 const C = {
   bg: '#fafafa',
   bgWarm: '#f1f5f9',
-  ink: '#1A1612',
-  inkSoft: '#3F362C',
-  inkMuted: '#6B6157',
-  border: '#D4CDC0',
-  borderSoft: '#E4DCCD',
-  accent: '#8B5A2B',
+  ink: '#0f172a',
+  inkSoft: '#475569',
+  inkMuted: '#94a3b8',
+  border: 'rgba(15, 23, 42, 0.12)',
+  borderSoft: 'rgba(15, 23, 42, 0.08)',
+  accent: '#4f46e5',
 };
 
-// Five frameworks. Order is top-to-bottom on the prism diagram.
+// Radius mirrors --radius-md from site tokens.
+const R = 10;
+
+// Five frameworks. Order is top-to-bottom on the prism diagram (cool→warm dispersion).
 const FRAMEWORKS = [
-  { id: 'eu',   name: 'EU AI Act',                  short: 'EU AI ACT',      region: 'European Union',             color: '#1E3A5F', tint: '#E5EBF2' },
-  { id: 'nist', name: 'NIST AI RMF',                short: 'NIST RMF',       region: 'United States',              color: '#9C6B1F', tint: '#F2E8D2' },
-  { id: 'au',   name: 'AU Continental AI Strategy', short: 'AU STRATEGY',    region: 'African Union',              color: '#9B2D20', tint: '#F0DBD7' },
-  { id: 'sa',   name: 'SA POPIA + Draft AI Policy', short: 'SA POLICY',      region: 'South Africa',               color: '#4C2A5C', tint: '#E8E0EF' },
-  { id: 'cn',   name: 'China AI Measures',          short: 'CHINA MEASURES', region: "People's Republic of China", color: '#1F5F4A', tint: '#DCE6E0' },
+  { id: 'eu',   name: 'EU AI Act',                  short: 'EU AI ACT',      region: 'European Union',             color: '#1e40af', tint: '#eef2ff' },
+  { id: 'nist', name: 'NIST AI RMF',                short: 'NIST RMF',       region: 'United States',              color: '#0ea5e9', tint: '#e0f2fe' },
+  { id: 'au',   name: 'AU Continental AI Strategy', short: 'AU STRATEGY',    region: 'African Union',              color: '#f59e0b', tint: '#fef3c7' },
+  { id: 'sa',   name: 'SA POPIA + Draft AI Policy', short: 'SA POLICY',      region: 'South Africa',               color: '#4f46e5', tint: '#eef2ff' },
+  { id: 'cn',   name: 'China AI Measures',          short: 'CHINA MEASURES', region: "People's Republic of China", color: '#9f1239', tint: '#ffe4e6' },
 ];
 
 const USE_CASES = {
@@ -474,9 +477,9 @@ function PrismDiagram({ activeLens, setActiveLens }) {
             y2={prismBottom}
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0%" stopColor="#FBF7EE" stopOpacity="0.92" />
-            <stop offset="55%" stopColor="#EDE3D1" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#CFC5B5" stopOpacity="0.95" />
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.92" />
+            <stop offset="55%" stopColor="#f1f5f9" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#cbd5e1" stopOpacity="0.95" />
           </linearGradient>
 
           <linearGradient
@@ -685,13 +688,12 @@ function UseCasePicker({ useCaseId, setUseCaseId }) {
             <button
               key={uc.id}
               onClick={() => setUseCaseId(uc.id)}
-              className="px-4 py-2 text-sm transition-all"
+              className="px-4 py-2 text-sm transition-all font-body"
               style={{
-                fontFamily: 'DM Sans, sans-serif',
                 backgroundColor: active ? C.ink : 'transparent',
                 color: active ? C.bg : C.inkSoft,
                 border: `1px solid ${active ? C.ink : C.border}`,
-                borderRadius: 0,
+                borderRadius: R,
               }}
             >
               {uc.label}
@@ -707,7 +709,7 @@ function UseCaseCard({ useCase }) {
   return (
     <div
       className="p-6 md:p-8 mb-12"
-      style={{ backgroundColor: C.bgWarm, border: `1px solid ${C.borderSoft}` }}
+      style={{ backgroundColor: C.bgWarm, border: `1px solid ${C.borderSoft}`, borderRadius: R }}
     >
       <p className="text-xs font-mono mb-2" style={{ color: C.accent, letterSpacing: '0.2em' }}>
         AT THE CENTRE OF THE PRISM
@@ -721,7 +723,7 @@ function UseCaseCard({ useCase }) {
       <div className="flex flex-col md:flex-row gap-2 md:gap-6">
         {useCase.facts.map((f, i) => (
           <div key={i} className="flex items-start gap-2 text-sm" style={{ color: C.inkMuted }}>
-            <span style={{ color: C.accent, fontFamily: 'Fraunces, serif' }}>-</span>
+            <span style={{ color: C.accent }}>—</span>
             <span>{f}</span>
           </div>
         ))}
@@ -747,7 +749,7 @@ function LensRow({ activeLens, setActiveLens }) {
               style={{
                 backgroundColor: active ? f.tint : 'transparent',
                 border: `1px solid ${active ? f.color : C.border}`,
-                borderRadius: 0,
+                borderRadius: R,
               }}
             >
               <div className="w-2 h-2 mb-2" style={{ backgroundColor: f.color, borderRadius: '50%' }} />
@@ -786,6 +788,7 @@ function RefractionPanel({ framework, lensData, useCase }) {
       style={{
         backgroundColor: framework.tint,
         border: `1px solid ${framework.color}33`,
+        borderRadius: R,
         transition: 'background-color 400ms ease',
       }}
     >
@@ -860,7 +863,7 @@ function ConflictSection({ conflicts, show, setShow }) {
           backgroundColor: show ? C.ink : 'transparent',
           color: show ? C.bg : C.ink,
           border: `1px solid ${C.ink}`,
-          borderRadius: 0,
+          borderRadius: R,
         }}
       >
         <div className="flex items-center justify-between gap-4">
@@ -890,7 +893,7 @@ function ConflictSection({ conflicts, show, setShow }) {
             <div
               key={i}
               className="p-6 md:p-8 mb-2"
-              style={{ backgroundColor: C.bgWarm, border: `1px solid ${C.borderSoft}` }}
+              style={{ backgroundColor: C.bgWarm, border: `1px solid ${C.borderSoft}`, borderRadius: R }}
             >
               <p className="text-xs font-mono mb-3" style={{ color: C.accent, letterSpacing: '0.2em' }}>
                 CONFLICT {String(i + 1).padStart(2, '0')}
@@ -933,11 +936,12 @@ export default function PolicyPrism() {
   return (
     <div style={{ backgroundColor: C.bg, color: C.ink, minHeight: '100vh' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-        .font-display { font-family: 'Fraunces', Georgia, 'Times New Roman', serif; font-optical-sizing: auto; }
-        .font-body { font-family: 'DM Sans', system-ui, sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
-        body { font-family: 'DM Sans', system-ui, sans-serif; }
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        .font-display { font-family: 'Clash Display', 'Inter', system-ui, -apple-system, sans-serif; }
+        .font-body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
         @keyframes beam-breathe {
           0%, 100% { opacity: 0.92; }
           50% { opacity: 1; }
@@ -993,12 +997,12 @@ export default function PolicyPrism() {
           style={{ borderTop: `1px solid ${C.border}`, color: C.inkMuted }}
         >
           <p
-            className="mb-2"
+            className="font-display mb-2"
             style={{
-              fontFamily: 'Fraunces, serif',
               fontStyle: 'italic',
               fontSize: '1.0625rem',
               color: C.inkSoft,
+              fontWeight: 500,
             }}
           >
             A prototype, built to think out loud.
