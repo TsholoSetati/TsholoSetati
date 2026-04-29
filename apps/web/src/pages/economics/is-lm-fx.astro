@@ -1,0 +1,374 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  seo={{
+    title: 'IS-LM-FX for South Africa · Innovation Economics',
+    description: 'AI capex shifts the IS curve. GPU import dependency drags the BP curve. Watch the new equilibrium for the rand, repo rate, and output.',
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>IS-LM-FX</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">INTERACTIVE · OPEN-ECONOMY MODEL</p>
+      <h1>IS-LM-FX for a small open economy</h1>
+      <p class="lead">
+        Three curves, calibrated to South Africa: <em>IS</em> (goods market), <em>LM</em> (money market), <em>BP</em> (balance of payments).
+        AI capex demand shifts IS rightward; GPU import dependency widens the current-account gap and shifts BP downward.
+        The new equilibrium is the answer to a question most strategy decks duck: what does an AI investment surge do to the rand?
+      </p>
+    </header>
+
+    <div class="model" data-reveal>
+      <div class="diagram-wrap">
+        <svg id="islm-svg" viewBox="0 0 560 420" preserveAspectRatio="xMidYMid meet" role="img" aria-label="IS-LM-FX equilibrium diagram">
+          <defs>
+            <linearGradient id="is-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.6"/>
+            </linearGradient>
+            <linearGradient id="lm-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.9"/>
+            </linearGradient>
+            <linearGradient id="bp-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#dc2626" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#dc2626" stop-opacity="0.5"/>
+            </linearGradient>
+            <filter id="eq-glow" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="3.5"/>
+            </filter>
+            <filter id="line-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="0.8"/>
+            </filter>
+          </defs>
+
+          {/* Axes */}
+          <g stroke="rgba(15,23,42,0.18)" stroke-width="1.2">
+            <line x1="60" y1="40" x2="60" y2="360"/>
+            <line x1="60" y1="360" x2="520" y2="360"/>
+          </g>
+          <g font-family="ui-monospace, monospace" font-size="11" fill="rgba(15,23,42,0.55)">
+            <text x="40" y="44" text-anchor="end">r</text>
+            <text x="520" y="380" text-anchor="end">Y</text>
+            <text x="60" y="380" text-anchor="middle">0</text>
+          </g>
+
+          {/* Original baseline curves (faded, dashed) */}
+          <line id="is-base" x1="80" y1="80" x2="500" y2="320" stroke="rgba(79,70,229,0.3)" stroke-width="1.4" stroke-dasharray="3 4"/>
+          <line id="lm-base" x1="100" y1="340" x2="500" y2="80" stroke="rgba(14,165,233,0.3)" stroke-width="1.4" stroke-dasharray="3 4"/>
+          <line id="bp-base" x1="60" y1="200" x2="520" y2="200" stroke="rgba(220,38,38,0.3)" stroke-width="1.4" stroke-dasharray="3 4"/>
+
+          {/* Active curves */}
+          <line id="is-line" x1="80" y1="80" x2="500" y2="320" stroke="url(#is-grad)" stroke-width="2.6" filter="url(#line-glow)" stroke-linecap="round"/>
+          <line id="lm-line" x1="100" y1="340" x2="500" y2="80" stroke="url(#lm-grad)" stroke-width="2.6" filter="url(#line-glow)" stroke-linecap="round"/>
+          <line id="bp-line" x1="60" y1="200" x2="520" y2="200" stroke="url(#bp-grad)" stroke-width="2.6" filter="url(#line-glow)" stroke-linecap="round"/>
+
+          {/* Curve labels */}
+          <g font-family="ui-monospace, monospace" font-size="11" font-weight="600">
+            <text id="is-label" x="500" y="316" fill="#4f46e5" text-anchor="end">IS</text>
+            <text id="lm-label" x="500" y="76" fill="#0ea5e9" text-anchor="end">LM</text>
+            <text id="bp-label" x="520" y="194" fill="#dc2626" text-anchor="end">BP</text>
+          </g>
+
+          {/* Equilibrium marker */}
+          <circle id="eq-glow-c" cx="200" cy="200" r="14" fill="#4f46e5" opacity="0.32" filter="url(#eq-glow)"/>
+          <circle id="eq-dot" cx="200" cy="200" r="5.5" fill="#4f46e5" stroke="white" stroke-width="2"/>
+
+          {/* Crosshair */}
+          <line id="eq-vline" x1="200" y1="360" x2="200" y2="200" stroke="rgba(79,70,229,0.4)" stroke-width="1" stroke-dasharray="2 3"/>
+          <line id="eq-hline" x1="60" y1="200" x2="200" y2="200" stroke="rgba(79,70,229,0.4)" stroke-width="1" stroke-dasharray="2 3"/>
+        </svg>
+
+        <div class="readout">
+          <div><span class="rl">Output Y</span><span class="rv" data-y>1.00</span></div>
+          <div><span class="rl">Repo r</span><span class="rv" data-r>7.50%</span></div>
+          <div><span class="rl">USD/ZAR e</span><span class="rv" data-e>R18.40</span></div>
+          <div class="ann"><span class="rl">CA gap</span><span class="rv" data-ca>—</span></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="control">
+          <label>AI capex <span class="hint">% of GFCF</span> <output data-out="aicapex">8</output>%</label>
+          <input type="range" min="0" max="30" step="1" value="8" data-slider="aicapex" />
+        </div>
+        <div class="control">
+          <label>GPU import share <span class="hint">% of AI capex</span> <output data-out="gpuimport">85</output>%</label>
+          <input type="range" min="0" max="100" step="5" value="85" data-slider="gpuimport" />
+        </div>
+        <div class="control">
+          <label>SARB stance <span class="hint">monetary tightness</span> <output data-out="sarb">0</output></label>
+          <input type="range" min="-100" max="100" step="10" value="0" data-slider="sarb" />
+        </div>
+
+        <div class="presets">
+          <button type="button" class="preset" data-preset="baseline">Baseline ZA</button>
+          <button type="button" class="preset" data-preset="surge">AI capex surge</button>
+          <button type="button" class="preset" data-preset="local-gpus">Local GPU plant</button>
+        </div>
+
+        <div class="legend">
+          <p class="legend-row"><span class="swatch" style="background:#4f46e5"></span> IS — goods market</p>
+          <p class="legend-row"><span class="swatch" style="background:#0ea5e9"></span> LM — money market</p>
+          <p class="legend-row"><span class="swatch" style="background:#dc2626"></span> BP — balance of payments</p>
+          <p class="legend-row dashed"><span class="swatch swatch-dash"></span> Baseline (faded)</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose">
+      <h2>How to read it</h2>
+      <p>
+        AI capex demand shifts <strong>IS</strong> rightward: investment goods spending raises planned expenditure at every interest rate.
+        If most of the AI hardware is imported (the <em>GPU import share</em> slider), the current account widens and <strong>BP</strong>
+        shifts downward — sustainable equilibrium requires either a weaker rand, higher rates to attract capital flows, or both.
+        SARB's monetary stance shifts <strong>LM</strong>: tightening pulls it left and up.
+      </p>
+      <p>
+        The <em>Local GPU plant</em> preset shows what changes if even 30% of AI hardware were assembled domestically: BP barely moves,
+        the rand softens less, and rates can stay where the goods-market story warrants. This is the FinOps argument for industrial
+        policy in one diagram.
+      </p>
+      <h3>Caveats</h3>
+      <ul>
+        <li>Stylised. The slopes are illustrative, not estimated. Use it to clarify the direction of effects, not to predict basis points.</li>
+        <li>Capital mobility is high but not perfect: BP is drawn downward-sloping (not flat) to reflect the SA risk premium.</li>
+      </ul>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-accent); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .lead em { font-family: var(--font-mono); font-style: normal; color: var(--color-ink-primary); font-size: 0.92em; }
+
+  .model {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  @media (max-width: 880px) { .model { grid-template-columns: 1fr; } }
+
+  .diagram-wrap { position: relative; min-height: 360px; }
+  #islm-svg { display: block; width: 100%; height: auto; background: var(--color-surface-base); border-radius: var(--radius-md); }
+  #islm-svg line { transition: all 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+  #islm-svg circle { transition: all 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+  #islm-svg text { transition: all 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+  .readout {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: color-mix(in oklab, var(--color-surface-raised) 90%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--color-border-subtle);
+    padding: 0.55rem 0.7rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    min-width: 140px;
+  }
+  .readout .rl { color: var(--color-ink-tertiary); }
+  .readout .rv { color: var(--color-ink-primary); font-weight: 600; }
+  .readout > div { display: flex; justify-content: space-between; gap: 0.6rem; }
+  .readout .ann .rv { color: var(--color-signal-down); }
+
+  .controls { display: flex; flex-direction: column; gap: 1rem; }
+  .control label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-secondary); margin-bottom: 0.4rem;
+  }
+  .control .hint { color: var(--color-ink-tertiary); font-size: 0.66rem; letter-spacing: 0.06em; flex: 1; margin-left: 0.5rem; }
+  .control output { color: var(--color-accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .control input[type=range] { width: 100%; height: 4px; appearance: none; background: var(--color-surface-sunken); border-radius: 999px; outline: none; }
+  .control input[type=range]::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--color-accent); cursor: pointer; box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-accent) 18%, transparent); }
+  .control input[type=range]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--color-accent); cursor: pointer; border: 0; }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+  .preset { font-family: var(--font-mono); font-size: 0.72rem; padding: 0.4rem 0.7rem; border: 1px solid var(--color-border-default); background: var(--color-surface-base); border-radius: var(--radius-sm); color: var(--color-ink-secondary); cursor: pointer; transition: all 160ms ease; }
+  .preset:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+  .legend { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--color-border-subtle); }
+  .legend-row { display: flex; align-items: center; gap: 0.5rem; margin: 0.25rem 0; font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-ink-secondary); }
+  .swatch { width: 16px; height: 3px; border-radius: 2px; display: inline-block; }
+  .swatch-dash { background: linear-gradient(90deg, rgba(15,23,42,0.4) 0 4px, transparent 4px 8px) repeat-x; height: 3px; }
+
+  .prose { max-width: 70ch; }
+  .prose h2, .prose h3 { font-family: var(--font-display); font-weight: 500; }
+  .prose h2 { font-size: 1.6rem; margin: 0 0 1rem; }
+  .prose h3 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
+  .prose p, .prose li { color: var(--color-ink-secondary); line-height: 1.65; }
+  .prose strong { color: var(--color-ink-primary); }
+  .prose em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
+  .prose ul { padding-left: 1.25rem; }
+</style>
+
+<script>
+  type State = { aicapex: number; gpuimport: number; sarb: number };
+
+  const PRESETS: Record<string, State> = {
+    'baseline':   { aicapex: 8,  gpuimport: 85, sarb: 0 },
+    'surge':      { aicapex: 22, gpuimport: 85, sarb: 30 },
+    'local-gpus': { aicapex: 22, gpuimport: 30, sarb: 0 },
+  };
+
+  function init() {
+    const svg = document.getElementById('islm-svg');
+    if (!svg || (svg as any).__bound) return;
+    (svg as any).__bound = true;
+
+    const sliders = Array.from(document.querySelectorAll<HTMLInputElement>('[data-slider]'));
+    const outs = Array.from(document.querySelectorAll<HTMLOutputElement>('[data-out]'));
+    const presets = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-preset]'));
+
+    function readState(): State {
+      return {
+        aicapex: parseFloat((document.querySelector('[data-slider="aicapex"]') as HTMLInputElement).value),
+        gpuimport: parseFloat((document.querySelector('[data-slider="gpuimport"]') as HTMLInputElement).value),
+        sarb: parseFloat((document.querySelector('[data-slider="sarb"]') as HTMLInputElement).value),
+      };
+    }
+
+    function syncOutputs(s: State) {
+      outs.forEach((o) => {
+        const k = o.dataset.out as keyof State;
+        o.textContent = String((s as any)[k]);
+      });
+    }
+
+    // Coordinate system: x in [60, 520] = Y; y in [40, 360] = r (inverted)
+    // Lines defined by (x1,y1)-(x2,y2). Equilibrium = intersection of IS and LM.
+    function computeCurves(s: State) {
+      // Baseline IS: from (80,80) to (500,320). Slope down-right.
+      // AI capex shifts IS right by `aicapex - 8` * 6 px.
+      const isShift = (s.aicapex - 8) * 6;
+      const is = { x1: 80 + isShift, y1: 80, x2: 500 + isShift, y2: 320 };
+
+      // LM: from (100,340) to (500,80). SARB stance shifts up/left when positive.
+      const lmShift = s.sarb * 0.6;
+      const lm = { x1: 100 - lmShift, y1: 340 - lmShift * 0.6, x2: 500 - lmShift, y2: 80 - lmShift * 0.6 };
+
+      // BP: roughly horizontal at y=200. GPU import widens current-account, shifts BP down (higher r needed for given Y).
+      // High aicapex × high gpuimport ⇒ big BP shift down.
+      const bpShift = ((s.aicapex - 8) * (s.gpuimport / 100)) * 4;
+      const bp = { x1: 60, y1: 200 + bpShift, x2: 520, y2: 200 + bpShift * 1.4 };
+
+      return { is, lm, bp };
+    }
+
+    function intersect(a: any, b: any) {
+      const x1 = a.x1, y1 = a.y1, x2 = a.x2, y2 = a.y2;
+      const x3 = b.x1, y3 = b.y1, x4 = b.x2, y4 = b.y2;
+      const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+      if (Math.abs(denom) < 1e-6) return { x: 290, y: 200 };
+      const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+      return { x: x1 + t * (x2 - x1), y: y1 + t * (y2 - y1) };
+    }
+
+    function setLine(id: string, c: any) {
+      const el = document.getElementById(id) as unknown as SVGLineElement | null;
+      if (!el) return;
+      el.setAttribute('x1', String(c.x1));
+      el.setAttribute('y1', String(c.y1));
+      el.setAttribute('x2', String(c.x2));
+      el.setAttribute('y2', String(c.y2));
+    }
+
+    function setLabel(id: string, x: number, y: number) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.setAttribute('x', String(x));
+      el.setAttribute('y', String(y));
+    }
+
+    function update() {
+      const s = readState();
+      syncOutputs(s);
+      const { is, lm, bp } = computeCurves(s);
+
+      setLine('is-line', is);
+      setLine('lm-line', lm);
+      setLine('bp-line', bp);
+
+      setLabel('is-label', is.x2 - 4, is.y2 - 6);
+      setLabel('lm-label', lm.x2 - 4, lm.y2 - 6);
+      setLabel('bp-label', 520, bp.y2 - 6);
+
+      const eq = intersect(is, lm);
+      const eqX = Math.max(60, Math.min(520, eq.x));
+      const eqY = Math.max(40, Math.min(360, eq.y));
+
+      const dot = document.getElementById('eq-dot');
+      const glow = document.getElementById('eq-glow-c');
+      const vline = document.getElementById('eq-vline');
+      const hline = document.getElementById('eq-hline');
+      [dot, glow].forEach((el) => {
+        if (el) {
+          el.setAttribute('cx', String(eqX));
+          el.setAttribute('cy', String(eqY));
+        }
+      });
+      if (vline) {
+        vline.setAttribute('x1', String(eqX));
+        vline.setAttribute('x2', String(eqX));
+        vline.setAttribute('y2', String(eqY));
+      }
+      if (hline) {
+        hline.setAttribute('x2', String(eqX));
+        hline.setAttribute('y1', String(eqY));
+        hline.setAttribute('y2', String(eqY));
+      }
+
+      // Translate eq position to economic readouts (illustrative)
+      const yPct = (eqX - 60) / 460; // 0..1
+      const rPct = 1 - (eqY - 40) / 320; // 0..1
+      const Y = (0.85 + yPct * 0.35);
+      const r = (5.5 + rPct * 6.5); // 5.5–12% range
+      // Exchange rate: more BP pressure (lower bp.y1) ⇒ weaker rand
+      const eRand = 16.5 + ((bp.y1 - 200) / 6) + (s.gpuimport / 100) * 1.2;
+      const ca = -((s.aicapex - 8) * (s.gpuimport / 100) * 0.3); // % of GDP
+
+      (document.querySelector('[data-y]') as HTMLElement).textContent = Y.toFixed(2);
+      (document.querySelector('[data-r]') as HTMLElement).textContent = r.toFixed(2) + '%';
+      (document.querySelector('[data-e]') as HTMLElement).textContent = 'R' + eRand.toFixed(2);
+      const caEl = document.querySelector('[data-ca]') as HTMLElement;
+      caEl.textContent = (ca >= 0 ? '+' : '') + ca.toFixed(2) + '% GDP';
+      caEl.style.color = ca < -1 ? 'var(--color-signal-down)' : ca < 0 ? 'var(--color-ink-secondary)' : 'var(--color-accent)';
+    }
+
+    sliders.forEach((sl) => sl.addEventListener('input', update));
+    presets.forEach((p) =>
+      p.addEventListener('click', () => {
+        const preset = PRESETS[p.dataset.preset!];
+        if (!preset) return;
+        sliders.forEach((sl) => {
+          const k = sl.dataset.slider as keyof State;
+          sl.value = String(preset[k]);
+        });
+        update();
+      })
+    );
+
+    update();
+  }
+
+  init();
+  document.addEventListener('astro:page-load', init);
+</script>

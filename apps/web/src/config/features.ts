@@ -10,6 +10,12 @@ export const features = {
   /** Live market ticker in header. Falls back to /data/*.json on fetch failure. */
   marketTicker: true,
 
+  /** Innovation Economics hero strip (4 monochrome indicator cards). */
+  innovationStrip: true,
+
+  /** /economics/ section: interactive models + visualisations. */
+  innovationEconomics: true,
+
   /** AI Readiness Diagnostic at /demos/diagnostic. Deterministic rubric, no LLM. */
   aiDiagnostic: true,
 

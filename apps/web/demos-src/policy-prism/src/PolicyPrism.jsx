@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 // Palette
 // ──────────────────────────────────────────────────────────────────────────
 const C = {
-  bg: '#F4EFE6',
-  bgWarm: '#EFE7D8',
+  bg: '#fafafa',
+  bgWarm: '#f1f5f9',
   ink: '#1A1612',
   inkSoft: '#3F362C',
   inkMuted: '#6B6157',
@@ -495,7 +495,7 @@ function PrismDiagram({ activeLens, setActiveLens }) {
           </linearGradient>
 
           <filter id="beam-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="2.4" result="blur" />
+            <feGaussianBlur stdDeviation="1.4" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -503,7 +503,7 @@ function PrismDiagram({ activeLens, setActiveLens }) {
           </filter>
 
           <filter id="apex-glow" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="4" />
+            <feGaussianBlur stdDeviation="2.5" />
           </filter>
 
           <filter id="prism-soft" x="-20%" y="-20%" width="140%" height="140%">

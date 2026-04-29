@@ -32,6 +32,7 @@ export const nav = [
   { label: 'Expertise', href: '/expertise' },
   { label: 'Insights', href: '/insights' },
   { label: 'Tech + Policy', href: '/policy' },
+  { label: 'Economics', href: '/economics' },
   { label: 'Demos', href: '/demos' },
   { label: 'Contact', href: '/contact' },
 ] as const;
@@ -46,6 +47,7 @@ export const footerLinks = {
   Work: [
     { label: 'Insights', href: '/insights' },
     { label: 'Tech + Policy', href: '/policy' },
+    { label: 'Economics', href: '/economics' },
     { label: 'Demos', href: '/demos' },
     { label: 'AI Diagnostic', href: '/demos/diagnostic' },
     { label: 'How AI is used here', href: '/ai' },

@@ -6,6 +6,7 @@
 import { nav, site } from '~/config/site';
 import { features } from '~/config/features';
 import MarketTicker from '~/components/data/MarketTicker.astro';
+import InnovationStrip from '~/components/data/InnovationStrip.astro';
 import { Icon } from 'astro-icon/components';
 
 const currentPath = Astro.url.pathname;
@@ -68,6 +69,7 @@ function isActive(href: string): boolean {
     </div>
   </div>
 
+  {features.innovationStrip && <InnovationStrip />}
   {features.marketTicker && <MarketTicker />}
 </header>
 

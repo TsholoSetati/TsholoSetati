@@ -1,0 +1,205 @@
+---
+/**
+ * InnovationStrip — hero indicator strip for Innovation Economics positioning.
+ *
+ * Four monochrome cards in a calm grid (no scroll). Sits directly under the
+ * site header, above the demoted market ticker. Mixes static, computed,
+ * and live data:
+ *   1. Africa Subsea (static, annual)
+ *   2. AU AI Strategy days (computed each render)
+ *   3. EU AI Act countdown (computed; flips T-/T+ at 2026-08-02)
+ *   4. Frontier ¢/1M tokens (live from /data/frontier-cost.json, daily Action)
+ */
+import { staticIndicators, assertFreshness } from '~/data/innovation-static';
+import { daysSince, daysUntil, formatCountdown } from '~/lib/dates';
+
+assertFreshness();
+
+const subsea = staticIndicators.find((i) => i.id === 'africa-subsea')!;
+
+const AU_ADOPTION = '2024-07-19';
+const EU_AI_ACT_DDAY = '2026-08-02';
+
+const auDays = daysSince(AU_ADOPTION);
+const euCountdown = formatCountdown(EU_AI_ACT_DDAY);
+const euPostDday = daysUntil(EU_AI_ACT_DDAY) <= 0;
+---
+
+<aside class="strip" role="region" aria-label="Innovation Economics indicators" data-innovation-strip>
+  <div class="container strip-grid">
+    {/* 1. Africa Subsea */}
+    <article class="cell" aria-label={subsea.tooltip} title={subsea.tooltip}>
+      <p class="cell-label">{subsea.label}</p>
+      <p class="cell-value">{subsea.value}</p>
+      <p class="cell-meta">
+        <span class="delta">{subsea.delta}</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span class="muted">as of {subsea.asOf}</span>
+      </p>
+    </article>
+
+    {/* 2. AU AI Strategy Day N */}
+    <article
+      class="cell"
+      aria-label={`Day ${auDays} since the African Union adopted its Continental AI Strategy on ${AU_ADOPTION}.`}
+      title="AU Executive Council adopted the Continental AI Strategy on 19 July 2024."
+    >
+      <p class="cell-label">AU AI STRATEGY</p>
+      <p class="cell-value">Day {auDays.toLocaleString()}</p>
+      <p class="cell-meta">
+        <span class="muted">since adoption</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span class="muted">{AU_ADOPTION}</span>
+      </p>
+    </article>
+
+    {/* 3. EU AI Act D-Day */}
+    <article
+      class="cell"
+      aria-label={`EU AI Act high-risk obligations: ${euCountdown}. Target date 2 August 2026.`}
+      title="EU AI Act high-risk obligations apply from 2 August 2026."
+    >
+      <p class="cell-label">{euPostDday ? 'EU AI ACT IN FORCE' : 'EU AI ACT D-DAY'}</p>
+      <p class="cell-value">{euCountdown}</p>
+      <p class="cell-meta">
+        <span class="muted">{euPostDday ? 'high-risk obligations live' : 'until high-risk obligations apply'}</span>
+      </p>
+    </article>
+
+    {/* 4. Frontier ¢/1M tokens (live, hydrated client-side) */}
+    <article
+      class="cell"
+      aria-label="Lowest cost per million tokens across frontier-tier models, blended prompt and completion."
+      title="Cheapest model in the curated frontier-tier allowlist (Claude Opus, GPT-5, Gemini Pro, Grok-4, Llama-4, DeepSeek V3 lineage). Refreshed daily from OpenRouter."
+      data-frontier-cell
+    >
+      <p class="cell-label">FRONTIER ¢/1M TOK</p>
+      <p class="cell-value" data-frontier-value>—</p>
+      <p class="cell-meta">
+        <span class="delta" data-frontier-delta>computing…</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span class="muted" data-frontier-model>frontier tier</span>
+      </p>
+    </article>
+  </div>
+</aside>
+
+<style>
+  .strip {
+    background: var(--color-surface-base);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-block: clamp(0.65rem, 1.4vw, 1.05rem);
+  }
+  .strip-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1.6vw, 1.25rem);
+  }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.4rem 0.6rem 0.4rem 0.85rem;
+    border-left: 2px solid var(--color-accent);
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-accent) 4%, transparent) 0%,
+      transparent 60%
+    );
+    min-width: 0;
+  }
+  .cell-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-tertiary);
+    margin: 0;
+  }
+  .cell-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+    font-weight: 500;
+    color: var(--color-ink-primary);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cell-meta {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--color-ink-tertiary);
+    margin: 0;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .delta {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  .muted { color: var(--color-ink-tertiary); }
+  .dot { opacity: 0.5; }
+
+  @media (max-width: 880px) {
+    .strip-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 480px) {
+    .strip-grid { grid-template-columns: 1fr; }
+    .cell { padding-block: 0.3rem; }
+  }
+</style>
+
+<script>
+  type FrontierPayload = {
+    updated: string;
+    currentCentsPer1M: number;
+    model: string;
+    modelName?: string;
+    yoyPct: number | null;
+  };
+
+  function setText(sel: string, root: HTMLElement, txt: string) {
+    const el = root.querySelector<HTMLElement>(sel);
+    if (el) el.textContent = txt;
+  }
+
+  function shortModel(id: string): string {
+    // anthropic/claude-opus-4.5 → claude-opus-4.5
+    return id.split('/').pop() ?? id;
+  }
+
+  async function hydrateFrontier() {
+    const cell = document.querySelector<HTMLElement>('[data-frontier-cell]');
+    if (!cell) return;
+    try {
+      const res = await fetch('/data/frontier-cost.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`status ${res.status}`);
+      const data = (await res.json()) as FrontierPayload;
+      const cents = data.currentCentsPer1M.toLocaleString(undefined, {
+        maximumFractionDigits: 1,
+        minimumFractionDigits: 1,
+      });
+      setText('[data-frontier-value]', cell, `${cents}¢`);
+      const yoy = data.yoyPct;
+      const yoyTxt =
+        yoy === null
+          ? 'baseline'
+          : `${yoy > 0 ? '+' : ''}${yoy.toFixed(1)}% YoY`;
+      setText('[data-frontier-delta]', cell, yoyTxt);
+      setText('[data-frontier-model]', cell, shortModel(data.model));
+    } catch {
+      setText('[data-frontier-value]', cell, 'n/a');
+      setText('[data-frontier-delta]', cell, 'unavailable');
+      setText('[data-frontier-model]', cell, 'frontier tier');
+    }
+  }
+
+  hydrateFrontier();
+  document.addEventListener('astro:page-load', hydrateFrontier);
+</script>

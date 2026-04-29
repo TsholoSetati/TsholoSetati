@@ -31,38 +31,13 @@ const UA = 'Mozilla/5.0 (compatible; tsholosetati-bot/1.0; +https://tsholosetati
  *  - `group` : informational only (not rendered).
  */
 const SYMBOLS = [
-  // Indices
-  { key: 'SPX',    label: 'S&P 500',    stooq: '^spx',    yahoo: '%5EGSPC',   group: 'index' },
-  { key: 'NDQ',    label: 'NASDAQ',     stooq: '^ndq',    yahoo: '%5EIXIC',   group: 'index' },
-  { key: 'J203',   label: 'JSE Top 40', stooq: null,      yahoo: '%5EJ203.JO', group: 'index' },
-
-  // FX & commodities
+  // Demoted v2: 6 symbols only. Innovation Strip is the headline; markets are background context.
   { key: 'USDZAR', label: 'USD/ZAR',    stooq: 'usdzar',  yahoo: 'USDZAR%3DX', group: 'fx' },
-  { key: 'CL',     label: 'WTI Crude',  stooq: 'cl.f',    yahoo: 'CL%3DF',    group: 'commodity' },
-  { key: 'HG',     label: 'Copper',     stooq: 'hg.f',    yahoo: 'HG%3DF',    group: 'commodity' },
-
-  // Tech ETFs
-  { key: 'QQQ',    label: 'QQQ',        stooq: 'qqq.us',  yahoo: 'QQQ',       group: 'etf' },
-  { key: 'SMH',    label: 'SMH',        stooq: 'smh.us',  yahoo: 'SMH',       group: 'etf' },
-  { key: 'SOXX',   label: 'SOXX',       stooq: 'soxx.us', yahoo: 'SOXX',      group: 'etf' },
-
-  // Chip makers
+  { key: 'J203',   label: 'JSE Top 40', stooq: null,      yahoo: '%5EJ203.JO', group: 'index' },
   { key: 'NVDA',   label: 'NVDA',       stooq: 'nvda.us', yahoo: 'NVDA',      group: 'chip' },
-  { key: 'AMD',    label: 'AMD',        stooq: 'amd.us',  yahoo: 'AMD',       group: 'chip' },
   { key: 'TSM',    label: 'TSM',        stooq: 'tsm.us',  yahoo: 'TSM',       group: 'chip' },
   { key: 'ASML',   label: 'ASML',       stooq: 'asml.us', yahoo: 'ASML',      group: 'chip' },
-
-  // Frontier tech
-  { key: 'PLTR',   label: 'PLTR',       stooq: 'pltr.us', yahoo: 'PLTR',      group: 'frontier' },
-  { key: 'SNOW',   label: 'SNOW',       stooq: 'snow.us', yahoo: 'SNOW',      group: 'frontier' },
-  { key: 'CRWD',   label: 'CRWD',       stooq: 'crwd.us', yahoo: 'CRWD',      group: 'frontier' },
-
-  // JSE majors (Stooq coverage is patchy → Yahoo fallback does the work)
-  { key: 'NPN',    label: 'Naspers',    stooq: null,      yahoo: 'NPN.JO',    group: 'jse' },
-  { key: 'BHP',    label: 'BHP',        stooq: null,      yahoo: 'BHG.JO',    group: 'jse' },
-  { key: 'SHP',    label: 'Shoprite',   stooq: null,      yahoo: 'SHP.JO',    group: 'jse' },
-  { key: 'MTN',    label: 'MTN',        stooq: null,      yahoo: 'MTN.JO',    group: 'jse' },
-  { key: 'CPI',    label: 'Capitec',    stooq: null,      yahoo: 'CPI.JO',    group: 'jse' },
+  { key: 'BOTZ',   label: 'BOTZ',       stooq: 'botz.us', yahoo: 'BOTZ',      group: 'etf' },
 ];
 
 /** Fetch with sensible timeout + UA. Returns body text on 2xx, else throws. */

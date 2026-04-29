@@ -1,0 +1,271 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  seo={{
+    title: "Wright's Law × Rogers Diffusion · Innovation Economics",
+    description: 'Where the falling unit cost of compute meets the rising adoption S-curve. The intersection predicts the inflection where enterprise adoption accelerates.',
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>Wright × Rogers</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">OVERLAY · COST × ADOPTION</p>
+      <h1>Wright's Law × Rogers Diffusion</h1>
+      <p class="lead">
+        Wright's Law: every doubling of cumulative production drops unit cost by a constant percentage. Rogers Diffusion:
+        adoption follows an S-curve as innovators give way to early adopters, the early majority, the late majority, the
+        laggards. Overlay the two and you get a usable theory of when a frontier technology stops being expensive enough
+        to talk about and starts being cheap enough to deploy.
+      </p>
+    </header>
+
+    <div class="model" data-reveal>
+      <div class="diagram-wrap">
+        <svg id="wr-svg" viewBox="0 0 720 420" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Wright's Law cost decline overlaid with Rogers diffusion S-curve">
+          <defs>
+            <linearGradient id="cost-area" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#dc2626" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#dc2626" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="adopt-area" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4f46e5" stop-opacity="0"/>
+              <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.18"/>
+            </linearGradient>
+            <filter id="point-glow" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="3"/>
+            </filter>
+          </defs>
+
+          {/* Axes */}
+          <g stroke="rgba(15,23,42,0.18)" stroke-width="1.2">
+            <line x1="60" y1="40" x2="60" y2="360"/>
+            <line x1="60" y1="360" x2="680" y2="360"/>
+            <line x1="680" y1="40" x2="680" y2="360"/>
+          </g>
+          <g font-family="ui-monospace, monospace" font-size="11" fill="rgba(15,23,42,0.55)">
+            <text x="40" y="44" text-anchor="end" fill="#dc2626">cost</text>
+            <text x="700" y="44" text-anchor="end" fill="#4f46e5">adoption</text>
+            <text x="60" y="380" text-anchor="middle">2020</text>
+            <text x="680" y="380" text-anchor="end">2032</text>
+          </g>
+
+          {/* Year ticks */}
+          <g font-family="ui-monospace, monospace" font-size="10" fill="rgba(15,23,42,0.4)">
+            <line x1="216" y1="358" x2="216" y2="364" stroke="rgba(15,23,42,0.3)"/>
+            <text x="216" y="378" text-anchor="middle">2023</text>
+            <line x1="372" y1="358" x2="372" y2="364" stroke="rgba(15,23,42,0.3)"/>
+            <text x="372" y="378" text-anchor="middle">2026</text>
+            <line x1="528" y1="358" x2="528" y2="364" stroke="rgba(15,23,42,0.3)"/>
+            <text x="528" y="378" text-anchor="middle">2029</text>
+          </g>
+
+          {/* Cost curve area */}
+          <path id="cost-fill" d="" fill="url(#cost-area)"/>
+          {/* Adoption curve area */}
+          <path id="adopt-fill" d="" fill="url(#adopt-area)"/>
+
+          {/* Cost curve (Wright's Law: log-log decline) */}
+          <path id="cost-line" d="" fill="none" stroke="#dc2626" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2000" stroke-dashoffset="2000">
+            <animate attributeName="stroke-dashoffset" from="2000" to="0" dur="1.6s" begin="0.2s" fill="freeze"/>
+          </path>
+
+          {/* Adoption curve (Rogers S-curve) */}
+          <path id="adopt-line" d="" fill="none" stroke="#4f46e5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2000" stroke-dashoffset="2000">
+            <animate attributeName="stroke-dashoffset" from="2000" to="0" dur="1.6s" begin="0.6s" fill="freeze"/>
+          </path>
+
+          {/* Intersection point */}
+          <circle id="x-glow" cx="0" cy="0" r="14" fill="#0f172a" opacity="0" filter="url(#point-glow)">
+            <animate attributeName="opacity" from="0" to="0.32" dur="0.4s" begin="2.0s" fill="freeze"/>
+          </circle>
+          <circle id="x-dot" cx="0" cy="0" r="6" fill="#0f172a" stroke="white" stroke-width="2" opacity="0">
+            <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="2.0s" fill="freeze"/>
+          </circle>
+          <text id="x-label" x="0" y="0" font-family="ui-monospace, monospace" font-size="11" font-weight="600" fill="#0f172a" text-anchor="middle" opacity="0">
+            <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="2.2s" fill="freeze"/>
+          </text>
+
+          {/* Annotations: adoption phases */}
+          <g font-family="ui-monospace, monospace" font-size="10" fill="rgba(15,23,42,0.5)">
+            <text x="120" y="58">Innovators</text>
+            <text x="280" y="58">Early adopters</text>
+            <text x="450" y="58">Early majority</text>
+            <text x="600" y="58">Late majority</text>
+          </g>
+          <g stroke="rgba(15,23,42,0.1)" stroke-width="1" stroke-dasharray="2 4">
+            <line x1="216" y1="60" x2="216" y2="360"/>
+            <line x1="372" y1="60" x2="372" y2="360"/>
+            <line x1="528" y1="60" x2="528" y2="360"/>
+          </g>
+        </svg>
+
+        <div class="readout">
+          <div><span class="rl">Cost halving</span><span class="rv">~24 mo</span></div>
+          <div><span class="rl">Inflection</span><span class="rv" id="inflect-year">—</span></div>
+          <div><span class="rl">Adoption then</span><span class="rv" id="inflect-pct">—</span></div>
+        </div>
+      </div>
+
+      <aside class="legend-panel">
+        <h3>Reading the curves</h3>
+        <p class="legend-row"><span class="dot dot-cost"></span><strong>Cost</strong> — illustrative compute unit cost on a log scale. Wright's Law fits frontier model training and inference cost reductions of roughly 4× per year.</p>
+        <p class="legend-row"><span class="dot dot-adopt"></span><strong>Adoption</strong> — share of large enterprises with at least one production AI workload. The S-curve flattens at ~85% (the rest will not adopt within the window).</p>
+        <p class="legend-row"><span class="dot dot-x"></span><strong>Intersection</strong> — the year cost crosses the rising adoption percentile. After this point, adoption is no longer cost-bound; it is capability-, change-management-, and talent-bound.</p>
+
+        <div class="implication">
+          <p class="il-eyebrow">Implication</p>
+          <p>If you are an executive sponsor: the window where you compete on <em>willingness to spend on AI</em> is short. The window where you compete on <em>operating-model fitness to absorb AI</em> is long. Plan accordingly.</p>
+        </div>
+      </aside>
+    </div>
+
+    <section class="prose">
+      <h2>How the curves are drawn</h2>
+      <p>
+        Cost follows <em>C(t) = C₀ · exp(−λt)</em> with λ chosen so cost halves roughly every 24 months. Adoption follows
+        a logistic <em>A(t) = L / (1 + exp(−k(t − t₀)))</em> calibrated so the inflection is reached when cost has dropped
+        by ≥ 90% from baseline. The intersection is found by linearising both segments and solving numerically.
+      </p>
+      <p>
+        These are illustrative curves, not forecasts. The point is the <em>shape</em>: the cost curve decays fastest while
+        adoption is slowest. By the time adoption flips into the early majority, unit cost is no longer the binding
+        constraint. This is why "we are waiting for AI to get cheaper" is almost always the wrong question.
+      </p>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-accent); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+
+  .model { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 3rem; }
+  @media (max-width: 880px) { .model { grid-template-columns: 1fr; } }
+
+  .diagram-wrap { position: relative; }
+  #wr-svg { display: block; width: 100%; height: auto; background: var(--color-surface-base); border-radius: var(--radius-md); }
+
+  .readout { position: absolute; top: 14px; right: 14px; display: flex; flex-direction: column; gap: 4px; background: color-mix(in oklab, var(--color-surface-raised) 90%, transparent); backdrop-filter: blur(6px); border: 1px solid var(--color-border-subtle); padding: 0.55rem 0.7rem; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.72rem; min-width: 160px; }
+  .readout .rl { color: var(--color-ink-tertiary); }
+  .readout .rv { color: var(--color-ink-primary); font-weight: 600; }
+  .readout > div { display: flex; justify-content: space-between; gap: 0.6rem; }
+
+  .legend-panel h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.2rem; margin: 0 0 1rem; }
+  .legend-row { font-size: 0.88rem; line-height: 1.55; color: var(--color-ink-secondary); display: flex; gap: 0.6rem; align-items: flex-start; margin: 0 0 0.85rem; }
+  .legend-row strong { color: var(--color-ink-primary); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 0.45rem; }
+  .dot-cost { background: #dc2626; }
+  .dot-adopt { background: #4f46e5; }
+  .dot-x { background: #0f172a; }
+
+  .implication { margin-top: 1.25rem; padding: 1rem; background: var(--color-surface-base); border-radius: var(--radius-md); border-left: 2px solid var(--color-accent); }
+  .il-eyebrow { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.5rem; }
+  .implication p:last-child { margin: 0; font-size: 0.92rem; line-height: 1.55; color: var(--color-ink-secondary); }
+  .implication em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.92em; }
+
+  .prose { max-width: 70ch; }
+  .prose h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.6rem; margin: 0 0 1rem; }
+  .prose p { color: var(--color-ink-secondary); line-height: 1.65; }
+  .prose em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
+</style>
+
+<script>
+  function init() {
+    const svg = document.getElementById('wr-svg');
+    if (!svg || (svg as any).__bound) return;
+    (svg as any).__bound = true;
+
+    const x0 = 60, x1 = 680, y0 = 60, y1 = 360;
+    const W = x1 - x0;
+    const H = y1 - y0;
+    const N = 80;
+    const tStart = 2020;
+    const tEnd = 2032;
+
+    // Cost: log decline with halving every ~24 months
+    const halfLifeYr = 2;
+    const lambda = Math.log(2) / halfLifeYr;
+    function costPct(yr: number): number {
+      const dt = yr - tStart;
+      return Math.exp(-lambda * dt); // 1 → ~0
+    }
+
+    // Adoption: logistic centred at 2027.5, k=0.85
+    const center = 2027.5;
+    const steepness = 0.85;
+    function adoptPct(yr: number): number {
+      const dt = yr - center;
+      return 1 / (1 + Math.exp(-steepness * dt)); // 0 → 1
+    }
+
+    function px(yr: number) { return x0 + ((yr - tStart) / (tEnd - tStart)) * W; }
+    // Cost path: high y when cost high; cost=1 → top (y0+10), cost=0 → bottom (y1-10).
+    function costY(yr: number) { return y0 + (1 - costPct(yr)) * H * 0 + (1 - costPct(yr)) * 0 + (1 - costPct(yr)) * 0 + (1 - costPct(yr)) * (H - 20) + 10; }
+    // Cleaner: cost=1 → y0+10 (top), cost=0 → y1-10 (bottom)
+    function costYsimple(yr: number) {
+      const c = costPct(yr); // 1..0
+      return y0 + 10 + (1 - c) * (H - 20);
+    }
+    // Adoption: 0 → bottom (y1-10), 1 → top (y0+10)
+    function adoptYsimple(yr: number) {
+      const a = adoptPct(yr);
+      return y1 - 10 - a * (H - 20);
+    }
+
+    let costPath = '';
+    let costFill = '';
+    let adoptPath = '';
+    let adoptFill = '';
+    for (let i = 0; i <= N; i++) {
+      const yr = tStart + (i / N) * (tEnd - tStart);
+      const X = px(yr);
+      const cy = costYsimple(yr);
+      const ay = adoptYsimple(yr);
+      const cmd = i === 0 ? 'M' : 'L';
+      costPath += `${cmd}${X.toFixed(2)},${cy.toFixed(2)} `;
+      adoptPath += `${cmd}${X.toFixed(2)},${ay.toFixed(2)} `;
+    }
+    costFill = costPath + `L${x1},${y1} L${x0},${y1} Z`;
+    adoptFill = adoptPath + `L${x1},${y1} L${x0},${y1} Z`;
+
+    (document.getElementById('cost-line') as unknown as SVGPathElement).setAttribute('d', costPath);
+    (document.getElementById('adopt-line') as unknown as SVGPathElement).setAttribute('d', adoptPath);
+    (document.getElementById('cost-fill') as unknown as SVGPathElement).setAttribute('d', costFill);
+    (document.getElementById('adopt-fill') as unknown as SVGPathElement).setAttribute('d', adoptFill);
+
+    // Find intersection: where costY ≈ adoptY (in pixel space)
+    let bestYr = tStart, bestDist = Infinity;
+    for (let i = 0; i <= 200; i++) {
+      const yr = tStart + (i / 200) * (tEnd - tStart);
+      const d = Math.abs(costYsimple(yr) - adoptYsimple(yr));
+      if (d < bestDist) { bestDist = d; bestYr = yr; }
+    }
+    const ix = px(bestYr);
+    const iy = costYsimple(bestYr);
+    const dot = document.getElementById('x-dot');
+    const glow = document.getElementById('x-glow');
+    const lab = document.getElementById('x-label');
+    [dot, glow].forEach((el) => { if (el) { el.setAttribute('cx', String(ix)); el.setAttribute('cy', String(iy)); }});
+    if (lab) {
+      lab.setAttribute('x', String(ix));
+      lab.setAttribute('y', String(iy - 14));
+      lab.textContent = `crossover ≈ ${Math.round(bestYr)}`;
+    }
+
+    const inflectYrEl = document.getElementById('inflect-year');
+    const inflectPctEl = document.getElementById('inflect-pct');
+    if (inflectYrEl) inflectYrEl.textContent = String(Math.round(bestYr));
+    if (inflectPctEl) inflectPctEl.textContent = `${(adoptPct(bestYr) * 100).toFixed(0)}% of F500`;
+  }
+
+  init();
+  document.addEventListener('astro:page-load', init);
+</script>

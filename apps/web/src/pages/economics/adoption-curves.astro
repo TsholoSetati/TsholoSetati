@@ -1,0 +1,318 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  seo={{
+    title: 'Adoption Curves · Innovation Economics',
+    description: 'Four overlaid technology adoption S-curves with annotated milestones. AI agents in F500, mobile money in SSA, cloud spend share of IT, frontier model release cadence.',
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>Adoption Curves</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">COMPARATIVE · S-CURVES</p>
+      <h1>Adoption Curves</h1>
+      <p class="lead">
+        Four S-curves overlaid on the same time axis. Each represents a technology adoption story relevant to a frontier-tech
+        investor or operator: <em>AI agents in the Fortune 500</em>, <em>mobile money in sub-Saharan Africa</em>,
+        <em>cloud as a share of enterprise IT spend</em>, and <em>frontier model release cadence</em>. Hover the milestones
+        for the underlying datapoints.
+      </p>
+    </header>
+
+    <div class="model" data-reveal>
+      <div class="diagram-wrap">
+        <svg id="adopt-svg" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Four overlaid technology adoption S-curves">
+          <defs>
+            <filter id="ms-glow" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="2"/>
+            </filter>
+          </defs>
+
+          {/* Axes */}
+          <g stroke="rgba(15,23,42,0.18)" stroke-width="1.2">
+            <line x1="60" y1="40" x2="60" y2="400"/>
+            <line x1="60" y1="400" x2="760" y2="400"/>
+          </g>
+
+          {/* Y axis labels */}
+          <g font-family="ui-monospace, monospace" font-size="11" fill="rgba(15,23,42,0.55)">
+            <text x="50" y="44" text-anchor="end">100%</text>
+            <text x="50" y="130" text-anchor="end">75%</text>
+            <text x="50" y="220" text-anchor="end">50%</text>
+            <text x="50" y="310" text-anchor="end">25%</text>
+            <text x="50" y="404" text-anchor="end">0%</text>
+          </g>
+
+          {/* Year ticks */}
+          <g font-family="ui-monospace, monospace" font-size="10" fill="rgba(15,23,42,0.45)">
+            <text x="60" y="424" text-anchor="middle">2010</text>
+            <text x="200" y="424" text-anchor="middle">2014</text>
+            <text x="340" y="424" text-anchor="middle">2018</text>
+            <text x="480" y="424" text-anchor="middle">2022</text>
+            <text x="620" y="424" text-anchor="middle">2026</text>
+            <text x="760" y="424" text-anchor="middle">2030</text>
+          </g>
+
+          {/* Gridlines */}
+          <g stroke="rgba(15,23,42,0.06)" stroke-width="1">
+            <line x1="60" y1="40" x2="760" y2="40"/>
+            <line x1="60" y1="130" x2="760" y2="130"/>
+            <line x1="60" y1="220" x2="760" y2="220"/>
+            <line x1="60" y1="310" x2="760" y2="310"/>
+          </g>
+
+          {/* Curves group — populated by script */}
+          <g id="curves"></g>
+          <g id="milestones"></g>
+        </svg>
+
+        <div id="ms-tooltip" class="tooltip" hidden></div>
+      </div>
+
+      <aside class="legend-panel">
+        <ul class="series-legend">
+          <li>
+            <span class="swatch" style="background:#4f46e5"></span>
+            <strong>AI agents in F500</strong>
+            <span class="muted">Share of Fortune 500 with at least one production agentic AI workload.</span>
+          </li>
+          <li>
+            <span class="swatch" style="background:#0ea5e9"></span>
+            <strong>Mobile money · SSA</strong>
+            <span class="muted">Share of adults in sub-Saharan Africa with a mobile money account.</span>
+          </li>
+          <li>
+            <span class="swatch" style="background:#16a34a"></span>
+            <strong>Cloud share of IT spend</strong>
+            <span class="muted">Public cloud as a percentage of enterprise IT budget, global.</span>
+          </li>
+          <li>
+            <span class="swatch" style="background:#f59e0b"></span>
+            <strong>Frontier model releases</strong>
+            <span class="muted">Cumulative count of frontier-tier model releases, normalised to 2030 = 100%.</span>
+          </li>
+        </ul>
+
+        <div class="implication">
+          <p class="il-eyebrow">Reading note</p>
+          <p>
+            Mobile money's curve is the closest African analogue we have for what frontier AI adoption will look like:
+            late start, steeper slope, leapfrog of legacy infrastructure. The cloud curve is the financial scaffolding
+            most underestimate: in 2010 it was a rounding error; by 2024, half of every IT dollar.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-accent); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .lead em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.92em; }
+
+  .model { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 3rem; }
+  @media (max-width: 880px) { .model { grid-template-columns: 1fr; } }
+
+  .diagram-wrap { position: relative; }
+  #adopt-svg { display: block; width: 100%; height: auto; background: var(--color-surface-base); border-radius: var(--radius-md); }
+
+  .series-legend { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; }
+  .series-legend li { display: grid; grid-template-columns: auto 1fr; column-gap: 0.6rem; align-items: baseline; font-size: 0.88rem; }
+  .series-legend strong { color: var(--color-ink-primary); }
+  .series-legend .muted { grid-column: 2; color: var(--color-ink-tertiary); font-size: 0.8rem; line-height: 1.5; }
+  .swatch { width: 14px; height: 3px; border-radius: 2px; align-self: center; }
+
+  .implication { padding: 1rem; background: var(--color-surface-base); border-radius: var(--radius-md); border-left: 2px solid var(--color-accent); }
+  .il-eyebrow { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.5rem; }
+  .implication p:last-child { margin: 0; font-size: 0.9rem; line-height: 1.55; color: var(--color-ink-secondary); }
+
+  .tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--color-ink-primary);
+    color: var(--color-surface-raised);
+    padding: 0.5rem 0.7rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    transform: translate(-50%, -100%);
+    white-space: nowrap;
+    box-shadow: var(--shadow-md);
+    z-index: 10;
+  }
+  .tooltip strong { color: var(--color-accent-fg, #a5b4fc); display: block; margin-bottom: 2px; }
+</style>
+
+<script>
+  type Series = {
+    id: string;
+    label: string;
+    color: string;
+    L: number;
+    k: number;
+    t0: number;
+    milestones: { yr: number; note: string }[];
+  };
+
+  const SERIES: Series[] = [
+    { id: 'ai',    label: 'AI agents · F500',        color: '#4f46e5', L: 0.92, k: 1.05, t0: 2026.5, milestones: [
+      { yr: 2022, note: 'ChatGPT launch · Nov 2022' },
+      { yr: 2024, note: 'F500 pilots become standing programmes' },
+      { yr: 2027, note: 'Inflection: agentic workflows in production' },
+    ] },
+    { id: 'mm',    label: 'Mobile money · SSA',      color: '#0ea5e9', L: 0.78, k: 0.45, t0: 2017,   milestones: [
+      { yr: 2011, note: 'M-Pesa Kenya: 50% adult penetration' },
+      { yr: 2017, note: 'SSA inflection at ~21% of adults' },
+      { yr: 2024, note: '~63% adult mobile money penetration · GSMA' },
+    ] },
+    { id: 'cloud', label: 'Cloud · % IT spend',      color: '#16a34a', L: 0.72, k: 0.40, t0: 2018,   milestones: [
+      { yr: 2010, note: '~3% of enterprise IT spend' },
+      { yr: 2020, note: '~22% — pandemic-era acceleration' },
+      { yr: 2024, note: '~51% — Gartner public cloud share' },
+    ] },
+    { id: 'fm',    label: 'Frontier model releases', color: '#f59e0b', L: 0.95, k: 0.55, t0: 2024,   milestones: [
+      { yr: 2020, note: 'GPT-3 · 175B parameters' },
+      { yr: 2023, note: 'GPT-4, Claude 2, Gemini 1' },
+      { yr: 2025, note: 'Claude 4, GPT-5, Gemini 2.5 — release cadence steepens' },
+    ] },
+  ];
+
+  const tStart = 2010, tEnd = 2030;
+  const x0 = 60, x1 = 760, y0 = 40, y1 = 400;
+
+  function logistic(s: Series, yr: number): number {
+    return s.L / (1 + Math.exp(-s.k * (yr - s.t0)));
+  }
+  function px(yr: number): number {
+    return x0 + ((yr - tStart) / (tEnd - tStart)) * (x1 - x0);
+  }
+  function py(p: number): number {
+    return y1 - p * (y1 - y0);
+  }
+
+  function init() {
+    const svg = document.getElementById('adopt-svg') as unknown as SVGSVGElement | null;
+    const curvesG = document.getElementById('curves');
+    const msG = document.getElementById('milestones');
+    const tip = document.getElementById('ms-tooltip');
+    if (!svg || !curvesG || !msG || !tip) return;
+    if ((svg as any).__bound) return;
+    (svg as any).__bound = true;
+
+    curvesG.innerHTML = '';
+    msG.innerHTML = '';
+
+    const N = 80;
+    SERIES.forEach((s, idx) => {
+      let d = '';
+      for (let i = 0; i <= N; i++) {
+        const yr = tStart + (i / N) * (tEnd - tStart);
+        const X = px(yr);
+        const Y = py(logistic(s, yr));
+        d += `${i === 0 ? 'M' : 'L'}${X.toFixed(2)},${Y.toFixed(2)} `;
+      }
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', s.color);
+      path.setAttribute('stroke-width', '2.4');
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-linejoin', 'round');
+      const length = 1800;
+      path.setAttribute('stroke-dasharray', String(length));
+      path.setAttribute('stroke-dashoffset', String(length));
+      const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+      anim.setAttribute('attributeName', 'stroke-dashoffset');
+      anim.setAttribute('from', String(length));
+      anim.setAttribute('to', '0');
+      anim.setAttribute('dur', '1.4s');
+      anim.setAttribute('begin', `${0.2 + idx * 0.25}s`);
+      anim.setAttribute('fill', 'freeze');
+      path.appendChild(anim);
+      curvesG.appendChild(path);
+
+      // Endpoint label
+      const lastYr = tEnd;
+      const lx = px(lastYr) - 2;
+      const ly = py(logistic(s, lastYr));
+      const lab = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      lab.setAttribute('x', String(lx));
+      lab.setAttribute('y', String(ly - 6));
+      lab.setAttribute('text-anchor', 'end');
+      lab.setAttribute('font-family', 'ui-monospace, monospace');
+      lab.setAttribute('font-size', '10');
+      lab.setAttribute('font-weight', '600');
+      lab.setAttribute('fill', s.color);
+      lab.setAttribute('opacity', '0');
+      const labAnim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+      labAnim.setAttribute('attributeName', 'opacity');
+      labAnim.setAttribute('from', '0');
+      labAnim.setAttribute('to', '1');
+      labAnim.setAttribute('dur', '0.4s');
+      labAnim.setAttribute('begin', `${1.4 + idx * 0.25}s`);
+      labAnim.setAttribute('fill', 'freeze');
+      lab.appendChild(labAnim);
+      lab.textContent = s.label;
+      curvesG.appendChild(lab);
+
+      // Milestones
+      s.milestones.forEach((m, j) => {
+        const mx = px(m.yr);
+        const my = py(logistic(s, m.yr));
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ring.setAttribute('cx', String(mx));
+        ring.setAttribute('cy', String(my));
+        ring.setAttribute('r', '8');
+        ring.setAttribute('fill', s.color);
+        ring.setAttribute('opacity', '0.18');
+        ring.setAttribute('filter', 'url(#ms-glow)');
+        msG.appendChild(ring);
+
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', String(mx));
+        dot.setAttribute('cy', String(my));
+        dot.setAttribute('r', '4');
+        dot.setAttribute('fill', s.color);
+        dot.setAttribute('stroke', 'white');
+        dot.setAttribute('stroke-width', '1.5');
+        dot.style.cursor = 'pointer';
+        dot.setAttribute('opacity', '0');
+        const dotAnim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        dotAnim.setAttribute('attributeName', 'opacity');
+        dotAnim.setAttribute('from', '0');
+        dotAnim.setAttribute('to', '1');
+        dotAnim.setAttribute('dur', '0.3s');
+        dotAnim.setAttribute('begin', `${1.6 + idx * 0.25 + j * 0.1}s`);
+        dotAnim.setAttribute('fill', 'freeze');
+        dot.appendChild(dotAnim);
+
+        dot.addEventListener('mouseenter', (e) => {
+          tip.hidden = false;
+          tip.innerHTML = `<strong>${s.label} · ${m.yr}</strong>${m.note}`;
+          const wrap = svg.parentElement as HTMLElement;
+          const rect = wrap.getBoundingClientRect();
+          const svgRect = svg.getBoundingClientRect();
+          const scaleX = svgRect.width / 800;
+          const scaleY = svgRect.height / 460;
+          tip.style.left = `${mx * scaleX}px`;
+          tip.style.top = `${my * scaleY - 6}px`;
+        });
+        dot.addEventListener('mouseleave', () => { tip.hidden = true; });
+        msG.appendChild(dot);
+      });
+    });
+  }
+
+  init();
+  document.addEventListener('astro:page-load', init);
+</script>

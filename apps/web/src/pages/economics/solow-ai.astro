@@ -1,0 +1,398 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  seo={{
+    title: 'Solow-AI · Innovation Economics',
+    description: 'Interactive Solow growth model extended with AI as a third factor of production. Move the sliders, watch the steady state shift.',
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>Solow-AI</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">INTERACTIVE · GROWTH MODEL</p>
+      <h1>Solow-AI</h1>
+      <p class="lead">
+        Cobb-Douglas production extended with AI capital as a third factor: <em>Y = A · K<sup>α</sup> · L<sup>β</sup> · AI<sup>γ</sup></em>.
+        Move the sliders to reweight the factor shares. The chart re-solves the steady-state output trajectory in real time.
+      </p>
+    </header>
+
+    <div class="model" data-reveal>
+      <div class="canvas-wrap">
+        <canvas id="solow-canvas" aria-label="Solow-AI output trajectory chart" role="img"></canvas>
+        <div class="readout" id="solow-readout">
+          <div><span class="rl">Steady-state Y</span><span class="rv" data-y>—</span></div>
+          <div><span class="rl">vs baseline</span><span class="rv" data-yd>—</span></div>
+          <div><span class="rl">Half-life to SS</span><span class="rv" data-h>—</span></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="control">
+          <label>α <span class="hint">capital share</span> <output data-out="alpha">0.30</output></label>
+          <input type="range" min="0.10" max="0.55" step="0.01" value="0.30" data-slider="alpha" />
+        </div>
+        <div class="control">
+          <label>β <span class="hint">labour share</span> <output data-out="beta">0.55</output></label>
+          <input type="range" min="0.20" max="0.70" step="0.01" value="0.55" data-slider="beta" />
+        </div>
+        <div class="control">
+          <label>γ <span class="hint">AI share</span> <output data-out="gamma">0.15</output></label>
+          <input type="range" min="0.00" max="0.40" step="0.01" value="0.15" data-slider="gamma" />
+        </div>
+        <div class="control">
+          <label>AI capex <span class="hint">% of GFCF</span> <output data-out="aicapex">8</output>%</label>
+          <input type="range" min="0" max="30" step="1" value="8" data-slider="aicapex" />
+        </div>
+
+        <div class="presets">
+          <button type="button" class="preset" data-preset="za-today">ZA today</button>
+          <button type="button" class="preset" data-preset="za-5yr">ZA + 5yr AI capex</button>
+          <button type="button" class="preset" data-preset="frontier">Frontier economy</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose">
+      <h2>How to read it</h2>
+      <p>
+        The chart shows the <strong>output trajectory</strong> from the current capital stock to the new steady state.
+        Raising γ (AI's share of output) is meaningful only if AI capex actually grows: that is what the second slider
+        does. Holding γ high while AI capex is zero is a <em>policy aspiration</em>, not a growth story.
+      </p>
+      <p>
+        The <em>baseline</em> reference is South Africa today: α 0.30, β 0.55, γ 0.15, AI capex 8% of GFCF. The
+        <em>+5yr</em> preset is what an aggressive but credible AI investment programme looks like under the same
+        production technology. The <em>frontier</em> preset is calibrated to a small high-income economy (Singapore,
+        Israel-shaped).
+      </p>
+      <h3>Caveats</h3>
+      <ul>
+        <li>Constant returns to scale assumed: α + β + γ ≈ 1.</li>
+        <li>The model is illustrative. Use it to shape an argument, not to size a budget.</li>
+      </ul>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-accent); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .lead em { font-family: var(--font-mono); font-style: normal; color: var(--color-ink-primary); }
+
+  .model {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+    overflow: hidden;
+  }
+  @media (max-width: 880px) { .model { grid-template-columns: 1fr; } }
+
+  .canvas-wrap { position: relative; min-height: 360px; }
+  #solow-canvas { display: block; width: 100%; height: 360px; background: var(--color-surface-base); border-radius: var(--radius-md); }
+
+  .readout {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: color-mix(in oklab, var(--color-surface-raised) 90%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--color-border-subtle);
+    padding: 0.55rem 0.7rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+  .readout .rl { color: var(--color-ink-tertiary); margin-right: 0.6rem; }
+  .readout .rv { color: var(--color-ink-primary); font-weight: 600; }
+  .readout > div { display: flex; justify-content: space-between; gap: 0.6rem; }
+
+  .controls { display: flex; flex-direction: column; gap: 1rem; }
+  .control label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-secondary); margin-bottom: 0.4rem;
+  }
+  .control .hint { color: var(--color-ink-tertiary); font-size: 0.66rem; letter-spacing: 0.06em; flex: 1; margin-left: 0.5rem; }
+  .control output { color: var(--color-accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .control input[type=range] {
+    width: 100%; height: 4px; appearance: none; background: var(--color-surface-sunken);
+    border-radius: 999px; outline: none;
+  }
+  .control input[type=range]::-webkit-slider-thumb {
+    appearance: none; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--color-accent); cursor: pointer;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-accent) 18%, transparent);
+    transition: transform 120ms ease;
+  }
+  .control input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  .control input[type=range]::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%; background: var(--color-accent); cursor: pointer; border: 0;
+  }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+  .preset {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    padding: 0.4rem 0.7rem; border: 1px solid var(--color-border-default);
+    background: var(--color-surface-base); border-radius: var(--radius-sm);
+    color: var(--color-ink-secondary); cursor: pointer;
+    transition: all 160ms ease;
+  }
+  .preset:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+  .prose { max-width: 70ch; }
+  .prose h2, .prose h3 { font-family: var(--font-display); font-weight: 500; }
+  .prose h2 { font-size: 1.6rem; margin: 0 0 1rem; }
+  .prose h3 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
+  .prose p, .prose li { color: var(--color-ink-secondary); line-height: 1.65; }
+  .prose ul { padding-left: 1.25rem; }
+  .prose strong { color: var(--color-ink-primary); }
+  .prose em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
+</style>
+
+<script>
+  type State = { alpha: number; beta: number; gamma: number; aicapex: number };
+
+  const PRESETS: Record<string, State> = {
+    'za-today':  { alpha: 0.30, beta: 0.55, gamma: 0.15, aicapex: 8 },
+    'za-5yr':    { alpha: 0.28, beta: 0.50, gamma: 0.22, aicapex: 18 },
+    'frontier':  { alpha: 0.32, beta: 0.40, gamma: 0.28, aicapex: 25 },
+  };
+  const BASELINE = PRESETS['za-today'];
+
+  function init() {
+    const canvas = document.getElementById('solow-canvas') as HTMLCanvasElement | null;
+    if (!canvas || (canvas as any).__bound) return;
+    (canvas as any).__bound = true;
+
+    const ctx = canvas.getContext('2d')!;
+    const sliders = Array.from(document.querySelectorAll<HTMLInputElement>('[data-slider]'));
+    const outs = Array.from(document.querySelectorAll<HTMLOutputElement>('[data-out]'));
+    const presets = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-preset]'));
+
+    const state: State = { ...BASELINE };
+    let raf = 0;
+    let lastTrajectory: number[] = [];
+    let targetTrajectory: number[] = [];
+    let animStart = 0;
+    const ANIM_MS = 600;
+    const TICKS = 60;
+
+    function steadyStateY(s: State): number {
+      // Y = A * K^a * L^b * (AI)^g, normalised. K, L baseline = 1, AI scales with capex share.
+      const A = 1.0;
+      const K = 1.0;
+      const L = 1.0;
+      const AI = Math.max(0.05, s.aicapex / 8); // 8% capex = AI factor of 1.0
+      return A * Math.pow(K, s.alpha) * Math.pow(L, s.beta) * Math.pow(AI, s.gamma);
+    }
+
+    function trajectory(s: State): number[] {
+      const y0 = 1.0;
+      const yss = steadyStateY(s);
+      // Simple convergence: y(t) = yss + (y0 - yss) * e^(-rt). r tied to AI share + capex.
+      const r = 0.05 + 0.04 * s.gamma + 0.002 * s.aicapex;
+      const out: number[] = [];
+      for (let t = 0; t <= TICKS; t++) {
+        out.push(yss + (y0 - yss) * Math.exp(-r * t));
+      }
+      return out;
+    }
+
+    function readState(): State {
+      return {
+        alpha: parseFloat((document.querySelector('[data-slider="alpha"]') as HTMLInputElement).value),
+        beta: parseFloat((document.querySelector('[data-slider="beta"]') as HTMLInputElement).value),
+        gamma: parseFloat((document.querySelector('[data-slider="gamma"]') as HTMLInputElement).value),
+        aicapex: parseFloat((document.querySelector('[data-slider="aicapex"]') as HTMLInputElement).value),
+      };
+    }
+
+    function syncOutputs(s: State) {
+      outs.forEach((o) => {
+        const k = o.dataset.out as keyof State;
+        if (k === 'aicapex') o.textContent = String(s.aicapex);
+        else o.textContent = (s as any)[k].toFixed(2);
+      });
+    }
+
+    function setReadout(s: State, traj: number[]) {
+      const yssNow = traj[traj.length - 1];
+      const yssBase = steadyStateY(BASELINE);
+      const dPct = ((yssNow - yssBase) / yssBase) * 100;
+      const r = 0.05 + 0.04 * s.gamma + 0.002 * s.aicapex;
+      const halfLife = (Math.log(2) / r).toFixed(1);
+      (document.querySelector('[data-y]') as HTMLElement).textContent = yssNow.toFixed(3);
+      const yd = document.querySelector('[data-yd]') as HTMLElement;
+      yd.textContent = `${dPct >= 0 ? '+' : ''}${dPct.toFixed(1)}%`;
+      yd.style.color = dPct >= 0 ? 'var(--color-accent)' : 'var(--color-signal-down)';
+      (document.querySelector('[data-h]') as HTMLElement).textContent = `${halfLife} periods`;
+    }
+
+    function draw(traj: number[]) {
+      const dpr = window.devicePixelRatio || 1;
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      if (canvas.width !== w * dpr) {
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const padL = 48, padR = 24, padT = 24, padB = 38;
+      const innerW = w - padL - padR;
+      const innerH = h - padT - padB;
+
+      const yMax = Math.max(steadyStateY(PRESETS['frontier']), Math.max(...traj)) * 1.1;
+      const yMin = 0.5;
+
+      // Grid
+      ctx.strokeStyle = 'rgba(15,23,42,0.06)';
+      ctx.lineWidth = 1;
+      ctx.font = '10px ui-monospace, monospace';
+      ctx.fillStyle = 'rgba(15,23,42,0.45)';
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + (innerH * i) / 4;
+        ctx.beginPath();
+        ctx.moveTo(padL, y);
+        ctx.lineTo(padL + innerW, y);
+        ctx.stroke();
+        const v = yMax - ((yMax - yMin) * i) / 4;
+        ctx.fillText(v.toFixed(2), 6, y + 3);
+      }
+      ctx.fillText('Y / L', 6, padT - 6);
+      ctx.fillText('time →', padL + innerW - 36, h - 8);
+
+      // Baseline trajectory (dashed)
+      const baseTraj = trajectory(BASELINE);
+      ctx.strokeStyle = 'rgba(15,23,42,0.30)';
+      ctx.setLineDash([3, 4]);
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      baseTraj.forEach((y, i) => {
+        const px = padL + (innerW * i) / TICKS;
+        const py = padT + innerH - ((y - yMin) / (yMax - yMin)) * innerH;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Active trajectory with gradient fill
+      const grad = ctx.createLinearGradient(0, padT, 0, padT + innerH);
+      grad.addColorStop(0, 'rgba(79,70,229,0.32)');
+      grad.addColorStop(1, 'rgba(79,70,229,0.00)');
+
+      ctx.beginPath();
+      traj.forEach((y, i) => {
+        const px = padL + (innerW * i) / TICKS;
+        const py = padT + innerH - ((y - yMin) / (yMax - yMin)) * innerH;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      });
+      // Fill area under
+      const lastX = padL + innerW;
+      const baseY = padT + innerH;
+      ctx.lineTo(lastX, baseY);
+      ctx.lineTo(padL, baseY);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Stroke active line
+      ctx.beginPath();
+      traj.forEach((y, i) => {
+        const px = padL + (innerW * i) / TICKS;
+        const py = padT + innerH - ((y - yMin) / (yMax - yMin)) * innerH;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      });
+      ctx.strokeStyle = '#4f46e5';
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // Steady-state line
+      const yss = traj[traj.length - 1];
+      const ssPy = padT + innerH - ((yss - yMin) / (yMax - yMin)) * innerH;
+      ctx.strokeStyle = 'rgba(79,70,229,0.45)';
+      ctx.setLineDash([2, 4]);
+      ctx.beginPath();
+      ctx.moveTo(padL, ssPy);
+      ctx.lineTo(padL + innerW, ssPy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#4f46e5';
+      ctx.fillText(`Y* = ${yss.toFixed(3)}`, padL + innerW - 80, ssPy - 6);
+
+      // Endpoint dot
+      ctx.beginPath();
+      ctx.arc(lastX, ssPy, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#4f46e5';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    function tick(now: number) {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const elapsed = now - animStart;
+      const t = reduce ? 1 : Math.min(1, elapsed / ANIM_MS);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const interp = lastTrajectory.map((v, i) => v + (targetTrajectory[i] - v) * eased);
+      draw(interp);
+      if (t < 1) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        lastTrajectory = targetTrajectory.slice();
+      }
+    }
+
+    function recompute() {
+      const s = readState();
+      // Constrain α + β + γ ≈ 1 by visually nudging output but not snapping the slider
+      syncOutputs(s);
+      const traj = trajectory(s);
+      setReadout(s, traj);
+      if (lastTrajectory.length === 0) lastTrajectory = traj.slice();
+      targetTrajectory = traj;
+      animStart = performance.now();
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(tick);
+    }
+
+    sliders.forEach((sl) => sl.addEventListener('input', recompute));
+    presets.forEach((p) =>
+      p.addEventListener('click', () => {
+        const preset = PRESETS[p.dataset.preset!];
+        if (!preset) return;
+        sliders.forEach((sl) => {
+          const k = sl.dataset.slider as keyof State;
+          sl.value = String(preset[k]);
+        });
+        recompute();
+      })
+    );
+
+    window.addEventListener('resize', recompute, { passive: true });
+    recompute();
+  }
+
+  init();
+  document.addEventListener('astro:page-load', init);
+</script>

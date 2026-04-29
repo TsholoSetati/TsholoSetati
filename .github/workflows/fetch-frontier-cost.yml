@@ -1,0 +1,40 @@
+name: Fetch frontier model cost
+
+# Daily snapshot of cheapest frontier-tier model on OpenRouter.
+# 06:00 UTC = 08:00 SAST. Independent of the markets fetch.
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-frontier-cost
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch frontier cost (OpenRouter)
+        run: node apps/web/scripts/fetch-frontier-cost.mjs
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- apps/web/public/data/frontier-cost.json; then
+            echo "No changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/public/data/frontier-cost.json
+          git commit -m "chore(data): refresh frontier model cost"
+          git push

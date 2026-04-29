@@ -1,0 +1,104 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+const models = [
+  {
+    slug: 'solow-ai',
+    eyebrow: 'INTERACTIVE · GROWTH MODEL',
+    title: 'Solow-AI',
+    description: 'A three-factor production function with AI as a distinct input alongside capital and labour. Move the sliders and watch the steady-state output trajectory respond in real time.',
+    primary: true,
+  },
+  {
+    slug: 'is-lm-fx',
+    eyebrow: 'INTERACTIVE · OPEN-ECONOMY MODEL',
+    title: 'IS-LM-FX for South Africa',
+    description: 'AI capex shifts the IS curve right. GPU import dependency drags the BP curve down. Find the new equilibrium for the rand, the repo rate, and output.',
+    primary: true,
+  },
+  {
+    slug: 'wright-rogers',
+    eyebrow: 'OVERLAY · COST × ADOPTION',
+    title: "Wright's Law × Rogers Diffusion",
+    description: 'Where compute cost decline meets the adoption S-curve. The intersection at each year predicts the inflection where enterprise adoption accelerates.',
+  },
+  {
+    slug: 'adoption-curves',
+    eyebrow: 'COMPARATIVE · S-CURVES',
+    title: 'Adoption Curves',
+    description: 'Four overlaid technology adoption trajectories with annotated milestones. Read off the velocity at which infrastructure, AI, and platforms ship into operating models.',
+  },
+];
+
+const v2 = [
+  { title: 'Capital flow direction', detail: 'Sankey of AI VC dollar flow between regions. Quarterly Briter + Partech.' },
+  { title: 'Policy gap stacked bars', detail: 'Draft / Passed / In-force segments per jurisdiction. OECD AI Policy Observatory.' },
+  { title: 'Productivity deltas', detail: 'Citation cards from BCG-Harvard, MIT NBER, GitHub, McKinsey studies.' },
+  { title: 'Innovation Phillips curve', detail: 'Deployment velocity vs. governance overhead. Provocative, defensible, original.' },
+];
+---
+
+<BaseLayout
+  seo={{
+    title: 'Innovation Economics',
+    description: 'Interactive economic models for frontier-tech strategy: Solow-AI growth, IS-LM-FX for SA, Wright\u2019s Law x Rogers diffusion, and adoption curves.',
+  }}
+>
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics</p>
+      <h1>Models for thinking about frontier technology in the real economy.</h1>
+      <p class="lead">
+        Most strategy decks reach for vibes. This section reaches for the economist's toolkit and applies it to the
+        decisions you actually face: how much AI capex shifts your steady state, what GPU import dependency does to
+        the rand, when adoption breaks the inflection. Move the sliders. Watch the curves shift.
+      </p>
+    </header>
+
+    <ul class="grid" data-reveal>
+      {models.map((m) => (
+        <li class={'item' + (m.primary ? ' item-primary' : '')} data-reveal>
+          <a class="card card-hover" href={`/economics/${m.slug}`}>
+            <p class="kicker">{m.eyebrow}</p>
+            <h2>{m.title}</h2>
+            <p class="muted">{m.description}</p>
+            <p class="cta">Open model <span aria-hidden="true">&rarr;</span></p>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <section class="backlog" data-reveal>
+      <p class="eyebrow">Up next</p>
+      <h3>Visualisations on the v2 backlog</h3>
+      <ul class="backlog-list">
+        {v2.map((b) => (
+          <li>
+            <strong>{b.title}.</strong> <span class="muted">{b.detail}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 3rem; line-height: 1.6; }
+
+  .grid { list-style: none; padding: 0; margin: 0 0 5rem; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .item-primary .card { border-left: 3px solid var(--color-accent); }
+  .card { display: flex; flex-direction: column; gap: 0.75rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); height: 100%; transition: all var(--duration-fast) var(--ease-out-quad); text-decoration: none; color: inherit; }
+  .card:hover { border-color: var(--color-accent); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .kicker { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin: 0; }
+  .card h2 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; margin: 0; line-height: 1.2; color: var(--color-ink-primary); }
+  .muted { color: var(--color-ink-secondary); margin: 0; line-height: 1.55; font-size: 0.95rem; }
+  .cta { color: var(--color-accent); font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; margin: auto 0 0; }
+
+  .backlog { padding-top: 3rem; border-top: 1px solid var(--color-border-subtle); }
+  .backlog h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.4rem; margin: 0 0 1.25rem; }
+  .backlog-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; }
+  .backlog-list li { line-height: 1.55; }
+  .backlog-list strong { color: var(--color-ink-primary); }
+</style>
