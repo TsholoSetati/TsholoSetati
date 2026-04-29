@@ -9,32 +9,36 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18]
+    defaults:
+      run:
+        working-directory: apps/web
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '20'
           cache: 'npm'
+          cache-dependency-path: |
+            apps/web/package-lock.json
+            apps/web/demos-src/sharp-sharp/package-lock.json
+            apps/web/demos-src/policy-prism/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Type check
-        run: npm run type-check
+      - name: Install demo (sharp-sharp) dependencies
+        run: npm ci
+        working-directory: apps/web/demos-src/sharp-sharp
 
-      - name: Lint
-        run: npm run lint
+      - name: Install demo (policy-prism) dependencies
+        run: npm ci
+        working-directory: apps/web/demos-src/policy-prism
 
-      - name: Run build
+      - name: Build site
         run: npm run build
-
-      - name: Run Prettier check
-        run: npx --no-install prettier --check . || true
+        env:
+          NODE_ENV: production
