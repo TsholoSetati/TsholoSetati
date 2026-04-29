@@ -1,0 +1,445 @@
+---
+/**
+ * CommandPalette — global ⌘K / Ctrl-K launcher.
+ *
+ * Indexes pages, demos, and insights at build time and ships them as a
+ * static JSON payload. Substring + token-prefix scoring; keyboard nav
+ * with ↑/↓/Enter/Esc and visual highlight. Theme-toggle and external
+ * social links included as actions.
+ *
+ * Hidden by default; shown by toggling [data-cmdk] aria-hidden + a class.
+ */
+import { Icon } from 'astro-icon/components';
+import { getCollection } from 'astro:content';
+import { nav, site } from '~/config/site';
+import { demos } from '~/data/demos';
+
+type Item = {
+  type: 'page' | 'demo' | 'insight' | 'action' | 'social';
+  title: string;
+  subtitle?: string;
+  href: string;
+  external?: boolean;
+  icon: string;
+  /** Lowercased haystack used for matching. */
+  hay: string;
+};
+
+const insightEntries = await getCollection('insights', (e) => !e.data.draft);
+
+const pageItems: Item[] = nav.map((n) => ({
+  type: 'page',
+  title: n.label,
+  subtitle: n.href,
+  href: n.href,
+  icon: ({
+    '/about': 'user',
+    '/experience': 'briefcase',
+    '/expertise': 'compass',
+    '/insights': 'article',
+    '/demos': 'flask',
+    '/contact': 'envelope-simple',
+  } as Record<string, string>)[n.href] ?? 'file',
+  hay: `${n.label} ${n.href}`.toLowerCase(),
+}));
+
+const extraPages: Item[] = [
+  { type: 'page', title: 'Home',          subtitle: '/',            href: '/',            icon: 'house',     hay: 'home /' },
+  { type: 'page', title: 'AI Diagnostic', subtitle: '/demos/diagnostic', href: '/demos/diagnostic', icon: 'gauge', hay: 'ai diagnostic /demos/diagnostic' },
+  { type: 'page', title: 'How AI is used here', subtitle: '/ai',    href: '/ai',          icon: 'robot',     hay: 'how ai is used here /ai' },
+];
+
+const demoItems: Item[] = demos.map((d) => ({
+  type: 'demo',
+  title: d.title,
+  subtitle: `${d.category} · ${d.status}`,
+  href: `/demos/${d.slug}`,
+  icon: d.icon,
+  hay: `${d.title} ${d.tagline} ${d.category} ${d.slug}`.toLowerCase(),
+}));
+
+const insightItems: Item[] = insightEntries
+  .sort((a, b) => +new Date(b.data.publishDate) - +new Date(a.data.publishDate))
+  .map((e) => ({
+    type: 'insight',
+    title: e.data.title,
+    subtitle: (e.data.topics ?? []).slice(0, 3).join(' · ') || 'Insight',
+    href: `/insights/${e.slug}`,
+    icon: 'article',
+    hay: `${e.data.title} ${(e.data.topics ?? []).join(' ')} ${e.data.summary ?? ''}`.toLowerCase(),
+  }));
+
+const socialItems: Item[] = [
+  { type: 'social', title: 'LinkedIn', subtitle: 'Open profile', href: site.social.linkedin, external: true, icon: 'linkedin-logo', hay: 'linkedin profile' },
+  { type: 'social', title: 'GitHub',   subtitle: 'Open profile', href: site.social.github,   external: true, icon: 'github-logo',   hay: 'github profile' },
+  { type: 'social', title: 'Email',    subtitle: site.author.email, href: `mailto:${site.author.email}`, external: true, icon: 'envelope-simple', hay: `email mail ${site.author.email}` },
+  { type: 'social', title: 'RSS',      subtitle: '/rss.xml',     href: '/rss.xml',           external: true, icon: 'rss', hay: 'rss feed' },
+];
+
+const actionItems: Item[] = [
+  { type: 'action', title: 'Toggle theme',          subtitle: 'Light / dark', href: '#theme', icon: 'circle-half',   hay: 'toggle theme dark light mode' },
+  { type: 'action', title: 'Copy current page link', subtitle: 'Clipboard',   href: '#copy-url', icon: 'link', hay: 'copy current page link url clipboard share' },
+];
+
+const items: Item[] = [...pageItems, ...extraPages, ...demoItems, ...insightItems, ...actionItems, ...socialItems];
+---
+
+<div class="cmdk" data-cmdk hidden role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="cmdk-backdrop" data-cmdk-close></div>
+  <div class="cmdk-panel" role="combobox" aria-haspopup="listbox" aria-expanded="true" aria-controls="cmdk-list">
+    <div class="cmdk-input-row">
+      <Icon name="ph:magnifying-glass" aria-hidden="true" class="cmdk-search-icon" />
+      <input
+        type="text"
+        class="cmdk-input"
+        data-cmdk-input
+        placeholder="Search pages, insights, demos…"
+        aria-label="Search"
+        aria-autocomplete="list"
+        aria-controls="cmdk-list"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <kbd class="cmdk-kbd">Esc</kbd>
+    </div>
+    <ul class="cmdk-list" id="cmdk-list" data-cmdk-list role="listbox"></ul>
+    <div class="cmdk-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>Enter</kbd> open</span>
+      <span><kbd>Esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" data-cmdk-items set:html={JSON.stringify(items)}></script>
+
+<style>
+  .cmdk {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal, 1000);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: clamp(4rem, 12vh, 9rem);
+  }
+  .cmdk[hidden] { display: none; }
+  .cmdk-backdrop {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in oklab, var(--color-ink-primary) 45%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  .cmdk-panel {
+    position: relative;
+    width: min(620px, calc(100vw - 2rem));
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl, 0 24px 48px -12px rgba(0,0,0,0.35));
+    display: flex;
+    flex-direction: column;
+    max-height: 70vh;
+    overflow: hidden;
+    animation: cmdk-pop 160ms ease-out;
+  }
+  @keyframes cmdk-pop {
+    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+  .cmdk-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  .cmdk-search-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--color-ink-tertiary);
+    flex-shrink: 0;
+  }
+  .cmdk-input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--color-ink-primary);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    padding: 0.1rem 0;
+  }
+  .cmdk-input::placeholder { color: var(--color-ink-tertiary); }
+  .cmdk-kbd, kbd {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border);
+    color: var(--color-ink-secondary);
+  }
+  .cmdk-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .cmdk-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    color: var(--color-ink-primary);
+    text-decoration: none;
+    transition: background 120ms ease;
+  }
+  .cmdk-item :global(svg) { width: 1.1rem; height: 1.1rem; color: var(--color-ink-tertiary); flex-shrink: 0; }
+  .cmdk-item-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+  .cmdk-item-title { font-weight: 500; font-size: 0.92rem; }
+  .cmdk-item-sub { font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-ink-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cmdk-item-type { font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-tertiary); padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); background: var(--color-surface-sunken); }
+  .cmdk-item.is-active,
+  .cmdk-item:hover { background: color-mix(in oklab, var(--color-accent) 14%, transparent); }
+  .cmdk-item.is-active :global(svg),
+  .cmdk-item:hover :global(svg) { color: var(--color-accent); }
+  .cmdk-empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: var(--color-ink-tertiary);
+    font-size: 0.9rem;
+  }
+  .cmdk-foot {
+    display: flex;
+    gap: 1rem;
+    padding: 0.55rem 1rem;
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-surface-sunken);
+    font-size: 0.7rem;
+    color: var(--color-ink-tertiary);
+  }
+  .cmdk-foot span { display: inline-flex; align-items: center; gap: 0.3rem; }
+
+  @media (max-width: 640px) {
+    .cmdk { padding-top: 4rem; }
+    .cmdk-panel { max-height: 80vh; }
+    .cmdk-foot { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cmdk-panel { animation: none; }
+  }
+</style>
+
+<script>
+  // Phosphor icon glyph map — inlined as static SVGs so we can render
+  // results without a hydration round-trip. Only icons referenced above.
+  const ICONS: Record<string, string> = {
+    'user':              '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M230.92 212c-15.23-26.33-38.7-45.21-66.09-54.16a72 72 0 1 0-73.66 0c-27.39 8.94-50.86 27.82-66.09 54.16a8 8 0 1 0 13.85 8c18.84-32.56 52.14-52 89.07-52s70.23 19.44 89.07 52a8 8 0 1 0 13.85-8ZM72 96a56 56 0 1 1 56 56 56.06 56.06 0 0 1-56-56Z"/></svg>',
+    'briefcase':         '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M216 56h-40v-8a24 24 0 0 0-24-24h-48a24 24 0 0 0-24 24v8H40a16 16 0 0 0-16 16v128a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V72a16 16 0 0 0-16-16ZM96 48a8 8 0 0 1 8-8h48a8 8 0 0 1 8 8v8H96Zm120 24v41.61A184 184 0 0 1 128 136a184.07 184.07 0 0 1-88-22.39V72Zm0 128H40v-68.31A200.19 200.19 0 0 0 128 152a200.25 200.25 0 0 0 88-20.31V200ZM104 112a8 8 0 0 1 8-8h32a8 8 0 0 1 0 16h-32a8 8 0 0 1-8-8Z"/></svg>',
+    'compass':           '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24Zm0 192a88 88 0 1 1 88-88 88.1 88.1 0 0 1-88 88Zm49.66-130.34a8 8 0 0 0-8.94-1.65l-72 32a8 8 0 0 0-4 4l-32 72a8 8 0 0 0 10.59 10.59l72-32a8 8 0 0 0 4-4l32-72a8 8 0 0 0-1.65-8.94ZM89.78 166.22l21-47.18 26.18 26.18ZM146.42 134 120.2 107.78l46.36-20.61Z"/></svg>',
+    'article':           '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M216 40H40a16 16 0 0 0-16 16v144a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16ZM40 56h176v32H40Zm0 144v-96h176v96ZM176 132a8 8 0 0 1-8 8H88a8 8 0 0 1 0-16h80a8 8 0 0 1 8 8Zm0 32a8 8 0 0 1-8 8H88a8 8 0 0 1 0-16h80a8 8 0 0 1 8 8Z"/></svg>',
+    'flask':             '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M229.66 218.46 176 124.43V32h8a8 8 0 0 0 0-16H72a8 8 0 0 0 0 16h8v92.43L26.34 218.46A16 16 0 0 0 40.21 240h175.58a16 16 0 0 0 13.87-21.54ZM96 32h64v40H96Zm-2.07 102 2.07-3.6V88h64v42.4l2.07 3.6 32.5 56.91-99.43-3.91Z"/></svg>',
+    'envelope-simple':   '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8Zm-8 144H40V74.19l82.59 75.71a8 8 0 0 0 10.82 0L216 74.19V192Z"/></svg>',
+    'house':             '<svg viewBox="0 0 256 256" fill="currentColor"><path d="m218.83 103.77-80-75.48a16 16 0 0 0-21.66 0l-80 75.48A16 16 0 0 0 32 115.55V208a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-48h32v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-92.45a16 16 0 0 0-5.17-11.78ZM208 208h-48v-48a16 16 0 0 0-16-16h-32a16 16 0 0 0-16 16v48H48v-92.45l80-75.48 80 75.48Z"/></svg>',
+    'gauge':             '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M232 128a104 104 0 1 0-208 0 104.41 104.41 0 0 0 32.08 75.18 8 8 0 0 0 11.16-11.46A88 88 0 1 1 216 128a87.39 87.39 0 0 1-26.92 63.14A8 8 0 0 0 200 202.93 103.4 103.4 0 0 0 232 128Zm-94.34-9.66a8 8 0 0 0-11.32 0L86.34 158.34a8 8 0 0 0 11.32 11.32l40-40a8 8 0 0 0 0-11.32Z"/></svg>',
+    'robot':             '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M200 48h-64V16a8 8 0 0 0-16 0v32H56a32 32 0 0 0-32 32v112a32 32 0 0 0 32 32h144a32 32 0 0 0 32-32V80a32 32 0 0 0-32-32Zm16 144a16 16 0 0 1-16 16H56a16 16 0 0 1-16-16V80a16 16 0 0 1 16-16h144a16 16 0 0 1 16 16Zm-52-56h-72a16 16 0 0 0-16 16v16a16 16 0 0 0 16 16h72a16 16 0 0 0 16-16v-16a16 16 0 0 0-16-16Zm0 32H92v-16h72v16ZM84 116a12 12 0 1 1 12-12 12 12 0 0 1-12 12Zm88 0a12 12 0 1 1 12-12 12 12 0 0 1-12 12Z"/></svg>',
+    'circle-half':       '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24Zm0 192V40a88 88 0 0 1 0 176Z"/></svg>',
+    'link':              '<svg viewBox="0 0 256 256" fill="currentColor"><path d="m137.54 186.36-29.66 29.66a40 40 0 0 1-56.57-56.56l34.83-34.84a40 40 0 0 1 52.93-3.21 8 8 0 1 0 10-12.51 56 56 0 0 0-74.07 4.49L40.2 148.21a56 56 0 0 0 79.2 79.2l29.66-29.66a8 8 0 0 0-11.32-11.32Zm78.22-114.14a56.08 56.08 0 0 0-79.2 0l-29.66 29.66a8 8 0 0 0 11.32 11.32l29.66-29.66a40 40 0 0 1 56.57 56.56l-34.83 34.84a40 40 0 0 1-52.93 3.21 8 8 0 1 0-10 12.51 56 56 0 0 0 74.07-4.49l34.83-34.84a56.06 56.06 0 0 0-.83-79.11Z"/></svg>',
+    'magnifying-glass':  '<svg viewBox="0 0 256 256" fill="currentColor"><path d="m229.66 218.34-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72 72.08 72.08 0 0 1-72-72Z"/></svg>',
+    'linkedin-logo':     '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16Zm0 192H40V40h176v176ZM96 112v64a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm88 28v36a8 8 0 0 1-16 0v-36a20 20 0 0 0-40 0v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A36 36 0 0 1 184 140ZM100 84a12 12 0 1 1-12-12 12 12 0 0 1 12 12Z"/></svg>',
+    'github-logo':       '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M208.31 75.68A59.78 59.78 0 0 0 202.93 28a8 8 0 0 0-6.93-4 59.75 59.75 0 0 0-48 24h-24a59.75 59.75 0 0 0-48-24 8 8 0 0 0-6.93 4 59.78 59.78 0 0 0-5.38 47.68A58.14 58.14 0 0 0 56 104v8a56.06 56.06 0 0 0 48.44 55.47A39.8 39.8 0 0 0 96 192v8H72a24 24 0 0 1-24-24 40 40 0 0 0-40-40 8 8 0 0 0 0 16 24 24 0 0 1 24 24 40 40 0 0 0 40 40h24v16a8 8 0 0 0 16 0v-40a24 24 0 0 1 48 0v40a8 8 0 0 0 16 0v-40a39.8 39.8 0 0 0-8.44-24.53A56.06 56.06 0 0 0 216 112v-8a58.14 58.14 0 0 0-7.69-28.32Z"/></svg>',
+    'rss':               '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M52 168a20 20 0 1 1-20-20 20 20 0 0 1 20 20Zm68 28A100.11 100.11 0 0 0 28 104a8 8 0 0 0 0 16 84.09 84.09 0 0 1 84 84 8 8 0 0 0 16 0Zm64 0A164 164 0 0 0 28 40a8 8 0 0 0 0 16 148 148 0 0 1 148 148 8 8 0 0 0 16 0Z"/></svg>',
+    'file':              '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M213.66 82.34l-56-56A8 8 0 0 0 152 24H56a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h144a16 16 0 0 0 16-16V88a8 8 0 0 0-2.34-5.66ZM160 51.31 188.69 80H160ZM200 216H56V40h88v48a8 8 0 0 0 8 8h48v120Z"/></svg>',
+  };
+
+  type Item = {
+    type: 'page' | 'demo' | 'insight' | 'action' | 'social';
+    title: string;
+    subtitle?: string;
+    href: string;
+    external?: boolean;
+    icon: string;
+    hay: string;
+  };
+
+  function loadItems(): Item[] {
+    const node = document.querySelector<HTMLScriptElement>('[data-cmdk-items]');
+    if (!node?.textContent) return [];
+    try { return JSON.parse(node.textContent) as Item[]; } catch { return []; }
+  }
+
+  function score(item: Item, query: string): number {
+    if (!query) return 1;
+    const q = query.toLowerCase();
+    const tokens = q.split(/\s+/).filter(Boolean);
+    let s = 0;
+    for (const tok of tokens) {
+      const idx = item.hay.indexOf(tok);
+      if (idx === -1) return 0;
+      // Earlier match + title match boost.
+      s += 100 - Math.min(idx, 50);
+      if (item.title.toLowerCase().includes(tok)) s += 30;
+    }
+    // Type-weight: pages/demos slightly above insights for short queries.
+    if (item.type === 'page') s += 5;
+    if (item.type === 'demo') s += 4;
+    return s;
+  }
+
+  function iconHtml(name: string): string {
+    return ICONS[name] ?? ICONS.file;
+  }
+
+  function escapeHtml(s: string): string {
+    return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+  }
+
+  function setupCommandPalette() {
+    const root = document.querySelector<HTMLElement>('[data-cmdk]');
+    const input = document.querySelector<HTMLInputElement>('[data-cmdk-input]');
+    const list = document.querySelector<HTMLUListElement>('[data-cmdk-list]');
+    if (!root || !input || !list) return;
+    if (root.dataset.bound) return;
+    root.dataset.bound = 'true';
+
+    const items = loadItems();
+    let active = 0;
+    let filtered: Item[] = items.slice(0, 30);
+
+    function render() {
+      if (filtered.length === 0) {
+        list.innerHTML = '<li class="cmdk-empty">No matches.</li>';
+        return;
+      }
+      list.innerHTML = filtered
+        .map(
+          (it, i) => `
+          <li role="option" aria-selected="${i === active}">
+            <a class="cmdk-item ${i === active ? 'is-active' : ''}"
+               data-cmdk-href="${escapeHtml(it.href)}"
+               data-cmdk-type="${it.type}"
+               data-cmdk-index="${i}"
+               href="${escapeHtml(it.href)}"
+               ${it.external ? 'target="_blank" rel="noopener"' : ''}>
+              ${iconHtml(it.icon)}
+              <span class="cmdk-item-text">
+                <span class="cmdk-item-title">${escapeHtml(it.title)}</span>
+                ${it.subtitle ? `<span class="cmdk-item-sub">${escapeHtml(it.subtitle)}</span>` : ''}
+              </span>
+              <span class="cmdk-item-type">${it.type}</span>
+            </a>
+          </li>`
+        )
+        .join('');
+    }
+
+    function refilter() {
+      const q = input.value.trim();
+      filtered = items
+        .map((it) => ({ it, s: score(it, q) }))
+        .filter((x) => x.s > 0)
+        .sort((a, b) => b.s - a.s)
+        .slice(0, 30)
+        .map((x) => x.it);
+      active = 0;
+      render();
+    }
+
+    function open() {
+      root.hidden = false;
+      input.value = '';
+      filtered = items.slice(0, 30);
+      active = 0;
+      render();
+      requestAnimationFrame(() => input.focus());
+    }
+    function close() {
+      root.hidden = true;
+    }
+
+    function activate(item: Item) {
+      if (item.type === 'action') {
+        if (item.href === '#theme') {
+          const html = document.documentElement;
+          const cur = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          html.setAttribute('data-theme', cur);
+          try { localStorage.setItem('theme', cur); } catch {}
+          close();
+          return;
+        }
+        if (item.href === '#copy-url') {
+          navigator.clipboard?.writeText(location.href).catch(() => {});
+          close();
+          return;
+        }
+      }
+      if (item.external) {
+        window.open(item.href, '_blank', 'noopener');
+      } else {
+        location.assign(item.href);
+      }
+      close();
+    }
+
+    input.addEventListener('input', refilter);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, filtered.length - 1); render(); ensureVisible(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); render(); ensureVisible(); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (filtered[active]) activate(filtered[active]); }
+      else if (e.key === 'Escape') { e.preventDefault(); close(); }
+    });
+
+    function ensureVisible() {
+      const el = list.querySelector<HTMLElement>(`[data-cmdk-index="${active}"]`);
+      el?.scrollIntoView({ block: 'nearest' });
+    }
+
+    // Click on a result.
+    list.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement).closest<HTMLElement>('[data-cmdk-href]');
+      if (!target) return;
+      e.preventDefault();
+      const idx = Number(target.dataset.cmdkIndex);
+      if (filtered[idx]) activate(filtered[idx]);
+    });
+
+    // Backdrop closes.
+    root.querySelector('[data-cmdk-close]')?.addEventListener('click', close);
+
+    // Header trigger button(s) open the palette.
+    document.querySelectorAll<HTMLElement>('[data-cmdk-trigger]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        root.hidden ? open() : close();
+      });
+    });
+
+    // Keyboard: ⌘K / Ctrl-K to toggle, '/' to open when nothing else is focused.
+    document.addEventListener('keydown', (e) => {
+      const meta = e.metaKey || e.ctrlKey;
+      if (meta && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        root.hidden ? open() : close();
+        return;
+      }
+      if (root.hidden && e.key === '/' && !isTextEditable(document.activeElement)) {
+        e.preventDefault();
+        open();
+      }
+    });
+
+    function isTextEditable(el: Element | null): boolean {
+      if (!el) return false;
+      const tag = el.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+      return (el as HTMLElement).isContentEditable === true;
+    }
+  }
+
+  setupCommandPalette();
+  document.addEventListener('astro:page-load', setupCommandPalette);
+</script>

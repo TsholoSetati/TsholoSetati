@@ -7,6 +7,7 @@ import { nav, site } from '~/config/site';
 import { features } from '~/config/features';
 import ThemeToggle from './ThemeToggle.astro';
 import MarketTicker from '~/components/data/MarketTicker.astro';
+import { Icon } from 'astro-icon/components';
 
 const currentPath = Astro.url.pathname;
 
@@ -43,6 +44,16 @@ function isActive(href: string): boolean {
     </nav>
 
     <div class="header-actions">
+      <button
+        type="button"
+        class="cmdk-trigger"
+        aria-label="Open command palette (Ctrl+K)"
+        title="Search (Ctrl+K)"
+        data-cmdk-trigger
+      >
+        <Icon name="ph:magnifying-glass" aria-hidden="true" />
+        <kbd>⌘K</kbd>
+      </button>
       <ThemeToggle />
       <button
         type="button"
@@ -194,6 +205,38 @@ function isActive(href: string): boolean {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
+  }
+
+  .cmdk-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 36px;
+    padding: 0 0.55rem 0 0.6rem;
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-ink-tertiary);
+    cursor: pointer;
+    transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+  }
+  .cmdk-trigger :global(svg) { width: 0.95rem; height: 0.95rem; }
+  .cmdk-trigger kbd {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-ink-tertiary);
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+  .cmdk-trigger:hover {
+    color: var(--color-ink-primary);
+    border-color: var(--color-accent);
+    background: color-mix(in oklab, var(--color-accent) 8%, var(--color-surface-sunken));
+  }
+  @media (max-width: 640px) {
+    .cmdk-trigger kbd { display: none; }
+    .cmdk-trigger { padding: 0 0.5rem; }
   }
 
   .hamburger {
