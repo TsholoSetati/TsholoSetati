@@ -1,152 +1,47 @@
 {
-  "updated": "2026-04-29T11:26:32.390Z",
+  "updated": "2026-04-29T15:10:44.463Z",
   "source": "yahoo+stooq",
   "quotes": [
     {
-      "symbol": "SPX",
-      "label": "S&P 500",
-      "price": 7138.8,
-      "changePct": 1.06,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "NDQ",
-      "label": "NASDAQ",
-      "price": 24663.799,
-      "changePct": 1.66,
+      "symbol": "USDZAR",
+      "label": "USD/ZAR",
+      "price": 16.7321,
+      "changePct": 1.64,
       "source": "yahoo"
     },
     {
       "symbol": "J203",
       "label": "JSE Top 40",
-      "price": 114209.57,
-      "changePct": -3.27,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "USDZAR",
-      "label": "USD/ZAR",
-      "price": 16.5783,
-      "changePct": 0.7,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "CL",
-      "label": "WTI Crude",
-      "price": 103.25,
-      "changePct": 9.37,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "HG",
-      "label": "Copper",
-      "price": 5.98,
-      "changePct": -0.71,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "QQQ",
-      "label": "QQQ",
-      "price": 657.55,
-      "changePct": 2.05,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "SMH",
-      "label": "SMH",
-      "price": 491.21,
-      "changePct": 5.71,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "SOXX",
-      "label": "SOXX",
-      "price": 438.71,
-      "changePct": 4.28,
+      "price": 113520.23,
+      "changePct": -3.85,
       "source": "yahoo"
     },
     {
       "symbol": "NVDA",
       "label": "NVDA",
-      "price": 213.17,
-      "changePct": 6.65,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "AMD",
-      "label": "AMD",
-      "price": 323.21,
-      "changePct": 13.61,
+      "price": 210.76,
+      "changePct": 4.08,
       "source": "yahoo"
     },
     {
       "symbol": "TSM",
       "label": "TSM",
-      "price": 392.34,
-      "changePct": 6.59,
+      "price": 393.28,
+      "changePct": 1.51,
       "source": "yahoo"
     },
     {
       "symbol": "ASML",
       "label": "ASML",
-      "price": 1384.56,
-      "changePct": -5.1,
+      "price": 1387.19,
+      "changePct": -3.91,
       "source": "yahoo"
     },
     {
-      "symbol": "PLTR",
-      "label": "PLTR",
-      "price": 141.18,
-      "changePct": -3.28,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "SNOW",
-      "label": "SNOW",
-      "price": 142.56,
-      "changePct": -5.49,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "CRWD",
-      "label": "CRWD",
-      "price": 454.99,
-      "changePct": 1.2,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "NPN",
-      "label": "Naspers",
-      "price": 88588,
-      "changePct": -4.2,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "BHP",
-      "label": "BHP",
-      "price": 65369,
-      "changePct": -0.43,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "SHP",
-      "label": "Shoprite",
-      "price": 28115,
-      "changePct": -2.52,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "MTN",
-      "label": "MTN",
-      "price": 20674,
-      "changePct": 2.42,
-      "source": "yahoo"
-    },
-    {
-      "symbol": "CPI",
-      "label": "Capitec",
-      "price": 449298,
-      "changePct": 2.02,
+      "symbol": "BOTZ",
+      "label": "BOTZ",
+      "price": 37.385,
+      "changePct": 0.04,
       "source": "yahoo"
     }
   ]
