@@ -43,7 +43,7 @@ export const experience: Company[] = [
       {
         title: 'Economic & Quantitative Research',
         body:
-          'At leading economic research institutions — including a centre of excellence for inequality research, a development policy think-tank, and a labour and development research unit — I conducted rigorous economic analysis and policy research. The work involved synthesising complex data into actionable insights, designing surveys, and authoring reports that informed decision-making across mental health economics, industrial policy, and inequality.',
+          'At leading economic research institutions, including a centre of excellence for inequality research, a development policy think-tank, and a labour and development research unit, I conducted rigorous economic analysis and policy research. The work involved synthesising complex data into actionable insights, designing surveys, and authoring reports that informed decision-making across mental health economics, industrial policy, and inequality.',
       },
     ],
   },

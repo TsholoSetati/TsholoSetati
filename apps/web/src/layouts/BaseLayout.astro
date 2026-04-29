@@ -1,6 +1,6 @@
 ---
 /**
- * BaseLayout — root document for every page.
+ * BaseLayout, root document for every page.
  * Handles meta, fonts, theme init (no FOUC), structured data, header/footer, motion bootstrap.
  */
 import '~/styles/global.css';
@@ -13,7 +13,6 @@ import Splash from '~/components/Splash.astro';
 import CursorHalo from '~/components/CursorHalo.astro';
 import { site } from '~/config/site';
 import { features, integrations } from '~/config/features';
-import { themeInitScript } from '~/lib/theme-init';
 import { pageTitle, jsonLdPerson, jsonLdWebsite } from '~/lib/seo';
 import type { SeoMeta } from '~/lib/seo';
 import { ClientRouter } from 'astro:transitions';
@@ -87,9 +86,6 @@ const structuredData = [jsonLdPerson(), jsonLdWebsite(), ...jsonLd];
     {/* RSS */}
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
 
-    {/* No-FOUC theme init */}
-    <script is:inline set:html={themeInitScript} />
-
     {/* Structured data */}
     {structuredData.map((data) => (
       <script type="application/ld+json" set:html={JSON.stringify(data)} />
@@ -122,7 +118,7 @@ const structuredData = [jsonLdPerson(), jsonLdWebsite(), ...jsonLd];
     {!bare && <CursorHalo />}
     <Toast />
 
-    {/* Motion bootstrap — runs once after first paint, re-binds after view transitions */}
+    {/* Motion bootstrap, runs once after first paint, re-binds after view transitions */}
     <script>
       import { initMotion } from '~/lib/motion';
       initMotion();

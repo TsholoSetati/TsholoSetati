@@ -1,6 +1,6 @@
 ---
 /**
- * CommandPalette — global ⌘K / Ctrl-K launcher.
+ * CommandPalette, global ⌘K / Ctrl-K launcher.
  *
  * Indexes pages, demos, and insights at build time and ships them as a
  * static JSON payload. Substring + token-prefix scoring; keyboard nav
@@ -26,6 +26,7 @@ type Item = {
 };
 
 const insightEntries = await getCollection('insights', (e) => !e.data.draft);
+const policyEntries = await getCollection('policy', (e) => !e.data.draft);
 
 const pageItems: Item[] = nav.map((n) => ({
   type: 'page',
@@ -37,6 +38,7 @@ const pageItems: Item[] = nav.map((n) => ({
     '/experience': 'briefcase',
     '/expertise': 'compass',
     '/insights': 'article',
+    '/policy': 'compass',
     '/demos': 'flask',
     '/contact': 'envelope-simple',
   } as Record<string, string>)[n.href] ?? 'file',
@@ -69,19 +71,28 @@ const insightItems: Item[] = insightEntries
     hay: `${e.data.title} ${(e.data.topics ?? []).join(' ')} ${e.data.summary ?? ''}`.toLowerCase(),
   }));
 
+const policyItems: Item[] = policyEntries
+  .sort((a, b) => +new Date(b.data.publishDate) - +new Date(a.data.publishDate))
+  .map((e) => ({
+    type: 'insight',
+    title: e.data.title,
+    subtitle: (e.data.topics ?? []).slice(0, 3).join(' · ') || 'Tech + Policy',
+    href: `/policy/${e.slug}`,
+    icon: 'compass',
+    hay: `${e.data.title} ${(e.data.topics ?? []).join(' ')} ${e.data.summary ?? ''} policy`.toLowerCase(),
+  }));
+
 const socialItems: Item[] = [
   { type: 'social', title: 'LinkedIn', subtitle: 'Open profile', href: site.social.linkedin, external: true, icon: 'linkedin-logo', hay: 'linkedin profile' },
-  { type: 'social', title: 'GitHub',   subtitle: 'Open profile', href: site.social.github,   external: true, icon: 'github-logo',   hay: 'github profile' },
   { type: 'social', title: 'Email',    subtitle: site.author.email, href: `mailto:${site.author.email}`, external: true, icon: 'envelope-simple', hay: `email mail ${site.author.email}` },
   { type: 'social', title: 'RSS',      subtitle: '/rss.xml',     href: '/rss.xml',           external: true, icon: 'rss', hay: 'rss feed' },
 ];
 
 const actionItems: Item[] = [
-  { type: 'action', title: 'Toggle theme',          subtitle: 'Light / dark', href: '#theme', icon: 'circle-half',   hay: 'toggle theme dark light mode' },
   { type: 'action', title: 'Copy current page link', subtitle: 'Clipboard',   href: '#copy-url', icon: 'link', hay: 'copy current page link url clipboard share' },
 ];
 
-const items: Item[] = [...pageItems, ...extraPages, ...demoItems, ...insightItems, ...actionItems, ...socialItems];
+const items: Item[] = [...pageItems, ...extraPages, ...demoItems, ...insightItems, ...policyItems, ...actionItems, ...socialItems];
 ---
 
 <div class="cmdk" data-cmdk hidden role="dialog" aria-modal="true" aria-label="Command palette">
@@ -235,7 +246,7 @@ const items: Item[] = [...pageItems, ...extraPages, ...demoItems, ...insightItem
 </style>
 
 <script>
-  // Phosphor icon glyph map — inlined as static SVGs so we can render
+  // Phosphor icon glyph map, inlined as static SVGs so we can render
   // results without a hydration round-trip. Only icons referenced above.
   const ICONS: Record<string, string> = {
     'user':              '<svg viewBox="0 0 256 256" fill="currentColor"><path d="M230.92 212c-15.23-26.33-38.7-45.21-66.09-54.16a72 72 0 1 0-73.66 0c-27.39 8.94-50.86 27.82-66.09 54.16a8 8 0 1 0 13.85 8c18.84-32.56 52.14-52 89.07-52s70.23 19.44 89.07 52a8 8 0 1 0 13.85-8ZM72 96a56 56 0 1 1 56 56 56.06 56.06 0 0 1-56-56Z"/></svg>',
@@ -363,14 +374,6 @@ const items: Item[] = [...pageItems, ...extraPages, ...demoItems, ...insightItem
 
     function activate(item: Item) {
       if (item.type === 'action') {
-        if (item.href === '#theme') {
-          const html = document.documentElement;
-          const cur = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-          html.setAttribute('data-theme', cur);
-          try { localStorage.setItem('theme', cur); } catch {}
-          close();
-          return;
-        }
         if (item.href === '#copy-url') {
           navigator.clipboard?.writeText(location.href).catch(() => {});
           close();

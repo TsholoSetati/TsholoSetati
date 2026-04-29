@@ -2,7 +2,7 @@
  * Feature flags & integration config.
  *
  * Each AI / 3rd-party feature has a kill switch here. Flip → redeploy → off.
- * Empty strings mean "not yet configured" — the component renders a graceful
+ * Empty strings mean "not yet configured", the component renders a graceful
  * placeholder instead of crashing.
  */
 
@@ -27,7 +27,7 @@ export const features = {
 } as const;
 
 export const integrations = {
-  /** Plausible — set to your verified site domain. */
+  /** Plausible, set to your verified site domain. */
   plausibleDomain: 'tsholosetati.com',
 
   /** Formspree form ID (e.g., 'xyzabc123'). Empty disables submit. */

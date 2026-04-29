@@ -28,7 +28,7 @@ const USE_CASES = {
     id: 'credit',
     label: 'Retail credit scoring',
     title: 'AI-driven retail credit scoring',
-    context: 'A South African retail bank deploys an ML model to automate personal loan decisions, drawing on bank transactions, demographic signals, and alternative data — mobile money, telco — to extend credit to thin-file customers.',
+    context: 'A South African retail bank deploys an ML model to automate personal loan decisions, drawing on bank transactions, demographic signals, and alternative data, mobile money, telco, to extend credit to thin-file customers.',
     facts: [
       'Affects credit access for ~2M customers',
       'Decisions are wholly or partly automated',
@@ -71,12 +71,12 @@ const USE_CASES = {
 };
 
 // ──────────────────────────────────────────────────────────────────────────
-// Lens content — 5 frameworks × 4 use cases = 20 entries
+// Lens content, 5 frameworks × 4 use cases = 20 entries
 // ──────────────────────────────────────────────────────────────────────────
 const LENSES = {
   eu: {
     credit: {
-      classification: 'High-risk AI system — Annex III §5(b) creditworthiness assessment.',
+      classification: 'High-risk AI system, Annex III §5(b) creditworthiness assessment.',
       obligations: [
         'Risk-management system across the lifecycle',
         'Data governance with bias testing on protected groups',
@@ -87,10 +87,10 @@ const LENSES = {
       ],
       timeline: 'High-risk obligations apply from 2 August 2026.',
       cost: 'Initial conformity programme typically €2–5M; ongoing audit overhead.',
-      translation: 'If we touch EU customers or use EU-supplied models, the credit engine is regulated like a medical device — pre-market conformity, not just post-hoc review.',
+      translation: 'If we touch EU customers or use EU-supplied models, the credit engine is regulated like a medical device, pre-market conformity, not just post-hoc review.',
     },
     hiring: {
-      classification: 'High-risk AI system — Annex III §4 employment, workers management.',
+      classification: 'High-risk AI system, Annex III §4 employment, workers management.',
       obligations: [
         'Provider and deployer obligations split asymmetrically',
         'Bias testing across protected groups',
@@ -146,13 +146,13 @@ const LENSES = {
       classification: 'Voluntary, intersecting with EEOC guidance on AI hiring and Title VII disparate-impact analysis.',
       obligations: [
         'Validation studies for the selection device',
-        'Disparate-impact testing — four-fifths rule and beyond',
+        'Disparate-impact testing, four-fifths rule and beyond',
         'Reasonable-accommodation considerations',
         'Vendor due diligence on model provenance',
       ],
       timeline: 'EEOC enforcement is an active priority.',
       cost: 'Embedded in HR governance budget if the function is mature.',
-      translation: 'Treat the model like any other selection device — validation and adverse-impact analysis — with AI-specific layers on top.',
+      translation: 'Treat the model like any other selection device, validation and adverse-impact analysis, with AI-specific layers on top.',
     },
     genai: {
       classification: 'NIST AI 600-1 Generative AI Profile applies as the audit baseline.',
@@ -221,7 +221,7 @@ const LENSES = {
       classification: 'AI-for-health is a flagship priority. African Medicines Agency framework maturing; Africa CDC and WHO AFRO guidance applies.',
       obligations: [
         'Member-state medicines and devices regulator approval',
-        'Population-representative training data — African cohorts',
+        'Population-representative training data, African cohorts',
         'Data sovereignty for patient information',
         'Alignment with continental health-data governance frameworks',
       ],
@@ -255,7 +255,7 @@ const LENSES = {
       ],
       timeline: 'All in force.',
       cost: 'Embedded in existing HR-compliance overhead.',
-      translation: 'EE Act fairness and POPIA Section 71 already constrain AI hiring before any new AI policy lands. Treat the algorithm as a selection device under EE law — that is the regime that will be enforced first.',
+      translation: 'EE Act fairness and POPIA Section 71 already constrain AI hiring before any new AI policy lands. Treat the algorithm as a selection device under EE law, that is the regime that will be enforced first.',
     },
     genai: {
       classification: 'POPIA on personal-information processing; Consumer Protection Act on commercial speech; ECT Act on automated electronic transactions; ICASA jurisdiction (telco); draft National AI Policy framing.',
@@ -319,7 +319,7 @@ const LENSES = {
       ],
       timeline: 'In force.',
       cost: 'Substantial; market-specific deployment is the norm.',
-      translation: 'A China deployment of the agent is a different product — registered, watermarked, content-moderated to local standards. Do not assume one global agent satisfies it.',
+      translation: 'A China deployment of the agent is a different product, registered, watermarked, content-moderated to local standards. Do not assume one global agent satisfies it.',
     },
     healthcare: {
       classification: 'NMPA medical-device pathway (Class II/III); algorithm filing where applicable; PIPL on patient data; data-export security review.',
@@ -331,13 +331,13 @@ const LENSES = {
       ],
       timeline: 'In force; medical-AI pathway clarified through 2024.',
       cost: 'Substantial; market-specific deployment with localised data.',
-      translation: 'China deployment is functionally a separate clinical product — registered with NMPA, trained on local data, and architecturally isolated from the SA and EU instances.',
+      translation: 'China deployment is functionally a separate clinical product, registered with NMPA, trained on local data, and architecturally isolated from the SA and EU instances.',
     },
   },
 };
 
 // ──────────────────────────────────────────────────────────────────────────
-// Conflicts — 3 per use case
+// Conflicts, 3 per use case
 // ──────────────────────────────────────────────────────────────────────────
 const CONFLICTS = {
   credit: [
@@ -354,7 +354,7 @@ const CONFLICTS = {
     {
       title: 'Data sovereignty vs. model portability',
       tension: 'AU emphasises data sovereignty; SA POPIA Section 72 conditions cross-border transfers on comparable protection or consent; China requires PI localisation and outbound security review; EU permits transfers under adequacy or SCCs; NIST is silent. A single global credit model is, in practice, illegal somewhere.',
-      strategic: 'Federated training or jurisdictional model variants — the architectural call most banks defer until forced.',
+      strategic: 'Federated training or jurisdictional model variants, the architectural call most banks defer until forced.',
     },
   ],
   hiring: [
@@ -376,13 +376,13 @@ const CONFLICTS = {
   ],
   genai: [
     {
-      title: 'Synthetic-content disclosure — three different floors',
+      title: 'Synthetic-content disclosure, three different floors',
       tension: 'EU AI Act Article 50 requires AI-generated content to be disclosed to users. China requires explicit watermarking and labelling. NIST AI 600-1 recommends without mandating. SA approach is consent and disclosure under POPIA / CPA. AU member states are uneven. A "Generated by AI" notice that is sufficient in one market is non-compliant in another.',
       strategic: 'Bake disclosure into the agent contract pattern, not into the UI alone.',
     },
     {
       title: 'Indigenous-language obligation',
-      tension: 'AU strategy and the SA draft AI Policy explicitly prioritise indigenous-language access. EU and NIST are language-neutral. The strategic choice — invest in isiZulu LLM tuning or default to English — is a compliance posture in one regime and an optional differentiator in another.',
+      tension: 'AU strategy and the SA draft AI Policy explicitly prioritise indigenous-language access. EU and NIST are language-neutral. The strategic choice, invest in isiZulu LLM tuning or default to English, is a compliance posture in one regime and an optional differentiator in another.',
       strategic: 'For MEA-headquartered enterprises, indigenous-language coverage is an AU-aligned compliance posture, not a feature. Frame the budget request that way.',
     },
     {
@@ -398,7 +398,7 @@ const CONFLICTS = {
       strategic: 'Lock in the regulatory change-control architecture before clinical deployment, not after. Retraining cadence is a regulatory question, not just an MLOps one.',
     },
     {
-      title: 'Population representativeness — regulatory vs. clinical',
+      title: 'Population representativeness, regulatory vs. clinical',
       tension: 'AU strategy explicitly demands African-trained models for African populations. EU AI Act demands demographic representativeness in training data for the deployment market. FDA increasingly emphasises subgroup performance. SA SAHPRA is sharpening guidance. A model trained on European or US populations may technically pass EU AI Act conformity yet fail AU-aligned clinical validity for African deployment.',
       strategic: 'Distinguish between regulatory representativeness and clinical generalisability. The regimes converge on the question; they diverge on whose representativeness counts.',
     },
@@ -411,7 +411,7 @@ const CONFLICTS = {
 };
 
 // ──────────────────────────────────────────────────────────────────────────
-// Prism diagram — refraction visual with rotation tied to the active lens
+// Prism diagram, refraction visual with rotation tied to the active lens
 // ──────────────────────────────────────────────────────────────────────────
 function PrismDiagram({ activeLens, setActiveLens }) {
   const prismLeft = 320;
@@ -721,7 +721,7 @@ function UseCaseCard({ useCase }) {
       <div className="flex flex-col md:flex-row gap-2 md:gap-6">
         {useCase.facts.map((f, i) => (
           <div key={i} className="flex items-start gap-2 text-sm" style={{ color: C.inkMuted }}>
-            <span style={{ color: C.accent, fontFamily: 'Fraunces, serif' }}>—</span>
+            <span style={{ color: C.accent, fontFamily: 'Fraunces, serif' }}>-</span>
             <span>{f}</span>
           </div>
         ))}
@@ -869,7 +869,7 @@ function ConflictSection({ conflicts, show, setShow }) {
               STEP 3 · WHERE STRATEGY LIVES
             </p>
             <p className="font-display text-xl md:text-2xl" style={{ fontWeight: 500 }}>
-              {show ? 'Friction zones — where the regimes disagree' : 'Show framework conflicts'}
+              {show ? 'Friction zones, where the regimes disagree' : 'Show framework conflicts'}
             </p>
           </div>
           <div
@@ -971,7 +971,7 @@ export default function PolicyPrism() {
             style={{ color: C.inkSoft, fontSize: 'clamp(1rem, 1.6vw, 1.125rem)' }}
           >
             One concrete use case sits at the centre. Five regulatory regimes refract it
-            differently — different classifications, different obligations, different costs.
+            differently, different classifications, different obligations, different costs.
             The conflict zones are where strategy actually lives.
           </p>
         </header>
@@ -1006,7 +1006,7 @@ export default function PolicyPrism() {
           <p className="max-w-2xl">
             Not legal advice. The classifications and timelines are simplifications drawn from
             the published instruments; an actual deployment requires regime-by-regime counsel.
-            What the prism is for is sharpening the boardroom question — which is rarely
+            What the prism is for is sharpening the boardroom question, which is rarely
             <em>&nbsp;is this compliant?&nbsp;</em>
             and almost always
             <em>&nbsp;under whose definition?</em>

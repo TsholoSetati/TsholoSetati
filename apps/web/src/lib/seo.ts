@@ -1,5 +1,5 @@
 /**
- * SEO helpers — JSON-LD generators + meta tag prep.
+ * SEO helpers, JSON-LD generators + meta tag prep.
  * All output is plain objects/strings; no runtime deps.
  */
 import { site } from '~/config/site';
@@ -20,7 +20,7 @@ export interface SeoMeta {
 export function pageTitle(pageTitle?: string): string {
   if (!pageTitle) return site.title;
   if (pageTitle === site.name) return site.title;
-  return `${pageTitle} — ${site.name}`;
+  return `${pageTitle}, ${site.name}`;
 }
 
 export function jsonLdPerson() {

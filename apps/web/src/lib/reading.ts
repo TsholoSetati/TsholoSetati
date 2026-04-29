@@ -2,14 +2,14 @@
  * Reading-time estimation for MDX/Markdown bodies.
  *
  * Strips frontmatter, code blocks, images, links and HTML/JSX tags so the
- * count reflects words a reader actually reads. Uses 220 wpm — a middle
+ * count reflects words a reader actually reads. Uses 220 wpm, a middle
  * ground for non-fiction prose with some technical vocabulary.
  */
 
 const WORDS_PER_MINUTE = 220;
 
 const STRIP_PATTERNS: ReadonlyArray<RegExp> = [
-  /^---[\s\S]*?---/m,           // YAML frontmatter (defensive — Astro usually strips it)
+  /^---[\s\S]*?---/m,           // YAML frontmatter (defensive, Astro usually strips it)
   /```[\s\S]*?```/g,            // fenced code blocks
   /`[^`]*`/g,                   // inline code
   /!\[[^\]]*\]\([^)]*\)/g,      // images

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GiftlyInvited — Private Gift Registry</title>
+  <title>GiftlyInvited, Private Gift Registry</title>
   <meta name="description" content="A private, invite-gated gift registry. Item claims, group chip-ins, RSVP, and calendar export. No accounts, no tracking." />
   <style>
     /* === Design tokens (brand parity with parent site) === */
@@ -308,7 +308,7 @@
 
       <div class="trust">
         <span class="trust-dot" aria-hidden="true"></span>
-        Everything stays in your browser — no server, no analytics, no signup.
+        Everything stays in your browser, no server, no analytics, no signup.
       </div>
     </section>
 
@@ -328,8 +328,8 @@
       <div class="hero">
         <div>
           <p class="eyebrow" id="rEventLabel">Wedding registry</p>
-          <h1 id="rTitle">—</h1>
-          <p class="lead" id="rSubtitle">—</p>
+          <h1 id="rTitle">-</h1>
+          <p class="lead" id="rSubtitle">-</p>
           <div class="hero-meta" id="rMeta"></div>
         </div>
         <div class="hero-actions">
@@ -699,7 +699,7 @@
     closeModal();
     renderStats();
     renderItems();
-    toast(mode === 'claim' ? `Thanks ${name.split(' ')[0]} — gift claimed.` : `Thanks ${name.split(' ')[0]} — chip-in recorded.`);
+    toast(mode === 'claim' ? `Thanks ${name.split(' ')[0]}, gift claimed.` : `Thanks ${name.split(' ')[0]}, chip-in recorded.`);
   }
 
   // Tabs
@@ -719,7 +719,7 @@
       card.innerHTML = `
         <h2>RSVP received ✓</h2>
         <div class="rsvp-confirmed">
-          <p style="margin-bottom: 0.5rem;"><strong>${escapeHtml(existing.name)}</strong> — ${existing.attend === 'yes' ? `attending with ${existing.plusOnes} additional guest${existing.plusOnes === 1 ? '' : 's'}` : 'sadly cannot attend'}</p>
+          <p style="margin-bottom: 0.5rem;"><strong>${escapeHtml(existing.name)}</strong>, ${existing.attend === 'yes' ? `attending with ${existing.plusOnes} additional guest${existing.plusOnes === 1 ? '' : 's'}` : 'sadly cannot attend'}</p>
           ${existing.dietary ? `<p class="hint" style="margin-top: 0.4rem;"><strong>Dietary:</strong> ${escapeHtml(existing.dietary)}</p>` : ''}
           ${existing.message ? `<p class="hint" style="margin-top: 0.4rem;"><strong>Message:</strong> ${escapeHtml(existing.message)}</p>` : ''}
         </div>
@@ -736,7 +736,7 @@
     }
     card.innerHTML = `
       <h2>Will you be joining us?</h2>
-      <p class="hint" style="margin-bottom: 1rem;">Quick RSVP — we'd love to know.</p>
+      <p class="hint" style="margin-bottom: 1rem;">Quick RSVP, we'd love to know.</p>
       <form id="rsvpForm">
         <div class="field">
           <label for="rsvpName">Your name</label>
@@ -786,7 +786,7 @@
       if (!r.name) { toast('Please enter your name'); return; }
       state.rsvps.push(r);
       saveState();
-      toast('RSVP sent — thank you!');
+      toast('RSVP sent, thank you!');
       renderRsvpForm();
     });
   }
@@ -829,7 +829,7 @@
 
   // WhatsApp share
   $('#shareWaBtn').addEventListener('click', () => {
-    const text = `You're invited to ${reg.title} on ${fmtDate(reg.eventDate)} at ${reg.venue}. View the registry & RSVP — invite code ${reg.inviteCode}: ${location.href.split('?')[0]}`;
+    const text = `You're invited to ${reg.title} on ${fmtDate(reg.eventDate)} at ${reg.venue}. View the registry & RSVP, invite code ${reg.inviteCode}: ${location.href.split('?')[0]}`;
     window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
   });
 
@@ -853,7 +853,7 @@
         return `
           <div class="owner-row">
             <div>
-              <div class="who"><strong>${escapeHtml(c.name)}</strong> · ${c.kind === 'claim' ? 'claimed' : 'chipped in for'} <em>${escapeHtml(it ? it.name : '—')}</em></div>
+              <div class="who"><strong>${escapeHtml(c.name)}</strong> · ${c.kind === 'claim' ? 'claimed' : 'chipped in for'} <em>${escapeHtml(it ? it.name : '-')}</em></div>
               ${c.message ? `<div class="hint">"${escapeHtml(c.message)}"</div>` : ''}
             </div>
             <div class="amt">${fmtMoney(c.amount)}</div>

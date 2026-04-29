@@ -1,11 +1,10 @@
 ---
 /**
- * SiteHeader — sticky glass header with brand mark, primary nav, theme toggle, mobile drawer trigger.
+ * SiteHeader, sticky glass header with brand mark, primary nav, theme toggle, mobile drawer trigger.
  * MarketTicker mounted underneath; collapses on scroll.
  */
 import { nav, site } from '~/config/site';
 import { features } from '~/config/features';
-import ThemeToggle from './ThemeToggle.astro';
 import MarketTicker from '~/components/data/MarketTicker.astro';
 import { Icon } from 'astro-icon/components';
 
@@ -54,7 +53,6 @@ function isActive(href: string): boolean {
         <Icon name="ph:magnifying-glass" aria-hidden="true" />
         <kbd>⌘K</kbd>
       </button>
-      <ThemeToggle />
       <button
         type="button"
         class="hamburger"

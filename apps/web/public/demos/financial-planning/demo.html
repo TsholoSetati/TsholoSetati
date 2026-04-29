@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Financial Planning — South African Toolkit</title>
+  <title>Financial Planning, South African Toolkit</title>
   <meta name="description" content="A South-African personal finance toolkit: tax, retirement Monte Carlo, two-pot, goal planning and loan amortisation. Runs entirely in your browser." />
   <style>
     /* === Design tokens (parity with parent site & ID8) === */
@@ -326,7 +326,7 @@
           </div>
           <div class="field"><label for="ret-esc">Annual contribution escalation (%)</label>
             <input type="number" id="ret-esc" step="0.5" value="6.0" />
-            <p class="field-hint">Nominal — net of the inflation toggle below.</p>
+            <p class="field-hint">Nominal, net of the inflation toggle below.</p>
           </div>
           <div class="field"><label for="ret-inflation">Inflation assumption (%)</label>
             <input type="number" id="ret-inflation" step="0.1" value="5.0" />
@@ -395,9 +395,9 @@
           </div>
           <div class="field"><label for="goal-vehicle">Vehicle</label>
             <select id="goal-vehicle">
-              <option value="tfsa">TFSA — tax-free growth (R36k/yr · R500k lifetime)</option>
-              <option value="ra">Retirement annuity — tax-deductible contributions</option>
-              <option value="disc">Discretionary — flexible, fully taxed</option>
+              <option value="tfsa">TFSA, tax-free growth (R36k/yr · R500k lifetime)</option>
+              <option value="ra">Retirement annuity, tax-deductible contributions</option>
+              <option value="disc">Discretionary, flexible, fully taxed</option>
             </select>
           </div>
           <div class="field"><label for="goal-return">Expected real return (%)</label>
@@ -608,7 +608,7 @@
         </div>
         <div class="note">
           ${withdrawal < wantedRaw ? `<strong>Capped at the savings-pot balance of ${fmtR(pot)}.</strong> ` : ''}
-          The two-pot withdrawal is <strong>not</strong> taxed under the favourable retirement lump-sum table — it is added to your income and taxed at your marginal rate.
+          The two-pot withdrawal is <strong>not</strong> taxed under the favourable retirement lump-sum table, it is added to your income and taxed at your marginal rate.
           Consider whether short-term liquidity is worth giving up the compounded growth on this amount.
         </div>
       `;
@@ -822,7 +822,7 @@
       } else if (vehicle === 'tfsa') {
         drag = 'TFSA: no tax on growth, dividends or withdrawals. R36 000/yr · R500 000 lifetime contribution cap. Excess attracts a 40% penalty.';
       } else if (vehicle === 'ra') {
-        drag = `RA: contributions are deductible up to 27.5% of taxable income (R350k cap). Income on retirement is taxed under the lump-sum + annuity table — typically lower than your marginal rate today (${(marg*100).toFixed(0)}%).`;
+        drag = `RA: contributions are deductible up to 27.5% of taxable income (R350k cap). Income on retirement is taxed under the lump-sum + annuity table, typically lower than your marginal rate today (${(marg*100).toFixed(0)}%).`;
       }
 
       const monthlyR = effReturn / 12;

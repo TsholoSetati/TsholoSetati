@@ -1,6 +1,6 @@
 ---
 /**
- * MarketTicker — strip under the site header.
+ * MarketTicker, strip under the site header.
  * Loads from /data/markets.json (refreshed by GH Action) with /data/*.json legacy fallback.
  * Marquees on small screens; static row on desktop.
  *
@@ -78,24 +78,26 @@
     .ticker-skeleton { animation: none; background-image: none; }
   }
 
-  /* Marquee on small screens */
+  /* Marquee, scrolls on every viewport (slower on desktop). */
+  .ticker-track {
+    animation: ticker-scroll 80s linear infinite;
+    width: max-content;
+  }
+  .ticker:hover .ticker-track,
+  .ticker:focus-within .ticker-track {
+    animation-play-state: paused;
+  }
+  @keyframes ticker-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
   @media (max-width: 768px) {
     .ticker-track {
-      animation: ticker-scroll 40s linear infinite;
-      width: max-content;
-    }
-    /* Pause when the user hovers the strip or focuses any child */
-    .ticker:hover .ticker-track,
-    .ticker:focus-within .ticker-track {
-      animation-play-state: paused;
-    }
-    @keyframes ticker-scroll {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(-50%);
-      }
+      animation-duration: 40s;
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -125,7 +127,7 @@
     return loadLegacyFallback();
   }
 
-  /** Legacy fallback — best-effort parse of the older Alpha Vantage shape. */
+  /** Legacy fallback, best-effort parse of the older Alpha Vantage shape. */
   async function loadLegacyFallback(): Promise<Quote[]> {
     const out: Quote[] = [];
     const sources: Array<{ url: string; label: string; symbol: string }> = [
@@ -171,7 +173,7 @@
         '<span class="ticker-item">Markets · live data unavailable</span>';
       return;
     }
-    const isMarquee = window.matchMedia('(max-width: 768px)').matches;
+    const isMarquee = true;
     const items = quotes
       .map(
         (q) =>
@@ -182,7 +184,7 @@
            </span>`
       )
       .join('');
-    // Duplicate for seamless marquee loop on small screens.
+    // Duplicate for seamless marquee loop.
     track.innerHTML = isMarquee ? items + items : items;
   }
 

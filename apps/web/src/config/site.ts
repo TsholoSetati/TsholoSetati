@@ -7,9 +7,9 @@ export const site = {
   name: 'Tsholofelo K. Setati',
   shortName: 'TS',
   url: 'https://tsholosetati.com',
-  title: 'Tsholofelo K. Setati — AI, Technology Economics & Governance',
+  title: 'Tsholofelo K. Setati, AI, Technology Economics & Governance',
   description:
-    'Tsholofelo K. Setati works at the intersection of AI, technology economics and institutional governance — writing, advising and thinking in public across enterprise, government, multilateral and non-profit contexts.',
+    'Tsholofelo K. Setati works at the intersection of AI, technology economics and institutional governance, writing, advising and thinking in public across enterprise, government, multilateral and non-profit contexts.',
   tagline: 'AI. Technology Economics. Governance. Strategy.',
   locale: 'en-ZA',
   themeColor: '#0a0e1a',
@@ -31,6 +31,7 @@ export const nav = [
   { label: 'Experience', href: '/experience' },
   { label: 'Expertise', href: '/expertise' },
   { label: 'Insights', href: '/insights' },
+  { label: 'Tech + Policy', href: '/policy' },
   { label: 'Demos', href: '/demos' },
   { label: 'Contact', href: '/contact' },
 ] as const;
@@ -44,13 +45,13 @@ export const footerLinks = {
   ],
   Work: [
     { label: 'Insights', href: '/insights' },
+    { label: 'Tech + Policy', href: '/policy' },
     { label: 'Demos', href: '/demos' },
     { label: 'AI Diagnostic', href: '/demos/diagnostic' },
     { label: 'How AI is used here', href: '/ai' },
   ],
   Connect: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/tsholosetati' },
-    { label: 'GitHub', href: 'https://github.com/tsholosetati' },
     { label: 'Email', href: 'mailto:hello@tsholosetati.com' },
     { label: 'RSS', href: '/rss.xml' },
   ],

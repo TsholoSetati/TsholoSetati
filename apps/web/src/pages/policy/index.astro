@@ -3,7 +3,7 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { computeReadingMinutes, formatReadingTime } from '~/lib/reading';
 
-const posts = (await getCollection('insights', ({ data }) => !data.draft))
+const posts = (await getCollection('policy', ({ data }) => !data.draft))
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 
 const readingBySlug = new Map(posts.map((p) => [p.slug, computeReadingMinutes(p.body)]));
@@ -11,17 +11,17 @@ const readingBySlug = new Map(posts.map((p) => [p.slug, computeReadingMinutes(p.
 const allTopics = Array.from(new Set(posts.flatMap((p) => p.data.topics))).sort();
 ---
 
-<BaseLayout seo={{ title: 'Insights', description: 'Field notes on AI strategy, innovation economics, and frontier technology.' }}>
+<BaseLayout seo={{ title: 'Tech + Policy', description: 'Comparative analysis of how frontier technology is governed across regimes. Briefs, breakdowns and an interactive policy explorer.' }}>
   <section class="container section">
     <header data-reveal>
-      <p class="eyebrow">Insights</p>
-      <h1>Field notes from the work.</h1>
-      <p class="lead">Long-form thinking on AI strategy, the economics of innovation and the operating models that make frontier technology stick.</p>
+      <p class="eyebrow">Tech + Policy</p>
+      <h1>Where the technology meets the rule book.</h1>
+      <p class="lead">Comparative breakdowns of how frontier technology is governed, regulated and contested across regimes. Plus a working explorer to refract a single use case through five frameworks at once.</p>
     </header>
 
     <div class="toolbar" data-reveal>
       <div class="search">
-        <input id="insights-search" type="search" placeholder="Search insights..." aria-label="Search insights" />
+        <input id="policy-search" type="search" placeholder="Search briefs..." aria-label="Search policy briefs" />
       </div>
       <div class="filters" role="group" aria-label="Filter by topic">
         <button class="chip is-active" data-topic="">All</button>
@@ -29,38 +29,71 @@ const allTopics = Array.from(new Set(posts.flatMap((p) => p.data.topics))).sort(
       </div>
     </div>
 
-    <ul class="grid" id="insights-grid">
-      {posts.map((post) => (
-        <li class="item" data-topics={post.data.topics.join('|')} data-title={post.data.title.toLowerCase()} data-desc={post.data.description.toLowerCase()} data-reveal>
-          <a class="card card-hover" href={`/insights/${post.slug}`}>
-            <p class="kicker">{post.data.topics[0] ?? 'Insight'}</p>
-            <h2>{post.data.title}</h2>
-            <p class="muted">{post.data.description}</p>
-            <p class="meta">
-              {post.data.publishDate.toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })}
-              <span aria-hidden="true">·</span>
-              <span>{formatReadingTime(readingBySlug.get(post.slug) ?? 1)}</span>
-              {post.data.canonicalUrl && <span class="badge">Originally on LinkedIn</span>}
-            </p>
-          </a>
-        </li>
-      ))}
-    </ul>
-    <p id="insights-empty" class="muted" hidden>No insights match your filters.</p>
+    {posts.length > 0 ? (
+      <ul class="grid" id="policy-grid">
+        {posts.map((post) => (
+          <li class="item" data-topics={post.data.topics.join('|')} data-title={post.data.title.toLowerCase()} data-desc={post.data.description.toLowerCase()} data-reveal>
+            <a class="card card-hover" href={`/policy/${post.slug}`}>
+              <p class="kicker">{post.data.topics[0] ?? 'Brief'}</p>
+              <h2>{post.data.title}</h2>
+              <p class="muted">{post.data.description}</p>
+              <p class="meta">
+                {post.data.publishDate.toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })}
+                <span aria-hidden="true">·</span>
+                <span>{formatReadingTime(readingBySlug.get(post.slug) ?? 1)}</span>
+              </p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty muted">Briefs are in draft. The explorer below is live.</p>
+    )}
+    <p id="policy-empty" class="muted" hidden>No briefs match your filters.</p>
+  </section>
+
+  <section class="explorer-section">
+    <div class="container">
+      <header class="explorer-head" data-reveal>
+        <p class="eyebrow">Interactive</p>
+        <h2>PolicyPrism, comparative AI policy explorer</h2>
+        <p class="lead">Pick a use case and refract it through EU AI Act, NIST AI RMF, the AU Continental AI Strategy, POPIA + the SA Draft AI Policy, and China's AI Measures. The deltas are the analysis.</p>
+      </header>
+    </div>
+
+    <div class="demo-breakout" data-reveal>
+      <div class="frame" style="--demo-h: 1100px;">
+        <div class="frame-bar" aria-hidden="true">
+          <span class="dot" style="background: #ff5f57;"></span>
+          <span class="dot" style="background: #febc2e;"></span>
+          <span class="dot" style="background: #28c840;"></span>
+          <span class="frame-url">policy-prism.tsholosetati.com</span>
+        </div>
+        <div class="iframe-host">
+          <iframe
+            src="/demos/policy-prism/demo.html"
+            title="PolicyPrism, comparative AI policy explorer"
+            loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-forms"
+          ></iframe>
+        </div>
+      </div>
+    </div>
   </section>
 </BaseLayout>
 
 <script>
   function bind() {
-    const grid = document.getElementById('insights-grid');
-    const empty = document.getElementById('insights-empty');
-    const search = document.getElementById('insights-search') as HTMLInputElement | null;
+    const grid = document.getElementById('policy-grid');
+    const empty = document.getElementById('policy-empty');
+    const search = document.getElementById('policy-search') as HTMLInputElement | null;
     const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip'));
     if (!grid || !search) return;
     let activeTopic = '';
     let query = '';
 
     function apply() {
+      if (!grid) return;
       const items = Array.from(grid.querySelectorAll<HTMLLIElement>('.item'));
       const useViewTransition =
         typeof (document as any).startViewTransition === 'function' &&
@@ -119,7 +152,6 @@ const allTopics = Array.from(new Set(posts.flatMap((p) => p.data.topics))).sort(
   .chip.is-active { background: var(--color-accent); color: white; border-color: var(--color-accent); }
   .grid { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
   .grid a { display: block; text-decoration: none; color: inherit; height: 100%; }
-  /* Filter transitions, fade items in/out without layout snap */
   .item { transition: opacity var(--duration-base) var(--ease-out-quad), transform var(--duration-base) var(--ease-out-quad); }
   .item[data-filter-state='in'] { opacity: 1; transform: translateY(0); }
   .item[data-filter-state='out'] { opacity: 0; transform: translateY(6px); }
@@ -130,5 +162,27 @@ const allTopics = Array.from(new Set(posts.flatMap((p) => p.data.topics))).sort(
   h2 { font-family: var(--font-display); font-size: var(--font-xl); margin: 0.5rem 0; }
   .muted { color: var(--color-ink-secondary); margin: 0; }
   .meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: var(--font-xs); color: var(--color-ink-tertiary); margin: 0.75rem 0 0; }
-  .badge { background: var(--color-surface-sunken); padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); }
+
+  .empty { padding: 1.5rem 0; }
+
+  .explorer-section { padding: 4rem 0 6rem; background: var(--color-surface-sunken); margin-top: 4rem; }
+  .explorer-head { max-width: 70ch; margin-bottom: 2.5rem; }
+  .explorer-head h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.25rem); margin: 0 0 1rem; }
+
+  /* Wide breakout for the explorer iframe; clamps on smaller viewports. */
+  .demo-breakout {
+    width: min(1600px, calc(100vw - 2rem));
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  .frame { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface-raised); box-shadow: var(--shadow-lg); }
+  .frame-bar { display: flex; align-items: center; gap: 0.4rem; padding: 0.6rem 0.9rem; background: var(--color-surface-sunken); border-bottom: 1px solid var(--color-border); }
+  .frame-bar .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .frame-url { margin-left: 0.75rem; font-family: var(--font-mono); font-size: var(--font-xs); color: var(--color-ink-tertiary); }
+  .iframe-host { position: relative; height: var(--demo-h, 1100px); background: var(--color-surface-base); }
+  .iframe-host iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+  @media (max-width: 768px) {
+    .iframe-host { height: 720px; }
+  }
 </style>

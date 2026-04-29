@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * fetch-markets.mjs — populate apps/web/public/data/markets.json.
+ * fetch-markets.mjs, populate apps/web/public/data/markets.json.
  *
  * Strategy: Yahoo Finance is the primary source (proper prev-close based
- * change %). Stooq is a per-symbol fallback (lite OHLC endpoint — no API
+ * change %). Stooq is a per-symbol fallback (lite OHLC endpoint, no API
  * key needed, but only intraday open→close change is available).
  *
  * Stooq's historical /q/d/l endpoint started requiring an apikey in 2025
@@ -12,7 +12,7 @@
  * Output schema is unchanged so MarketTicker.astro keeps working:
  *   { updated: ISO8601, quotes: [{ symbol, label, price, changePct }, ...] }
  *
- * No external deps — Node 20+ global fetch only.
+ * No external deps, Node 20+ global fetch only.
  */
 import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
@@ -82,7 +82,7 @@ async function get(url, { timeoutMs = 15_000 } = {}) {
 }
 
 /** Parse Stooq lite CSV → { price, prevClose }. Lite returns single row
- *  Symbol,Date,Time,Open,High,Low,Close,Volume — so prevClose is treated
+ *  Symbol,Date,Time,Open,High,Low,Close,Volume, so prevClose is treated
  *  as the day's open (gives intraday change %). */
 function parseStooqLite(csv) {
   const lines = csv.trim().split(/\r?\n/);
@@ -101,7 +101,7 @@ function parseStooqLite(csv) {
 }
 
 async function fetchStooq(symbol) {
-  // Lite quote — keyless. Returns header + one CSV row per symbol.
+  // Lite quote, keyless. Returns header + one CSV row per symbol.
   const url = `https://stooq.com/q/l/?s=${encodeURIComponent(symbol)}&f=sd2t2ohlcv&h&e=csv`;
   const csv = await get(url);
   return parseStooqLite(csv);

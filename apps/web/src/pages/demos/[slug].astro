@@ -8,7 +8,7 @@ export function getStaticPaths() {
 }
 
 const { demo } = Astro.props as { demo: ReturnType<typeof getDemo> & {} };
-// Stricter default sandbox — drop allow-popups/allow-modals unless a demo opts in.
+// Stricter default sandbox, drop allow-popups/allow-modals unless a demo opts in.
 const sandboxAttr =
   demo.sandbox === 'standard'
     ? 'allow-scripts allow-same-origin allow-forms allow-popups allow-modals'
@@ -95,15 +95,10 @@ const sandboxAttr =
 </BaseLayout>
 
 <script>
-  // Theme handoff + click-to-load iframe with ?theme=&t= passthrough.
+  // Click-to-load iframe with ?theme=light&t= passthrough.
   (function () {
-    const root = document.documentElement;
     function currentTheme() {
-      const t = root.getAttribute('data-theme');
-      if (t === 'light' || t === 'dark') return t;
-      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
+      return 'light';
     }
     function withTheme(src: string) {
       try {
@@ -145,7 +140,7 @@ const sandboxAttr =
       }
     });
 
-    // Fullscreen launch — request fullscreen on the .frame container.
+    // Fullscreen launch, request fullscreen on the .frame container.
     const frame = document.querySelector<HTMLDivElement>('.frame[data-iframe-src]');
     document.querySelectorAll<HTMLElement>('[data-launch-fullscreen]').forEach((btn) => {
       btn.addEventListener('click', async () => {
@@ -214,7 +209,18 @@ const sandboxAttr =
   .narr-stack { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0; }
   .chip { display: inline-block; font-family: var(--font-mono); font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: var(--radius-full); background: var(--color-surface-base); border: 1px solid var(--color-border); color: var(--color-ink-secondary); }
 
-  .frame { border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-surface-raised); box-shadow: var(--shadow-lg); }
+  .frame {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-lg);
+    /* Break out of the container so demos can use up to 1600px wide. */
+    width: min(1600px, calc(100vw - 2rem));
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
   .frame-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.85rem; background: var(--color-surface-sunken); border-bottom: 1px solid var(--color-border); font-family: var(--font-mono); font-size: var(--font-xs); }
   .dot { width: 10px; height: 10px; border-radius: 50%; }
   .dot.r { background: #ff5f56; } .dot.y { background: #ffbd2e; } .dot.g { background: #27c93f; }
@@ -229,7 +235,7 @@ const sandboxAttr =
   .bar-btn:hover { background: var(--color-surface-base); color: var(--color-accent); }
 
   /* When fullscreen, fill the whole viewport with the iframe and hide chrome. */
-  .frame:fullscreen { border-radius: 0; border: 0; box-shadow: none; display: flex; flex-direction: column; background: white; }
+  .frame:fullscreen { width: 100%; left: auto; transform: none; border-radius: 0; border: 0; box-shadow: none; display: flex; flex-direction: column; background: white; }
   .frame:fullscreen .frame-bar { flex-shrink: 0; }
   .frame:fullscreen .iframe-host { flex: 1; min-height: 0; }
   .frame:fullscreen iframe { height: 100%; }

@@ -16,7 +16,7 @@ export default defineConfig({
       manifest: {
         name: 'Sharp-Sharp',
         short_name: 'Sharp-Sharp',
-        description: 'Shared expense tracker — split, settle, ship.',
+        description: 'Shared expense tracker, split, settle, ship.',
         theme_color: '#047857',
         background_color: '#ffffff',
         display: 'standalone',

@@ -1,5 +1,5 @@
 /* =========================================================
- * Global stylesheet — TsholoSetati v2
+ * Global stylesheet, TsholoSetati v2
  * Imports tokens, fonts, then base resets & utilities
  * Tailwind v4 layered on via @tailwindcss/vite
  * ========================================================= */
@@ -22,7 +22,7 @@
 }
 
 /* =========================================================
- * Tailwind v4 theme bridge — expose tokens as Tailwind utilities
+ * Tailwind v4 theme bridge, expose tokens as Tailwind utilities
  * ========================================================= */
 @theme {
   --color-surface: var(--color-surface-base);
@@ -222,7 +222,7 @@ select {
 }
 
 /* =========================================================
- * Component primitives — Buttons
+ * Component primitives, Buttons
  * ========================================================= */
 .btn {
   display: inline-flex;
@@ -283,7 +283,7 @@ select {
 }
 
 /* =========================================================
- * Component primitives — Cards
+ * Component primitives, Cards
  * ========================================================= */
 .card {
   background: var(--color-surface-raised);
@@ -339,7 +339,7 @@ select {
   transform: translateY(0);
 }
 
-/* Reveal variants — opt-in via [data-motion-variant] */
+/* Reveal variants, opt-in via [data-motion-variant] */
 [data-reveal][data-motion-variant='fade'] {
   transform: none;
 }
@@ -354,7 +354,7 @@ select {
 }
 
 /* =========================================================
- * View Transitions — global page cross-fade
+ * View Transitions, global page cross-fade
  * (cinematic-only; calm/reduced-motion keeps default snap)
  * ========================================================= */
 @keyframes ts-vt-fade-in {
@@ -373,7 +373,7 @@ select {
 }
 
 /* =========================================================
- * Pending state — shared button affordance
+ * Pending state, shared button affordance
  * Buttons get [data-pending="true"] while an async action runs;
  * pointer events disabled, opacity dimmed, spinner visible.
  * ========================================================= */
@@ -388,7 +388,7 @@ select {
 }
 
 /* =========================================================
- * Pull-quote reveal — used by long-form articles
+ * Pull-quote reveal, used by long-form articles
  * Triggered by [data-pullquote="in"] which the BaseLayout script
  * sets when a blockquote scrolls into view.
  * ========================================================= */
@@ -427,7 +427,7 @@ blockquote[data-pullquote='in']::before {
   blockquote[data-pullquote]::before { transform: scaleY(1); transition: none; }
 }
 
-/* Cursor accent target — light hover bump for buttons + key links
+/* Cursor accent target, light hover bump for buttons + key links
  * (the actual halo follower lives in CursorHalo.astro). */
 .btn-primary,
 .btn-accent {
@@ -461,12 +461,6 @@ blockquote[data-pullquote='in']::before {
     --color-border-subtle: rgba(10, 14, 26, 0.3);
     --color-border-default: rgba(10, 14, 26, 0.5);
     --color-ink-secondary: #1e293b;
-  }
-
-  [data-theme='dark'] {
-    --color-border-subtle: rgba(255, 255, 255, 0.3);
-    --color-border-default: rgba(255, 255, 255, 0.5);
-    --color-ink-secondary: #e2e8f0;
   }
 }
 

@@ -116,7 +116,7 @@ import { questions, dimensions } from '~/data/diagnostic-rubric';
     });
 
     btn.addEventListener('click', () => {
-      // Tiny artificial pause so the result feels “computed” — also lets the
+      // Tiny artificial pause so the result feels “computed”, also lets the
       // pending state register visually for users on fast machines.
       btn!.dataset.pending = 'true';
       const labelEl = btn!.querySelector<HTMLElement>('.ts-label');

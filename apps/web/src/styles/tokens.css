@@ -1,5 +1,5 @@
 /* =========================================================
- * Design Tokens — TsholoSetati v2
+ * Design Tokens, TsholoSetati v2
  * Editorial baseline + cinematic accents + data-forward signals
  * Light/dark theme via [data-theme] on <html>
  * ========================================================= */
@@ -7,16 +7,16 @@
 :root {
   /* ---------- Color: brand & semantic ---------- */
   /* Light theme defaults */
-  /* Palette: Slate Indigo & Lumen — quiet authority with a confident accent */
+  /* Palette: Slate Indigo & Lumen, quiet authority with a confident accent */
   --color-surface-base: #fafafa;        /* page background */
   --color-surface-raised: #ffffff;      /* cards, modals */
   --color-surface-sunken: #f1f5f9;      /* recessed wells (slate-100) */
   --color-surface-inverse: #0a0e1a;
   --color-surface-glass: rgba(255, 255, 255, 0.7);
 
-  --color-ink-primary: #0f172a;         /* slate-900 — body text */
-  --color-ink-secondary: #475569;       /* slate-600 — muted text */
-  --color-ink-tertiary: #94a3b8;        /* slate-400 — very muted */
+  --color-ink-primary: #0f172a;         /* slate-900, body text */
+  --color-ink-secondary: #475569;       /* slate-600, muted text */
+  --color-ink-tertiary: #94a3b8;        /* slate-400, very muted */
   --color-ink-inverse: #fafafa;
   --color-ink-on-accent: #ffffff;
 
@@ -24,10 +24,10 @@
   --color-border-default: rgba(15, 23, 42, 0.12);
   --color-border-strong: rgba(15, 23, 42, 0.24);
 
-  --color-accent: #4f46e5;              /* indigo-600 — primary brand */
+  --color-accent: #4f46e5;              /* indigo-600, primary brand */
   --color-accent-hover: #4338ca;        /* indigo-700 */
   --color-accent-soft: rgba(79, 70, 229, 0.08);
-  --color-accent-2: #0ea5e9;            /* sky-500 — cool secondary (data viz, accents) */
+  --color-accent-2: #0ea5e9;            /* sky-500, cool secondary (data viz, accents) */
   --color-accent-2-soft: rgba(14, 165, 233, 0.1);
 
   --color-signal-up: #16a34a;
@@ -144,46 +144,4 @@
   --noise-opacity: 0.04;
 
   color-scheme: light;
-}
-
-/* ---------- Dark theme ---------- */
-[data-theme='dark'] {
-  /* Palette: Slate Indigo & Lumen — dark — immersive midnight slate, lumen indigo accent */
-  --color-surface-base: #0a0e1a;        /* deep slate */
-  --color-surface-raised: #141a2e;      /* elevated card */
-  --color-surface-sunken: #06080f;      /* recessed well */
-  --color-surface-inverse: #fafafa;
-  --color-surface-glass: rgba(20, 26, 46, 0.65);
-
-  --color-ink-primary: #e2e8f0;         /* slate-200 */
-  --color-ink-secondary: #94a3b8;       /* slate-400 */
-  --color-ink-tertiary: #64748b;        /* slate-500 */
-  --color-ink-inverse: #0f172a;
-
-  --color-border-subtle: rgba(255, 255, 255, 0.06);
-  --color-border-default: rgba(255, 255, 255, 0.1);
-  --color-border-strong: rgba(255, 255, 255, 0.18);
-
-  --color-accent: #818cf8;              /* indigo-400 — luminous on dark */
-  --color-accent-hover: #a5b4fc;        /* indigo-300 */
-  --color-accent-soft: rgba(129, 140, 248, 0.14);
-  --color-accent-2: #38bdf8;            /* sky-400 */
-  --color-accent-2-soft: rgba(56, 189, 248, 0.14);
-
-  --color-signal-up: #4ade80;
-  --color-signal-up-soft: rgba(74, 222, 128, 0.14);
-  --color-signal-down: #f87171;
-  --color-signal-down-soft: rgba(248, 113, 113, 0.14);
-
-  --color-focus-ring: #818cf8;
-
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.6);
-  --shadow-glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  --shadow-focus: 0 0 0 3px rgba(129, 140, 248, 0.4);
-
-  color-scheme: dark;
 }

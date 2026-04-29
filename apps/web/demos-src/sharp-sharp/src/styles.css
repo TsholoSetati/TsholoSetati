@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-/* Brand parity tokens — match parent site & sibling demos (ID8, Financial Planning) */
+/* Brand parity tokens, match parent site & sibling demos (ID8, Financial Planning) */
 @theme {
   --color-bg: #ffffff;
   --color-surface-base: #ffffff;

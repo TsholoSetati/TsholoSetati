@@ -1,5 +1,5 @@
 /**
- * AI Maturity Diagnostic — deterministic rubric.
+ * AI Maturity Diagnostic, deterministic rubric.
  * No runtime LLM. Each question maps to a dimension with weighted answers.
  * The output is a profile + tailored recommendations from a pre-authored matrix.
  */
@@ -14,7 +14,7 @@ export type Dimension =
 
 export interface Choice {
   label: string;
-  /** 0–4 — higher is more mature. */
+  /** 0–4, higher is more mature. */
   score: number;
 }
 
@@ -70,7 +70,7 @@ export const questions: Question[] = [
     dimension: 'strategy',
     prompt: 'Who owns AI outcomes at the executive level?',
     choices: [
-      { label: 'Nobody — AI is a side initiative', score: 0 },
+      { label: 'Nobody, AI is a side initiative', score: 0 },
       { label: 'IT leadership, by default', score: 1 },
       { label: 'A nominated AI lead reporting to the CIO', score: 2 },
       { label: 'A dedicated executive (Chief AI Officer or equivalent)', score: 3 },

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
-  <title>PayPer — Negotiation & Payment Platform (Prototype)</title>
+  <title>PayPer, Negotiation & Payment Platform (Prototype)</title>
   <meta name="description" content="A static prototype exploring negotiation-led payment flows for South African rent, stokvel, remittance and utility payments." />
   <style>
     /* ---------- Tokens ---------- */
@@ -417,7 +417,7 @@
                   stroke-dasharray="251" stroke-dashoffset="251" />
           </svg>
           <div class="gauge-value" id="scoreValue">0</div>
-          <div class="gauge-label">Good — Tier 3</div>
+          <div class="gauge-label">Good, Tier 3</div>
         </div>
       </section>
 
@@ -448,7 +448,7 @@
       <section class="nego" id="negoPanel">
         <div class="nego-head">
           <div>
-            <div class="nego-title" id="negoTitle">Rent — Apr 2026</div>
+            <div class="nego-title" id="negoTitle">Rent, Apr 2026</div>
             <div class="nego-counter" id="negoCounterparty">With Mr. Dlamini · ZAR 7,500/mo</div>
             <span class="trust-chip" id="trustChip" title="Counterparty trust score">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg>
@@ -605,7 +605,7 @@
         ],
         negotiation: {
           id:               'n_apr2026_rent',
-          item:             'Rent — Apr 2026',
+          item:             'Rent, Apr 2026',
           counterparty:     'Mr. Dlamini',
           counterpartyTrust: 72,
           proposed:         7500,
@@ -617,7 +617,7 @@
           escrow:           null,
           history: [
             { who: 'them', text: 'Proposed R 7,500 for April rent',                  when: '2 days ago' },
-            { who: 'you',  text: 'Countered with R 7,200 — early settlement bonus', when: '1 day ago' },
+            { who: 'you',  text: 'Countered with R 7,200, early settlement bonus', when: '1 day ago' },
             { who: 'them', text: 'Holding firm at R 7,500',                          when: 'Today' },
           ],
         },
@@ -641,7 +641,7 @@
         }
         if (parsed.negotiation && !parsed.negotiation.id) {
           parsed.negotiation.id = 'n_legacy';
-          parsed.negotiation.item = 'Rent — Apr 2026';
+          parsed.negotiation.item = 'Rent, Apr 2026';
           parsed.negotiation.counterparty = 'Mr. Dlamini';
           parsed.negotiation.lastOfferBy = 'them';
           parsed.negotiation.lastOfferAmount = parsed.negotiation.proposed;
@@ -669,7 +669,7 @@
         return false;
       }
       state.negotiation.state = to;
-      addAudit('STATE', 'system', `${from.toUpperCase()} → ${to.toUpperCase()}${reason ? ' — ' + reason : ''}`);
+      addAudit('STATE', 'system', `${from.toUpperCase()} → ${to.toUpperCase()}${reason ? ', ' + reason : ''}`);
       return true;
     }
 
@@ -895,7 +895,7 @@
         rent:        ['Add rent payment',         'On-time rent boosts your score the most.'],
         stokvel:     ['Track a stokvel contribution', 'Build credit history through your group savings.'],
         remittance:  ['Send remittance',           'Cross-border family transfers, FX-locked at entry.'],
-        electricity: ['Add electricity payment',   'Prepaid or postpaid — both count.'],
+        electricity: ['Add electricity payment',   'Prepaid or postpaid, both count.'],
       };
       const [t, sub] = labels[kind] || ['Add Payment', ''];
       document.getElementById('modalTitle').textContent = t;
@@ -972,7 +972,7 @@
       if (!amt || amt <= 0) return;
 
       const text = reason
-        ? `Countered with R ${amt.toLocaleString('en-ZA')} — ${reason}`
+        ? `Countered with R ${amt.toLocaleString('en-ZA')}, ${reason}`
         : `Countered with R ${amt.toLocaleString('en-ZA')}`;
       n.history.push({ who: 'you', text, when: 'Just now' });
       n.lastOfferBy = 'you';
@@ -1031,7 +1031,7 @@
       state.payments.push({
         id: Date.now(), kind: 'rent', counter: n.counterparty, amount: n.escrow.amount,
         date: new Date().toISOString().slice(0, 10), status: 'paid',
-        label: n.item.replace(/\s—\s/, ' · '),
+        label: n.item.replace(/\s-\s/, ' · '),
       });
       // Animate escrow bar to full before hide.
       document.getElementById('escrowBarFill').style.transform = 'scaleX(1)';

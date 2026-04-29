@@ -38,7 +38,7 @@ export const demos: Demo[] = [
       claim: 'Reducing the friction between owing and settling.',
       capabilities: [
         'Add expenses, split by share or by head, and see who owes whom in one glance.',
-        'Local-first ledger that survives a refresh — no sign-up to try it.',
+        'Local-first ledger that survives a refresh, no sign-up to try it.',
         'Settlement suggestions that minimise the number of payments needed.',
       ],
       stack: ['Vanilla JS', 'localStorage', 'Offline-first UX'],
@@ -80,7 +80,7 @@ export const demos: Demo[] = [
       claim: 'Personal finance should be quantitative, local, and honest about uncertainty.',
       capabilities: [
         'Six calculators built on real SARS tables, not US heuristics: brackets, RA s.11F shield, two-pot taxation.',
-        '1 000-path Monte Carlo retirement projection with seeded results — same inputs always give the same answer.',
+        '1 000-path Monte Carlo retirement projection with seeded results, same inputs always give the same answer.',
         'Vehicle-aware goal planning that compares TFSA vs RA vs discretionary on after-tax outcome.',
       ],
       stack: ['Vanilla JS', 'Inline-SVG fan charts', 'Mulberry32 PRNG', 'Box–Muller'],
@@ -100,7 +100,7 @@ export const demos: Demo[] = [
     narrative: {
       claim: 'Turning the "should we build this with AI?" debate into a defensible decision.',
       capabilities: [
-        'Seven weighted criteria across Value and Feasibility axes — mirrors how I run portfolio reviews.',
+        'Seven weighted criteria across Value and Feasibility axes, mirrors how I run portfolio reviews.',
         '2×2 matrix with bubble-sized financial impact and tier badges (Kill / Defer / Pilot / Scale / Flagship).',
         'Pre-authored insurance-sector portfolio so you can stress-test the model immediately.',
         'Shareable URL state (base64-encoded) so analysis travels with the link.',
@@ -113,7 +113,7 @@ export const demos: Demo[] = [
     title: 'GiftlyInvited',
     tagline: 'Private gift registry',
     description:
-      'Invite-only gift registry with a guest experience and an owner panel. Items can be claimed outright or chipped in for as a group gift. Client-side only — every claim, contribution, and RSVP lives in your browser.',
+      'Invite-only gift registry with a guest experience and an owner panel. Items can be claimed outright or chipped in for as a group gift. Client-side only, every claim, contribution, and RSVP lives in your browser.',
     iframe: '/demos/giftly/demo.html',
     height: 1100,
     category: 'Productivity',
@@ -125,30 +125,9 @@ export const demos: Demo[] = [
         'Invite-gated entry (try code DEMO2026) so the registry never appears on a public index.',
         'Per-item claim or group chip-in with a live progress bar and supporter count.',
         'Built-in RSVP, downloadable .ics calendar invite, and one-tap WhatsApp share.',
-        'Owner panel with full activity feed and CSV export — no accounts, no analytics.',
+        'Owner panel with full activity feed and CSV export, no accounts, no analytics.',
       ],
       stack: ['Vanilla JS', 'localStorage', '.ics generation', 'WhatsApp deep link'],
-    },
-  },
-  {
-    slug: 'policy-prism',
-    title: 'PolicyPrism',
-    tagline: 'Comparative AI policy framework explorer',
-    description:
-      'Refract a single AI use case through five governance regimes — EU AI Act, NIST RMF, AU Continental AI Strategy, SA POPIA + Draft AI Policy, and China AI Measures — and see how the obligations diverge.',
-    iframe: '/demos/policy-prism/demo.html',
-    height: 1100,
-    category: 'AI Tooling',
-    status: 'Prototype',
-    icon: 'scales',
-    narrative: {
-      claim: 'AI governance is not one debate; it is five overlapping ones with different priorities.',
-      capabilities: [
-        'Side-by-side comparison of how each framework classifies and constrains the same use case.',
-        'Four worked use cases: retail credit scoring, hiring, generative customer agents, and healthcare triage.',
-        'Surfaces the deltas — what one regime prohibits, another only requires you to disclose.',
-      ],
-      stack: ['React', 'Vite', 'Comparative regulatory analysis'],
     },
   },
 ];

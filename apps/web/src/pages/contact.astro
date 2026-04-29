@@ -41,7 +41,7 @@ const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
               <span>What would you like to discuss?</span>
               <textarea name="message" rows="5" required></textarea>
             </label>
-            {/* Honeypot — hidden from real users */}
+            {/* Honeypot, hidden from real users */}
             <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute; left:-9999px;" aria-hidden="true" />
             <input type="hidden" name="_subject" value="New enquiry from tsholosetati.com" />
             <input type="hidden" name="_t" id="contact-t" value="" />
@@ -71,10 +71,6 @@ const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
           <li>
             <strong>LinkedIn</strong>
             <a href={site.social.linkedin} target="_blank" rel="noopener">/in/tsholosetati</a>
-          </li>
-          <li>
-            <strong>GitHub</strong>
-            <a href={site.social.github} target="_blank" rel="noopener">@tsholosetati</a>
           </li>
           <li>
             <strong>Based in</strong>

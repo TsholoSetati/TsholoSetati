@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ID8 — AI Use Case Assessment</title>
+  <title>ID8, AI Use Case Assessment</title>
   <meta name="description" content="A deterministic multi-criteria scoring engine for prioritising AI use cases. Outputs a 2×2 portfolio matrix and a tailored shortlist." />
   <style>
     /* --- Design tokens (parity with parent site) --- */
@@ -262,9 +262,9 @@
   <div class="wrap">
     <header class="head">
       <p class="eyebrow">Use case assessment · Deterministic scoring</p>
-      <h1>ID8 — AI Portfolio Prioritisation</h1>
+      <h1>ID8, AI Portfolio Prioritisation</h1>
       <p class="lead">
-        Add your candidate AI use cases. Each is scored on seven weighted criteria across two axes — value and feasibility.
+        Add your candidate AI use cases. Each is scored on seven weighted criteria across two axes, value and feasibility.
         The output is a ranked shortlist, a 2&times;2 matrix and a tailored set of priority recommendations.
         No data leaves your browser.
       </p>
@@ -317,7 +317,7 @@
       <div class="result-head">
         <div class="score-ring" id="ring" style="--p:0">
           <span id="overall-pct">0%</span>
-          <small id="overall-tier">—</small>
+          <small id="overall-tier">-</small>
         </div>
         <div class="result-summary">
           <p class="eyebrow" style="margin:0">Portfolio readiness</p>
@@ -331,10 +331,10 @@
           <div class="matrix-wrap">
             <svg class="matrix" id="matrix" viewBox="0 0 400 400" role="img" aria-label="Value vs feasibility matrix"></svg>
             <div class="matrix-legend">
-              <div class="legend-cell"><strong>Strategic Bets</strong>High value, low feasibility — invest in foundations.</div>
-              <div class="legend-cell"><strong>Quick Wins</strong>High value, high feasibility — fund now.</div>
-              <div class="legend-cell"><strong>Money Pits</strong>Low value, low feasibility — kill or radically rescope.</div>
-              <div class="legend-cell"><strong>Fillers</strong>Low value, high feasibility — automate or deprioritise.</div>
+              <div class="legend-cell"><strong>Strategic Bets</strong>High value, low feasibility, invest in foundations.</div>
+              <div class="legend-cell"><strong>Quick Wins</strong>High value, high feasibility, fund now.</div>
+              <div class="legend-cell"><strong>Money Pits</strong>Low value, low feasibility, kill or radically rescope.</div>
+              <div class="legend-cell"><strong>Fillers</strong>Low value, high feasibility, automate or deprioritise.</div>
             </div>
           </div>
         </div>
@@ -356,7 +356,7 @@
         <p>
           Composite score = <code>(Value × 0.6 + Feasibility × 0.4) × 20</code>, mapped 0–100. Quadrant assignment uses a cut-off at 3.0 on each axis (the midpoint of 1–5).
           Tier thresholds: <code>0–20 Kill</code>, <code>20–40 Defer</code>, <code>40–60 Pilot</code>, <code>60–80 Scale</code>, <code>80+ Flagship</code>.
-          The recommendation engine maps each quadrant and the lowest-scoring criteria to pre-authored guidance — there is no LLM at runtime.
+          The recommendation engine maps each quadrant and the lowest-scoring criteria to pre-authored guidance, there is no LLM at runtime.
         </p>
       </details>
     </section>
@@ -400,7 +400,7 @@
 
     const QUADRANT_RECS = {
       'quick-wins':     'Fund the Quick Wins now. They will compound credibility and free capacity for the Strategic Bets.',
-      'strategic-bets': 'Invest in foundations (data, platform, governance) before scaling the Strategic Bets — they are the highest-leverage bets but the most fragile to weak plumbing.',
+      'strategic-bets': 'Invest in foundations (data, platform, governance) before scaling the Strategic Bets, they are the highest-leverage bets but the most fragile to weak plumbing.',
       'fillers':        'Automate or deprioritise the Fillers. They consume scarce delivery capacity without moving enterprise outcomes.',
       'money-pits':     'Kill or radically rescope the Money Pits. Each one approved past pilot will starve a higher-value initiative.',
     };
@@ -613,7 +613,7 @@
       countEl.textContent = `${portfolio.length} use case${portfolio.length === 1 ? '' : 's'}`;
 
       if (!portfolio.length) {
-        host.innerHTML = `<div class="empty">No use cases yet. Add one — or load the sample portfolio.</div>`;
+        host.innerHTML = `<div class="empty">No use cases yet. Add one, or load the sample portfolio.</div>`;
         document.getElementById('result-card').hidden = true;
         return;
       }
@@ -715,7 +715,7 @@
         const label = `${i + 1}`;
         return `
           <g>
-            <title>${escapeHtml(s.item.name)} — ${s.composite.toFixed(0)} (${s.tier.name})</title>
+            <title>${escapeHtml(s.item.name)}, ${s.composite.toFixed(0)} (${s.tier.name})</title>
             <circle cx="${cx}" cy="${cy}" r="${r}" fill="${c}" fill-opacity="0.28" stroke="${c}" stroke-width="1.5" />
             <text x="${cx}" y="${cy + 3.5}" font-family="var(--font-mono)" font-size="10" font-weight="600" fill="${c}" text-anchor="middle">${label}</text>
           </g>

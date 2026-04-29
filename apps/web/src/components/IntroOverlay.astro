@@ -1,13 +1,13 @@
 ---
 /**
- * IntroOverlay — first-visit welcome shown once per browser.
+ * IntroOverlay, first-visit welcome shown once per browser.
  *
  * Renders nothing in the SSR HTML beyond a hidden dialog. The script
  * checks localStorage for `ts:intro-seen`; if absent and the visitor
  * hasn't asked for reduced motion, the overlay is unhidden after a
  * short delay so it doesn't fight the initial paint.
  *
- * Three quick-start tiles route to About, Demos, and Insights — the
+ * Three quick-start tiles route to About, Demos, and Insights, the
  * most useful entry points for a new visitor. A dismiss button writes
  * the localStorage flag so it never shows again.
  *
@@ -29,7 +29,7 @@ import { site } from '~/config/site';
     <h2 id="intro-title" class="intro-title">{site.name}</h2>
     <p class="intro-tagline">{site.tagline}</p>
     <p class="intro-lede">
-      Translating emerging technology into compounding business advantage —
+      Translating emerging technology into compounding business advantage -
       with field notes, working demos and a clear point of view.
     </p>
 
@@ -276,7 +276,7 @@ import { site } from '~/config/site';
   }
 
   setupIntro();
-  // Note: deliberately NOT re-binding on astro:page-load — the intro
+  // Note: deliberately NOT re-binding on astro:page-load, the intro
   // should only ever appear on the first visit, not on subsequent
   // in-session navigations.
 </script>

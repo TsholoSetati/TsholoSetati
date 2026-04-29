@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Sharp-Sharp shared expense tracker — Vite + lit-html + Tailwind v4 + Dexie + Workbox PWA",
+  "description": "Sharp-Sharp shared expense tracker, Vite + lit-html + Tailwind v4 + Dexie + Workbox PWA",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

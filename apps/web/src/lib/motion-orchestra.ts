@@ -1,5 +1,5 @@
 /**
- * Motion orchestrator — cinematic layer.
+ * Motion orchestrator, cinematic layer.
  *
  * Lazy-imports heavy libs (GSAP, ScrollTrigger) only when an opt-in helper is
  * called by a specific page island. Everything is gated by

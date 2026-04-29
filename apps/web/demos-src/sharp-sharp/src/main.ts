@@ -82,7 +82,7 @@ async function seedSample() {
       participants: m.map((x) => x.id), splitMode: 'equal', createdAt: now - 4 * 86400000,
     },
     {
-      id: uid(), groupId: gId, description: 'Groceries — Pick n Pay', amount: 1240, payerId: m[1].id,
+      id: uid(), groupId: gId, description: 'Groceries, Pick n Pay', amount: 1240, payerId: m[1].id,
       participants: m.map((x) => x.id), splitMode: 'equal', createdAt: now - 3 * 86400000,
     },
     {
@@ -331,7 +331,7 @@ function overviewTab(g: Group): TemplateResult {
     ${transfers.length > 0
       ? html`
           <div class="card mt-3">
-            <h3 class="mb-3">Settle up — minimum payments</h3>
+            <h3 class="mb-3">Settle up, minimum payments</h3>
             <p class="text-sm mb-3" style="color: var(--color-ink-secondary);">
               ${transfers.length} ${transfers.length === 1 ? 'transfer' : 'transfers'} clears every balance.
             </p>
@@ -348,8 +348,8 @@ function overviewTab(g: Group): TemplateResult {
 }
 
 function transferRow(t: { fromId: string; toId: string; amount: number }, g: Group): TemplateResult {
-  const from = state.members.find((m) => m.id === t.fromId)?.name ?? '—';
-  const to = state.members.find((m) => m.id === t.toId)?.name ?? '—';
+  const from = state.members.find((m) => m.id === t.fromId)?.name ?? '-';
+  const to = state.members.find((m) => m.id === t.toId)?.name ?? '-';
   return html`
     <li class="flex items-center gap-2 text-sm">
       <span class="font-medium">${from}</span>
@@ -421,7 +421,7 @@ function settleTab(g: Group): TemplateResult {
   const transfers = suggestSettlements(balances);
   return html`
     <div class="flex items-center mb-3">
-      <p class="text-sm" style="color: var(--color-ink-secondary);">Suggested transfers — minimum number of payments to clear all balances.</p>
+      <p class="text-sm" style="color: var(--color-ink-secondary);">Suggested transfers, minimum number of payments to clear all balances.</p>
       <button class="btn btn-primary ml-auto" @click=${() => go({ kind: 'add-settlement', groupId: g.id })}>+ Record payment</button>
     </div>
 
@@ -434,9 +434,9 @@ function settleTab(g: Group): TemplateResult {
                 <li class="flex items-center gap-3 py-3">
                   <div>
                     <div class="font-medium">
-                      ${state.members.find((m) => m.id === t.fromId)?.name ?? '—'}
+                      ${state.members.find((m) => m.id === t.fromId)?.name ?? '-'}
                       <span style="color: var(--color-ink-tertiary);"> pays </span>
-                      ${state.members.find((m) => m.id === t.toId)?.name ?? '—'}
+                      ${state.members.find((m) => m.id === t.toId)?.name ?? '-'}
                     </div>
                     <div class="text-xs mt-1" style="color: var(--color-ink-tertiary);">Tap "Record" once paid.</div>
                   </div>
@@ -455,9 +455,9 @@ function settleTab(g: Group): TemplateResult {
             <ul class="divide-y" style="border-color: var(--color-border);">
               ${repeat(state.settlements, (s) => s.id, (s) => html`
                 <li class="flex items-center gap-3 py-2 text-sm">
-                  <span>${state.members.find((m) => m.id === s.fromId)?.name ?? '—'}</span>
+                  <span>${state.members.find((m) => m.id === s.fromId)?.name ?? '-'}</span>
                   <span style="color: var(--color-ink-tertiary);">→</span>
-                  <span>${state.members.find((m) => m.id === s.toId)?.name ?? '—'}</span>
+                  <span>${state.members.find((m) => m.id === s.toId)?.name ?? '-'}</span>
                   <span class="ml-auto font-mono" style="color: var(--color-success);">${fmtMoney(s.amount, g.currency)}</span>
                   <span class="text-xs" style="color: var(--color-ink-tertiary);">${fmtRelative(s.createdAt)}</span>
                   <button class="btn btn-danger text-xs" @click=${() => deleteSettlement(s.id)}>Undo</button>

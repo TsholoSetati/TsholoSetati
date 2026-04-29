@@ -126,7 +126,7 @@ function extract(html) {
   let bodyRaw = bodyMatch ? bodyMatch[1] : '';
   // Remove the lead image, h1, created/published lines.
   bodyRaw = bodyRaw
-    .replace(/<img[^>]*\/?>/i, '') // first hero img only — rest are inline figures
+    .replace(/<img[^>]*\/?>/i, '') // first hero img only, rest are inline figures
     .replace(/<h1>[\s\S]*?<\/h1>/i, '')
     .replace(/<p[^>]*class="created"[^>]*>[\s\S]*?<\/p>/i, '')
     .replace(/<p[^>]*class="published"[^>]*>[\s\S]*?<\/p>/i, '')
@@ -315,7 +315,7 @@ function main() {
   }
   mkdirSync(OUT_DIR, { recursive: true });
 
-  // Personal/health pieces from the LinkedIn export — kept out of the
+  // Personal/health pieces from the LinkedIn export, kept out of the
   // public Insights collection to maintain a professional focus. These
   // are slug stems matched after deriveSlug() runs.
   const PERSONAL_SLUGS = new Set([
@@ -326,7 +326,7 @@ function main() {
 
   const files = readdirSync(SRC_DIR).filter((f) => {
     if (!f.toLowerCase().endsWith('.html')) return false;
-    // Skip LinkedIn draft exports — their filenames lead with a date+time stamp
+    // Skip LinkedIn draft exports, their filenames lead with a date+time stamp
     // (e.g. "2025-06-23 05_44_31.0-Part 2_ ...html"). The published versions of
     // these articles arrive with a normal slug filename in the same export.
     if (/^\d{4}-\d{2}-\d{2}\s+\d{2}_\d{2}_\d{2}\.\d/.test(f)) {
