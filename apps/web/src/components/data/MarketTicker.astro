@@ -11,12 +11,14 @@
 <div class="ticker" data-ticker aria-label="Live market data" role="region">
   <div class="ticker-track" data-ticker-track>
     {/* Server-side initial dotty placeholder; hydrated by client */}
-    {Array.from({ length: 6 }).map(() => (
-      <span class="ticker-item ticker-skeleton">
-        <span class="ticker-symbol">…</span>
-        <span class="ticker-value">·····</span>
-      </span>
-    ))}
+    <div class="ticker-group">
+      {Array.from({ length: 6 }).map(() => (
+        <span class="ticker-item ticker-skeleton">
+          <span class="ticker-symbol">…</span>
+          <span class="ticker-value">·····</span>
+        </span>
+      ))}
+    </div>
   </div>
 </div>
 
@@ -36,13 +38,18 @@
   .ticker-track {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
-    padding-inline: var(--container-padding);
     width: 100%;
     white-space: nowrap;
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-variant-numeric: tabular-nums;
+  }
+  .ticker-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    padding-right: var(--space-6);
+    flex-shrink: 0;
   }
 
   .ticker-item {
@@ -173,22 +180,24 @@
   function render(track: HTMLElement, quotes: Quote[]) {
     if (quotes.length === 0) {
       track.innerHTML =
-        '<span class="ticker-item">Markets · live data unavailable</span>';
+        '<div class="ticker-group"><span class="ticker-item">Markets · live data unavailable</span></div>';
       return;
     }
-    const isMarquee = true;
     const items = quotes
-      .map(
-        (q) =>
-          `<span class="ticker-item">
-             <span class="ticker-symbol">${q.label}</span>
-             <span>${fmtPrice(q.price)}</span>
-             <span class="${q.changePct >= 0 ? 'ticker-up' : 'ticker-down'}">${fmtPct(q.changePct)}</span>
-           </span>`
-      )
+      .map((q) => {
+        const up = q.changePct >= 0;
+        const colorVar = up ? 'var(--color-signal-up)' : 'var(--color-signal-down)';
+        const arrow = up ? '▲' : '▼';
+        return `<span class="ticker-item" style="color:${colorVar}">
+             <span class="ticker-symbol" style="color:${colorVar}">${q.label}</span>
+             <span style="color:${colorVar}">${fmtPrice(q.price)}</span>
+             <span style="color:${colorVar}">${arrow} ${fmtPct(q.changePct)}</span>
+           </span>`;
+      })
       .join('');
-    // Duplicate for seamless marquee loop.
-    track.innerHTML = isMarquee ? items + items : items;
+    // Two equal groups for seamless -50% marquee loop.
+    const group = `<div class="ticker-group">${items}</div>`;
+    track.innerHTML = group + `<div class="ticker-group" aria-hidden="true">${items}</div>`;
   }
 
   function setupTicker() {
