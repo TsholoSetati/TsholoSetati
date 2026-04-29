@@ -8,7 +8,11 @@ import Mark from '~/components/Mark.astro';
 type Id =
   | 'prism' | 'monogram' | 'inflection' | 'aperture'
   | 'cross' | 'compound' | 'network' | 'lattice' | 'jcurve'
-  | 'wavefront' | 'threshold' | 'arbitrage' | 'frontier' | 'sprout';
+  | 'wavefront' | 'threshold' | 'arbitrage' | 'frontier' | 'sprout'
+  | 'cross-axes' | 'cross-shift' | 'cross-wedge' | 'cross-arrows' | 'cross-halo'
+  | 'inflection-tangent' | 'inflection-twin' | 'inflection-grid' | 'inflection-ribbon' | 'inflection-mirror'
+  | 'lattice-path' | 'lattice-spread' | 'lattice-hex' | 'lattice-ring' | 'lattice-pulse'
+  | 'frontier-ticks' | 'frontier-dual' | 'frontier-radial' | 'frontier-segments' | 'frontier-shaded';
 
 const concepts: { id: Id; name: string; note: string }[] = [
   {
@@ -85,6 +89,58 @@ const concepts: { id: Id; name: string; note: string }[] = [
 ];
 
 const sizes = [16, 28, 64, 200];
+
+// ── Round 3: variations on four favourites ──
+const variations: { family: string; baseId: Id; intro: string; items: { id: Id; name: string; note: string }[] }[] = [
+  {
+    family: 'Cross variations',
+    baseId: 'cross',
+    intro: 'Five takes on the supply · demand X — adding axes, motion, area, arrowheads, or a halo.',
+    items: [
+      { id: 'cross-axes', name: 'Axes + dotted equilibrium', note: 'Adds price/quantity axes and dotted guides dropping to the equilibrium point. Closest to a real chart.' },
+      { id: 'cross-shift', name: 'Demand shift', note: 'A faded original demand line and a shifted solid one with a tiny shift arrow. Captures change, not just state.' },
+      { id: 'cross-wedge', name: 'Wedge fill', note: 'Faint triangular fill behind the X — surplus, deadweight, the area-under-the-curve idea.' },
+      { id: 'cross-arrows', name: 'Arrowed forces', note: 'Both lines become arrows meeting at the centre. Reads as opposing forces resolving into a price.' },
+      { id: 'cross-halo', name: 'Equilibrium halo', note: 'A faint ring around the equilibrium dot. Quietly emphasises the meeting point.' },
+    ],
+  },
+  {
+    family: 'Inflection variations',
+    baseId: 'inflection',
+    intro: 'Five takes on the S-curve at the moment it changes direction.',
+    items: [
+      { id: 'inflection-tangent', name: 'Tangent line', note: 'Dashed tangent through the inflection point. Reads as derivative / slope analysis.' },
+      { id: 'inflection-twin', name: 'Twin S', note: 'Two mirrored S-curves crossing at the inflection — symmetry, equilibrium of opposing trends.' },
+      { id: 'inflection-grid', name: 'On grid', note: 'S-curve over a faint chart grid. Looks like a real plot.' },
+      { id: 'inflection-ribbon', name: 'Ribbon', note: 'Main S between two faint parallel guide curves. A confidence band, almost.' },
+      { id: 'inflection-mirror', name: 'Mirrored arms', note: 'Three S-arms branching from the central node. Reads as forking futures from a turning point.' },
+    ],
+  },
+  {
+    family: 'Lattice variations',
+    baseId: 'lattice',
+    intro: 'Five arrangements of dots — different stories about adoption, diffusion, and frontier.',
+    items: [
+      { id: 'lattice-path', name: 'Diagonal path', note: 'Faint full lattice with a lit BL→TR diagonal. The frontier as a path you walk.' },
+      { id: 'lattice-spread', name: 'Spread from origin', note: 'Brightness fades from BL outward — diffusion across a population.' },
+      { id: 'lattice-hex', name: 'Hex with centre', note: 'Hexagonal cluster, central node bright. Honeycomb — Christaller / market areas.' },
+      { id: 'lattice-ring', name: 'Ring + centre', note: 'Six nodes on a ring with one bright node + centre. Network with a pivot.' },
+      { id: 'lattice-pulse', name: 'Central pulse', note: 'Lattice grid with a haloed central node. A shock, a regional centre, a hub.' },
+    ],
+  },
+  {
+    family: 'Frontier (PPF) variations',
+    baseId: 'frontier',
+    intro: 'Five takes on the production possibility frontier.',
+    items: [
+      { id: 'frontier-ticks', name: 'Ticked axes', note: 'PPF arc with proper axis ticks. Reads more textbook-like than the bare version.' },
+      { id: 'frontier-dual', name: 'Inner + outer', note: 'Two frontiers, the outer expanded — captures growth / technology improvement, not static trade-off.' },
+      { id: 'frontier-radial', name: 'Radial guide', note: 'Dashed line from origin out to the chosen point — emphasises the choice on the frontier.' },
+      { id: 'frontier-segments', name: 'Segmented', note: 'Polyline of three segments with a node at the kink. Reads as discrete options rather than a smooth curve.' },
+      { id: 'frontier-shaded', name: 'Shaded feasible region', note: 'Faint fill under the frontier — the feasible set, with the chosen efficient point on the boundary.' },
+    ],
+  },
+];
 ---
 
 <BaseLayout
@@ -147,6 +203,46 @@ const sizes = [16, 28, 64, 200];
       </section>
     ))}
 
+    <section class="round" data-reveal>
+      <header class="round-head">
+        <p class="eyebrow">Round 3 · variations</p>
+        <h2>Five takes each on cross, inflection, lattice, and frontier.</h2>
+        <p class="round-lead">
+          Same four families, pushed in different directions — adding axes, motion, area fills,
+          shifts, halos, grids. Reply with the id of any variant you want me to refine, combine, or take to Phase 2.
+        </p>
+      </header>
+
+      {variations.map((v) => (
+        <div class="family">
+          <header class="family-head">
+            <p class="block-eyebrow">{v.family} · base <code>{v.baseId}</code></p>
+            <p class="family-intro">{v.intro}</p>
+          </header>
+
+          <div class="variant-grid">
+            {v.items.map((vi) => (
+              <article class="variant">
+                <div class="variant-surface light">
+                  <Mark id={vi.id} size={64} />
+                </div>
+                <div class="variant-meta">
+                  <p class="variant-name">{vi.name}</p>
+                  <p class="variant-id"><code>{vi.id}</code></p>
+                  <p class="variant-note">{vi.note}</p>
+                  <div class="variant-sizes">
+                    <Mark id={vi.id} size={16} />
+                    <Mark id={vi.id} size={28} />
+                    <span class="dark-chip"><Mark id={vi.id} size={28} /></span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+
     <p class="hint">
       <code>/marks-preview</code> is unlisted (noindex, not in nav). Reply with the chosen concept id and I&rsquo;ll roll it out.
     </p>
@@ -188,4 +284,59 @@ const sizes = [16, 28, 64, 200];
   .wordmark { font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; letter-spacing: -0.01em; }
 
   .hint { margin-top: 3rem; color: var(--color-ink-tertiary); font-size: 0.9rem; }
+
+  /* Round 3 — variations */
+  .round { margin-top: 4rem; padding-top: 3rem; border-top: 2px solid var(--color-border-strong, var(--color-border-subtle)); }
+  .round-head { margin: 0 0 2.5rem; }
+  .round-head h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 500; margin: 0.4rem 0 0.75rem; line-height: 1.2; }
+  .round-lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0; line-height: 1.6; }
+
+  .family { margin: 0 0 3rem; }
+  .family-head { margin: 0 0 1.25rem; }
+  .family-intro { color: var(--color-ink-secondary); margin: 0.4rem 0 0; line-height: 1.55; max-width: 65ch; font-size: 0.95rem; }
+
+  .variant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .variant {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-surface-base);
+    color: var(--color-ink-primary);
+    display: flex;
+    flex-direction: column;
+  }
+  .variant-surface {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.75rem 1rem;
+    background: var(--color-surface-sunken);
+    border-bottom: 1px solid var(--color-border-subtle);
+    min-height: 120px;
+  }
+  .variant-meta { padding: 1rem 1.1rem 1.1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .variant-name { font-family: var(--font-display); font-weight: 500; font-size: 1rem; margin: 0; }
+  .variant-id { margin: 0; font-size: 0.75rem; color: var(--color-ink-tertiary); }
+  .variant-note { margin: 0.2rem 0 0.6rem; color: var(--color-ink-secondary); font-size: 0.85rem; line-height: 1.5; }
+  .variant-sizes {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--color-border-subtle);
+  }
+  .dark-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: var(--radius-sm);
+    background: #0f172a;
+    color: #fafafa;
+  }
 </style>
