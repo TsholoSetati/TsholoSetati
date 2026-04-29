@@ -315,6 +315,15 @@ function main() {
   }
   mkdirSync(OUT_DIR, { recursive: true });
 
+  // Personal/health pieces from the LinkedIn export — kept out of the
+  // public Insights collection to maintain a professional focus. These
+  // are slug stems matched after deriveSlug() runs.
+  const PERSONAL_SLUGS = new Set([
+    'celebrating-cancer-survivor-month-2023-my-journey',
+    'hidden-strength-zahavian-signals-disability',
+    'reflecting-2023-lessons-heart-health-horizons',
+  ]);
+
   const files = readdirSync(SRC_DIR).filter((f) => {
     if (!f.toLowerCase().endsWith('.html')) return false;
     // Skip LinkedIn draft exports — their filenames lead with a date+time stamp
@@ -322,6 +331,10 @@ function main() {
     // these articles arrive with a normal slug filename in the same export.
     if (/^\d{4}-\d{2}-\d{2}\s+\d{2}_\d{2}_\d{2}\.\d/.test(f)) {
       console.log(`  skip draft: ${f}`);
+      return false;
+    }
+    if (PERSONAL_SLUGS.has(deriveSlug(f))) {
+      console.log(`  skip personal: ${f}`);
       return false;
     }
     return true;
