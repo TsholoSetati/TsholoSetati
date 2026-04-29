@@ -1,0 +1,137 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Mark from '~/components/Mark.astro';
+
+// Scratch page — preview four candidate site marks side-by-side.
+// Unlisted (underscore prefix). Delete after concept is locked.
+
+type Id = 'prism' | 'monogram' | 'inflection' | 'aperture';
+
+const concepts: { id: Id; name: string; note: string }[] = [
+  {
+    id: 'prism',
+    name: 'Refracting prism',
+    note: 'Triangle splits an input line into three short beams. Echoes PolicyPrism + the "one input, many readings" thesis.',
+  },
+  {
+    id: 'monogram',
+    name: 'TS monogram',
+    note: 'Geometric stacked T·S. Editorial-classical, reads as a personal mark.',
+  },
+  {
+    id: 'inflection',
+    name: 'Curve inflection',
+    note: 'S-curve with a single dot at the inflection point. Analytical, references the Phillips / adoption / J-curves.',
+  },
+  {
+    id: 'aperture',
+    name: 'Aperture',
+    note: 'Four overlapping arcs forming a soft eye with a focal dot. Quiet cousin of the prism — about focus rather than refraction.',
+  },
+];
+
+const sizes = [16, 28, 64, 200];
+---
+
+<BaseLayout
+  seo={{ title: 'Mark sketches · scratch', description: 'Internal preview, not for navigation.' }}
+>
+  <Fragment slot="head"><meta name="robots" content="noindex,nofollow" /></Fragment>
+
+  <section class="container section">
+    <header data-reveal>
+      <p class="eyebrow">Scratch · internal preview</p>
+      <h1>Site mark candidates.</h1>
+      <p class="lead">
+        Four concepts at four sizes, on light and dark, with header pairing. Pick one and the next round
+        rolls it out to the header, footer, favicon, OG image, and 404. All marks are monochrome and
+        inherit <code>currentColor</code>; the &ldquo;dark&rdquo; preview just sets a dark background.
+      </p>
+    </header>
+
+    {concepts.map((c) => (
+      <section class="block" data-reveal>
+        <header class="block-head">
+          <p class="block-eyebrow">Candidate · <code>{c.id}</code></p>
+          <h2>{c.name}</h2>
+          <p class="block-note">{c.note}</p>
+        </header>
+
+        <div class="row">
+          <div class="surface light">
+            <p class="surface-label">Light · ink</p>
+            <div class="sizes">
+              {sizes.map((s) => (
+                <div class="size-cell">
+                  <Mark id={c.id} size={s} />
+                  <span class="size-label">{s}px</span>
+                </div>
+              ))}
+            </div>
+            <div class="pair">
+              <Mark id={c.id} size={28} />
+              <span class="wordmark">Tsholo Setati</span>
+            </div>
+          </div>
+
+          <div class="surface dark">
+            <p class="surface-label">Dark · paper</p>
+            <div class="sizes">
+              {sizes.map((s) => (
+                <div class="size-cell">
+                  <Mark id={c.id} size={s} />
+                  <span class="size-label">{s}px</span>
+                </div>
+              ))}
+            </div>
+            <div class="pair">
+              <Mark id={c.id} size={28} />
+              <span class="wordmark">Tsholo Setati</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    ))}
+
+    <p class="hint">
+      <code>/marks-preview</code> is unlisted (noindex, not in nav). Reply with the chosen concept id and I&rsquo;ll roll it out.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 3rem; line-height: 1.6; }
+  code { font-family: var(--font-mono); font-size: 0.88em; background: var(--color-surface-sunken); padding: 0.05em 0.35em; border-radius: var(--radius-xs); }
+
+  .block { margin: 0 0 3rem; padding: 0 0 3rem; border-bottom: 1px solid var(--color-border-subtle); }
+  .block:last-of-type { border-bottom: 0; }
+  .block-head { margin: 0 0 1.5rem; }
+  .block-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.4rem; }
+  .block h2 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 500; margin: 0 0 0.5rem; line-height: 1.2; }
+  .block-note { color: var(--color-ink-secondary); margin: 0; line-height: 1.55; max-width: 65ch; font-size: 0.95rem; }
+
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.25rem; }
+  .surface { padding: 1.5rem; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .surface.light { background: var(--color-surface-base); color: var(--color-ink-primary); }
+  .surface.dark { background: #0f172a; color: #fafafa; border-color: rgba(250,250,250,0.08); }
+  .surface-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.55; margin: 0 0 1.25rem; }
+
+  .sizes {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding: 0 0 1.25rem;
+    border-bottom: 1px dashed color-mix(in oklab, currentColor 18%, transparent);
+    margin-bottom: 1.25rem;
+  }
+  .size-cell { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .size-label { font-family: var(--font-mono); font-size: 0.66rem; opacity: 0.55; }
+
+  .pair { display: flex; align-items: center; gap: 0.7rem; }
+  .wordmark { font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; letter-spacing: -0.01em; }
+
+  .hint { margin-top: 3rem; color: var(--color-ink-tertiary); font-size: 0.9rem; }
+</style>

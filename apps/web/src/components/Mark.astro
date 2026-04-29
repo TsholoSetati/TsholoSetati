@@ -1,0 +1,104 @@
+---
+/**
+ * Site mark — inline SVG, monochrome, themed via currentColor.
+ * Concepts (id):
+ *   prism      — refracting prism, single beam → three
+ *   monogram   — geometric T·S
+ *   inflection — S-curve with dot at the inflection point
+ *   aperture   — three overlapping arcs (soft eye)
+ */
+
+interface Props {
+  id: 'prism' | 'monogram' | 'inflection' | 'aperture';
+  size?: number;
+  title?: string;
+  class?: string;
+}
+
+const { id, size = 28, title = 'Tsholo Setati', class: cls = '' } = Astro.props;
+const sw = size <= 16 ? 1.6 : size <= 28 ? 1.5 : 1.4;
+---
+
+{id === 'prism' && (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    role="img"
+    aria-label={title}
+    class={cls}
+    style="display:inline-block;vertical-align:middle"
+  >
+    {/* incoming ray */}
+    <line x1="1.5" y1="12" x2="7.5" y2="12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* prism: equilateral triangle, apex right */}
+    <path d="M7.5 4.5 L7.5 19.5 L20 12 Z" stroke="currentColor" stroke-width={sw} stroke-linejoin="round" fill="none" />
+    {/* three refracted beams (top fans up, mid horizontal, bottom fans down) */}
+    <line x1="20" y1="12" x2="22.8" y2="7.2" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="20" y1="12" x2="22.8" y2="12" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="20" y1="12" x2="22.8" y2="16.8" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'monogram' && (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    role="img"
+    aria-label={title}
+    class={cls}
+    style="display:inline-block;vertical-align:middle"
+  >
+    {/* T: horizontal crossbar + vertical stem */}
+    <line x1="3" y1="5" x2="21" y2="5" stroke="currentColor" stroke-width={sw * 1.1} stroke-linecap="round" />
+    <line x1="12" y1="5" x2="12" y2="21" stroke="currentColor" stroke-width={sw * 1.1} stroke-linecap="round" />
+    {/* S: nested arc reading top-right to bottom-left of stem */}
+    <path d="M19 9 C 16 9, 14 11, 14 13 C 14 15, 16 17, 19 17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+  </svg>
+)}
+
+{id === 'inflection' && (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    role="img"
+    aria-label={title}
+    class={cls}
+    style="display:inline-block;vertical-align:middle"
+  >
+    {/* baseline axis (faint) */}
+    <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="0.8" opacity="0.25" stroke-linecap="round" />
+    {/* S-curve crossing axis at midpoint (12,12) */}
+    <path d="M3 19 C 7 19, 9 12, 12 12 C 15 12, 17 5, 21 5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* inflection dot */}
+    <circle cx="12" cy="12" r={sw * 1.4} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'aperture' && (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    role="img"
+    aria-label={title}
+    class={cls}
+    style="display:inline-block;vertical-align:middle"
+  >
+    {/* Three arcs, 60° apart, forming a soft hexagonal aperture */}
+    <g stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none">
+      <path d="M6 8 A 8 8 0 0 1 18 8" />
+      <path d="M18 8 A 8 8 0 0 1 18 16" />
+      <path d="M18 16 A 8 8 0 0 1 6 16" />
+      <path d="M6 16 A 8 8 0 0 1 6 8" />
+    </g>
+    {/* small focal dot */}
+    <circle cx="12" cy="12" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
