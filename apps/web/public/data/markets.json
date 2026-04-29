@@ -1,5 +1,5 @@
 {
-  "updated": "2026-04-29T09:07:43.721Z",
+  "updated": "2026-04-29T11:26:32.390Z",
   "source": "yahoo+stooq",
   "quotes": [
     {
@@ -19,29 +19,29 @@
     {
       "symbol": "J203",
       "label": "JSE Top 40",
-      "price": 113942.01,
-      "changePct": -3.49,
+      "price": 114209.57,
+      "changePct": -3.27,
       "source": "yahoo"
     },
     {
       "symbol": "USDZAR",
       "label": "USD/ZAR",
-      "price": 16.5938,
-      "changePct": 0.8,
+      "price": 16.5783,
+      "changePct": 0.7,
       "source": "yahoo"
     },
     {
       "symbol": "CL",
       "label": "WTI Crude",
-      "price": 103.6,
-      "changePct": 9.75,
+      "price": 103.25,
+      "changePct": 9.37,
       "source": "yahoo"
     },
     {
       "symbol": "HG",
       "label": "Copper",
-      "price": 5.99,
-      "changePct": -0.55,
+      "price": 5.98,
+      "changePct": -0.71,
       "source": "yahoo"
     },
     {
@@ -117,36 +117,36 @@
     {
       "symbol": "NPN",
       "label": "Naspers",
-      "price": 88900,
-      "changePct": -3.86,
+      "price": 88588,
+      "changePct": -4.2,
       "source": "yahoo"
     },
     {
       "symbol": "BHP",
       "label": "BHP",
-      "price": 65102,
-      "changePct": -0.83,
+      "price": 65369,
+      "changePct": -0.43,
       "source": "yahoo"
     },
     {
       "symbol": "SHP",
       "label": "Shoprite",
-      "price": 28042,
-      "changePct": -2.77,
+      "price": 28115,
+      "changePct": -2.52,
       "source": "yahoo"
     },
     {
       "symbol": "MTN",
       "label": "MTN",
-      "price": 20389,
-      "changePct": 1.01,
+      "price": 20674,
+      "changePct": 2.42,
       "source": "yahoo"
     },
     {
       "symbol": "CPI",
       "label": "Capitec",
-      "price": 448435,
-      "changePct": 1.83,
+      "price": 449298,
+      "changePct": 2.02,
       "source": "yahoo"
     }
   ]
