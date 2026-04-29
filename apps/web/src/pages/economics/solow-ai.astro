@@ -77,6 +77,18 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
         <li>The model is illustrative. Use it to shape an argument, not to size a budget.</li>
       </ul>
     </section>
+
+    <aside class="frame" data-reveal>
+      <p class="frame-eyebrow">Framing · Solow on what's missing</p>
+      <p>
+        Solow established that the <em>majority</em> of long-run growth comes from technology, not from
+        saving more or working harder. That single result is the intellectual foundation under every
+        "AI productivity" board paper ever written. Its limitation is also its lesson: by treating
+        innovation as exogenous, Solow tells you that it matters but not how to produce it — and is
+        largely silent on whether the gains accrue to workers or to capital owners. South Africa's
+        post-2000 productivity story is the warning: capital deepened, output grew, the labour share fell.
+      </p>
+    </aside>
   </section>
 </BaseLayout>
 
@@ -164,6 +176,11 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
   .prose ul { padding-left: 1.25rem; }
   .prose strong { color: var(--color-ink-primary); }
   .prose em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
+
+  .frame { margin-top: 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); }
+  .frame-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.6rem; }
+  .frame p:not(.frame-eyebrow) { margin: 0; line-height: 1.7; color: var(--color-ink-secondary); }
+  .frame em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
 </style>
 
 <script>

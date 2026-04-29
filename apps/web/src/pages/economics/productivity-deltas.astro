@@ -129,6 +129,17 @@ const max = Math.max(...studies.map((s) => s.uplift));
       </p>
     </section>
 
+    <aside class="frame" data-reveal>
+      <p class="frame-eyebrow">Framing · Acemoglu &amp; Restrepo</p>
+      <p>
+        Treat labour as a bundle of <em>tasks</em>, not a single factor. The headline uplift number hides
+        the real question: which tasks are being displaced, which complemented, and which entirely new
+        tasks the technology creates. The studies on this page measure the displacement and complement
+        effects. None of them measure reinstatement. The long-run labour share depends on the third number,
+        which nobody has yet.
+      </p>
+    </aside>
+
     <p class="back"><a href="/economics">← All models</a></p>
   </section>
 </BaseLayout>
@@ -199,4 +210,7 @@ const max = Math.max(...studies.map((s) => s.uplift));
 
   .back { margin-top: 2rem; }
   .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+  .frame { margin-top: 1.25rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); }
+  .frame-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.6rem; }
+  .frame p:not(.frame-eyebrow) { margin: 0; line-height: 1.7; color: var(--color-ink-secondary); }
 </style>

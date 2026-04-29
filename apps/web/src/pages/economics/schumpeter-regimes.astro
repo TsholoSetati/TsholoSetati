@@ -1,0 +1,158 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Schumpeter Mark I (entrepreneurial outsiders) vs Mark II (corporate R&D labs).
+// 2x2 quadrant: capital intensity (x) × disruptor permeability (y).
+
+interface Sector {
+  id: string; label: string; cap: number; perm: number; tag: string;
+}
+
+const sectors: Sector[] = [
+  { id: 'frontier-ai', label: 'Frontier AI',         cap: 92, perm: 18, tag: 'mk II' },
+  { id: 'pharma',      label: 'Pharma',              cap: 88, perm: 12, tag: 'mk II' },
+  { id: 'semis',       label: 'Semiconductors',      cap: 95, perm: 8,  tag: 'mk II' },
+  { id: 'aero',        label: 'Aerospace',           cap: 84, perm: 14, tag: 'mk II' },
+  { id: 'sa-fintech',  label: 'SA fintech',          cap: 22, perm: 78, tag: 'mk I' },
+  { id: 'saas',        label: 'SaaS',                cap: 28, perm: 82, tag: 'mk I' },
+  { id: 'consumer',    label: 'Consumer apps',       cap: 18, perm: 88, tag: 'mk I' },
+  { id: 'mea-bpo',     label: 'MEA BPO',             cap: 36, perm: 62, tag: 'mk I' },
+  { id: 'mea-hw',      label: 'MEA hardware',        cap: 64, perm: 32, tag: 'mixed' },
+  { id: 'utilities',   label: 'Utilities',           cap: 78, perm: 18, tag: 'mk II' },
+];
+
+const W = 880, H = 540;
+const M = { top: 30, right: 50, bottom: 60, left: 70 };
+const innerW = W - M.left - M.right;
+const innerH = H - M.top - M.bottom;
+const sx = (v: number) => M.left + (v / 100) * innerW;
+const sy = (v: number) => M.top + innerH - (v / 100) * innerH;
+---
+
+<BaseLayout
+  seo={{
+    title: 'Schumpeter regimes · Innovation Economics',
+    description: 'Mark I vs Mark II innovation regimes plotted across sectors. Mistaking the regime is a category error.',
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>Schumpeter regimes</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics · Quadrant</p>
+      <h1>Schumpeter Mark I and Mark II.</h1>
+      <p class="lead">
+        The young Schumpeter saw innovation as the work of entrepreneurial outsiders disrupting established
+        markets. The older Schumpeter saw it as the systematised output of large corporate R&D laboratories.
+        Both are right, in different sectors and different decades. Mistaking the regime is a category
+        error. Pharmaceuticals, semiconductors and frontier AI are Mark II. SaaS, fintech and consumer apps
+        are Mark I. South African fintech is mostly Mark I. Frontier-model AI is Mark II globally and, for
+        now, almost entirely outside Africa.
+      </p>
+    </header>
+
+    <figure class="chart" data-reveal>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Sectors plotted on capital intensity vs disruptor permeability">
+        <g class="grid">
+          {[0, 25, 50, 75, 100].map((t) => (
+            <>
+              <line x1={sx(t)} y1={M.top} x2={sx(t)} y2={M.top + innerH} />
+              <line x1={M.left} y1={sy(t)} x2={M.left + innerW} y2={sy(t)} />
+            </>
+          ))}
+        </g>
+
+        {/* Quadrant labels */}
+        <text x={sx(25)} y={sy(85)} class="quad-lbl">Mark I · disruptor-led</text>
+        <text x={sx(75)} y={sy(85)} class="quad-lbl">Mixed regime</text>
+        <text x={sx(25)} y={sy(15)} class="quad-lbl">Stagnant / commoditised</text>
+        <text x={sx(75)} y={sy(15)} class="quad-lbl">Mark II · incumbent labs</text>
+
+        {/* Mid-axis dividers */}
+        <line class="midaxis" x1={sx(50)} y1={M.top} x2={sx(50)} y2={M.top + innerH} />
+        <line class="midaxis" x1={M.left} y1={sy(50)} x2={M.left + innerW} y2={sy(50)} />
+
+        {/* Axes */}
+        <line class="axis" x1={M.left} y1={M.top + innerH} x2={M.left + innerW} y2={M.top + innerH} />
+        <line class="axis" x1={M.left} y1={M.top} x2={M.left} y2={M.top + innerH} />
+
+        <text x={M.left + innerW / 2} y={H - 20} text-anchor="middle" class="ax-title">Capital intensity →</text>
+        <text x={-(M.top + innerH / 2)} y={20} text-anchor="middle" class="ax-title" transform="rotate(-90)">
+          Disruptor permeability →
+        </text>
+
+        {/* Sectors */}
+        <g class="dots">
+          {sectors.map((s, i) => (
+            <g class={`dot-group is-${s.tag.replace(' ', '-')}`} style={`--i:${i}`}>
+              <circle cx={sx(s.cap)} cy={sy(s.perm)} r={9} class="dot" />
+              <text x={sx(s.cap) + 14} y={sy(s.perm) + 4} class="dot-lbl">{s.label}</text>
+              <title>{`${s.label} — ${s.tag}, capital ${s.cap}, permeability ${s.perm}`}</title>
+            </g>
+          ))}
+        </g>
+      </svg>
+      <figcaption>Sectoral composites. Colour by regime: indigo = Mk I, amber = Mk II, slate = mixed.</figcaption>
+    </figure>
+
+    <section class="thesis" data-reveal>
+      <p class="kicker">The thesis</p>
+      <p>
+        Mark II regimes concentrate gains in capital and high-skill labour, with thin pathways for
+        outsiders to capture rents. Mark I regimes are more permeable but more volatile — the median
+        entrepreneur fails. The inequality consequences of an economy depend on the mix; an economy that
+        is Mark II at the frontier and informal at the base, with a thin Mark I middle, looks a lot like
+        South Africa.
+      </p>
+    </section>
+
+    <p class="back"><a href="/economics">← All models</a></p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll<SVGGElement>('.dot-group').forEach((g, i) => {
+      g.style.opacity = '0';
+      g.style.transition = 'opacity 320ms ease-out';
+      setTimeout(() => { g.style.opacity = '1'; }, 200 + i * 60);
+    });
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+
+  .chart { margin: 0 0 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .grid line { stroke: var(--color-border-subtle); stroke-width: 1; opacity: 0.5; }
+  .midaxis { stroke: var(--color-ink-tertiary); stroke-width: 1.4; stroke-dasharray: 4 4; opacity: 0.5; }
+  .axis { stroke: var(--color-ink-tertiary); stroke-width: 1.2; }
+  .ax-title { font-family: var(--font-mono); font-size: 12px; fill: var(--color-ink-secondary); letter-spacing: 0.06em; }
+  .quad-lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-tertiary); text-anchor: middle; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .dot { stroke: var(--color-surface-base); stroke-width: 2; }
+  .dot-lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-primary); }
+  .dot-group { transition: opacity 240ms ease-out; }
+  .is-mk-I .dot { fill: var(--color-accent); }
+  .is-mk-II .dot { fill: #f59e0b; }
+  .is-mixed .dot { fill: #94a3b8; }
+
+  figcaption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 1rem 0 0; letter-spacing: 0.04em; }
+
+  .thesis { margin-top: 2rem; padding: 1.75rem; background: var(--color-surface-sunken); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-ink-primary); border-radius: var(--radius-md); }
+  .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
+  .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+</style>

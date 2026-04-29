@@ -137,6 +137,20 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
         constraint. This is why "we are waiting for AI to get cheaper" is almost always the wrong question.
       </p>
     </section>
+
+    <aside class="frame" data-reveal>
+      <p class="frame-eyebrow">Framing · Rogers' adopter segments</p>
+      <p>
+        The S-curve hides five distinct populations underneath it: <strong>innovators (~2.5%)</strong>,
+        <strong>early adopters (~13.5%)</strong>, <strong>early majority (~34%)</strong>,
+        <strong>late majority (~34%)</strong>, <strong>laggards (~16%)</strong>. Most board mistakes
+        about AI adoption are timing mistakes — confusing the early-adopter phase with mass adoption
+        produces premature scaling; confusing the early majority with the laggards produces late entry.
+        And diffusion is uneven: each successive technology widens the gap between the populations that
+        adopted the previous one and those that did not. AI is the most consequential of those in a
+        generation.
+      </p>
+    </aside>
   </section>
 </BaseLayout>
 
@@ -175,6 +189,11 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
   .prose h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.6rem; margin: 0 0 1rem; }
   .prose p { color: var(--color-ink-secondary); line-height: 1.65; }
   .prose em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
+
+  .frame { margin-top: 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); }
+  .frame-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.6rem; }
+  .frame p:not(.frame-eyebrow) { margin: 0; line-height: 1.7; color: var(--color-ink-secondary); }
+  .frame strong { color: var(--color-ink-primary); }
 </style>
 
 <script>

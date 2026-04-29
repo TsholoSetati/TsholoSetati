@@ -1,0 +1,149 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Sen capability approach: AI deployments × capability dimensions, scored as expand / mixed / contract.
+
+interface Cell { v: 1 | 0 | -1; note?: string; }
+type Score = 1 | 0 | -1;
+
+const dimensions = [
+  { id: 'health',     label: 'Health' },
+  { id: 'education',  label: 'Education' },
+  { id: 'voice',      label: 'Voice' },
+  { id: 'livelihood', label: 'Livelihood' },
+  { id: 'security',   label: 'Security' },
+  { id: 'inclusion',  label: 'Inclusion' },
+];
+
+interface Deployment {
+  id: string; label: string; row: Score[];
+}
+
+const deployments: Deployment[] = [
+  { id: 'rural-dx',     label: 'Rural diagnostic AI',         row: [ 1,  0,  0,  1,  1,  1] },
+  { id: 'lang-agents',  label: 'Indigenous-language agents',  row: [ 0,  1,  1,  0,  0,  1] },
+  { id: 'bank-auto',    label: 'Banking automation',          row: [ 0,  0, -1,  0, -1, -1] },
+  { id: 'thin-credit',  label: 'Thin-file credit scoring',    row: [ 0,  0,  0,  1,  0,  1] },
+  { id: 'hr-screen',    label: 'AI hiring screening',         row: [ 0,  0, -1, -1,  0, -1] },
+  { id: 'tship-fin',    label: 'Township fintech AI',         row: [ 0,  0,  0,  1,  0,  1] },
+  { id: 'school-tutor', label: 'School-tier tutor AI',        row: [ 0,  1,  0,  0,  0,  1] },
+  { id: 'predict-pol',  label: 'Predictive policing',         row: [ 0,  0, -1,  0, -1, -1] },
+  { id: 'ag-yield',     label: 'Smallholder yield AI',        row: [ 1,  1,  0,  1,  1,  1] },
+  { id: 'gen-content',  label: 'Generative content tooling',  row: [ 0,  0,  1,  0,  0,  0] },
+];
+
+function symbol(v: Score) { return v === 1 ? '+' : v === -1 ? '−' : '·'; }
+function tone(v: Score) { return v === 1 ? 'pos' : v === -1 ? 'neg' : 'neu'; }
+---
+
+<BaseLayout
+  seo={{
+    title: 'Capability matrix · Innovation Economics',
+    description: "Sen's capability approach applied to ten AI deployments across six capability dimensions.",
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>Capability matrix</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics · Heatmap</p>
+      <h1>Sen's capability matrix.</h1>
+      <p class="lead">
+        Amartya Sen reframed poverty and development as a question of <em>substantive freedoms</em> — what
+        people are actually able to do and to be — rather than income or utility. The capability frame
+        asks a different question of any AI deployment: what does this expand the capability to do, and
+        for whom? An AI tool that automates a banking process may expand the capability of the bank's
+        customers (faster service, thin-file access) or contract it (foreclosed services for those the
+        model excludes). Same tool, different outcomes by design and deployment.
+      </p>
+    </header>
+
+    <figure class="matrix-wrap" data-reveal>
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th class="row-head">Deployment</th>
+            {dimensions.map((d) => (<th>{d.label}</th>))}
+          </tr>
+        </thead>
+        <tbody>
+          {deployments.map((d, i) => (
+            <tr style={`--i:${i}`}>
+              <th class="row-head">{d.label}</th>
+              {d.row.map((v, j) => (
+                <td class={`cell tone-${tone(v)}`} data-tone={tone(v)} aria-label={`${d.label} × ${dimensions[j].label}: ${tone(v)}`}>
+                  <span class="sym">{symbol(v)}</span>
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <figcaption>
+        Hand-rated. <span class="lg-pos">+ expands capability</span> · <span class="lg-neu">· neutral or mixed</span> · <span class="lg-neg">− contracts capability</span>.
+        These ratings are debatable and that is the point — every cell is a design choice, not a feature decision.
+      </figcaption>
+    </figure>
+
+    <section class="thesis" data-reveal>
+      <p class="kicker">The thesis</p>
+      <p>
+        The capability lens highlights that innovation can reduce income poverty while leaving capability
+        poverty unchanged — or even expanding it, if the technology degrades the capabilities of
+        marginalised groups. Indigenous-language coverage in AI agents is a capability question, not a
+        feature question. Access to AI-assisted healthcare in rural areas is a capability question, not an
+        infrastructure question. For an MEA-headquartered enterprise, Sen's frame is the most useful
+        single lens for distinguishing AI deployments that genuinely serve from those that merely sell.
+      </p>
+    </section>
+
+    <p class="back"><a href="/economics">← All models</a></p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll<HTMLTableRowElement>('tbody tr').forEach((r, i) => {
+      r.style.opacity = '0';
+      r.style.transition = 'opacity 280ms ease-out';
+      setTimeout(() => { r.style.opacity = '1'; }, 200 + i * 80);
+    });
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .lead em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
+
+  .matrix-wrap { margin: 0 0 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); overflow-x: auto; }
+  .matrix { width: 100%; border-collapse: separate; border-spacing: 4px; font-family: var(--font-mono); font-size: 0.85rem; }
+  .matrix thead th { text-align: center; padding: 0.5rem 0.75rem; color: var(--color-ink-tertiary); font-weight: 500; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .row-head { text-align: left !important; padding-right: 1rem; color: var(--color-ink-primary); font-weight: 500; white-space: nowrap; }
+  .cell { width: 56px; height: 44px; text-align: center; border-radius: var(--radius-sm); transition: all var(--duration-fast) var(--ease-out-quad); }
+  .cell .sym { display: block; font-family: var(--font-display); font-size: 1.4rem; line-height: 1; }
+  .tone-pos { background: rgba(22, 163, 74, 0.18); color: #16a34a; }
+  .tone-neg { background: rgba(220, 38, 38, 0.18); color: #dc2626; }
+  .tone-neu { background: rgba(148, 163, 184, 0.10); color: var(--color-ink-tertiary); }
+  .cell:hover { transform: scale(1.06); }
+
+  figcaption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 1rem 0 0; letter-spacing: 0.04em; line-height: 1.6; }
+  .lg-pos { color: #16a34a; }
+  .lg-neg { color: #dc2626; }
+  .lg-neu { color: var(--color-ink-secondary); }
+
+  .thesis { margin-top: 2rem; padding: 1.75rem; background: var(--color-surface-sunken); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-ink-primary); border-radius: var(--radius-md); }
+  .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
+  .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+</style>

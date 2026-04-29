@@ -219,6 +219,17 @@ const fmtUsd = (m: number) =>
       </article>
     </section>
 
+    <aside class="frame" data-reveal>
+      <p class="frame-eyebrow">Framing · Piketty (r &gt; g)</p>
+      <p>
+        AI is a near-perfect r &gt; g technology. The fixed cost of producing a frontier model is enormous;
+        the marginal cost of inference is near zero; the returns to scale are substantial; the compounding
+        advantage of data and infrastructure access is large. The ribbon weights on this chart are not a
+        market failure — they are the equilibrium that the underlying economics produce. Wealth
+        concentration is the prediction, not the surprise.
+      </p>
+    </aside>
+
     <p class="back"><a href="/economics">← All models</a></p>
   </section>
 </BaseLayout>
@@ -270,6 +281,10 @@ const fmtUsd = (m: number) =>
 
   .back { margin-top: 2rem; }
   .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+
+  .frame { margin: 0 0 2.5rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); }
+  .frame-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.6rem; }
+  .frame p:not(.frame-eyebrow) { margin: 0; line-height: 1.7; color: var(--color-ink-secondary); }
 
   @media (max-width: 720px) {
     .lbl { font-size: 9px; }

@@ -1,0 +1,214 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// GPT J-curve: productivity index vs years since introduction.
+// Three GPTs overlaid on the same time axis (years from t=0): electricity, IT/internet, AI.
+// Stylised; the shape of the J is the point.
+
+const W = 920, H = 540;
+const M = { top: 30, right: 60, bottom: 60, left: 70 };
+const innerW = W - M.left - M.right;
+const innerH = H - M.top - M.bottom;
+
+const xMin = 0, xMax = 50;            // years since introduction
+const yMin = 90, yMax = 200;          // productivity index, baseline = 100 at t=0
+const sx = (v: number) => M.left + ((v - xMin) / (xMax - xMin)) * innerW;
+const sy = (v: number) => M.top + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+
+interface Series {
+  id: string; label: string; color: string; intro: string;
+  // (yearsSinceIntro, productivityIndex)
+  pts: Array<[number, number]>;
+  projectedFrom?: number; // years where the curve becomes dashed
+}
+
+const series: Series[] = [
+  {
+    id: 'electricity', label: 'Electricity', color: '#94a3b8', intro: '1890',
+    pts: [
+      [0, 100], [5, 99], [10, 100], [15, 102], [20, 106], [25, 114],
+      [30, 128], [35, 148], [40, 168], [45, 184], [50, 192],
+    ],
+  },
+  {
+    id: 'it', label: 'IT / internet', color: '#0ea5e9', intro: '1980',
+    pts: [
+      [0, 100], [5, 100], [10, 101], [15, 105], [20, 113], [25, 126],
+      [30, 142], [35, 158], [40, 170], [45, 178],
+    ],
+  },
+  {
+    id: 'ai', label: 'AI', color: '#f59e0b', intro: '2022',
+    pts: [
+      // observed-ish 0-4
+      [0, 100], [1, 100], [2, 101], [3, 103], [4, 106],
+      // projected fan beyond 4
+      [8, 118], [12, 138], [16, 162], [20, 184], [25, 196],
+    ],
+    projectedFrom: 4,
+  },
+];
+
+function pathFor(pts: Array<[number, number]>, upTo?: number) {
+  const filtered = upTo == null ? pts : pts.filter(([x]) => x <= upTo);
+  return filtered.map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${sx(x).toFixed(1)} ${sy(y).toFixed(1)}`).join(' ');
+}
+
+function pathFrom(pts: Array<[number, number]>, fromX: number) {
+  const filtered = pts.filter(([x]) => x >= fromX);
+  return filtered.map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${sx(x).toFixed(1)} ${sy(y).toFixed(1)}`).join(' ');
+}
+
+const xTicks = [0, 10, 20, 30, 40, 50];
+const yTicks = [100, 125, 150, 175, 200];
+---
+
+<BaseLayout
+  seo={{
+    title: 'GPT J-curve · Innovation Economics',
+    description: 'Productivity vs years since introduction for three general purpose technologies. The J shape is the point.',
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>GPT J-curve</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics · Historical overlay</p>
+      <h1>The GPT J-curve.</h1>
+      <p class="lead">
+        General purpose technologies — electricity, the semiconductor, the internet — diffuse across the
+        whole economy, generate complementary innovations, and reorganise production. The productivity
+        gains arrive <em>late</em>, after firms restructure around the technology. Plotted on a common
+        axis of years-since-introduction, all three GPTs trace the same J. AI is at year 4. The historical
+        pattern says the steep ramp begins after firms reorganise, not when the technology arrives.
+      </p>
+    </header>
+
+    <figure class="chart" data-reveal>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Productivity index vs years since introduction for electricity, IT, and AI">
+        <g class="grid">
+          {xTicks.map((t) => (<line x1={sx(t)} y1={M.top} x2={sx(t)} y2={M.top + innerH} />))}
+          {yTicks.map((t) => (<line x1={M.left} y1={sy(t)} x2={M.left + innerW} y2={sy(t)} />))}
+        </g>
+
+        {/* Baseline 100 emphasised */}
+        <line class="baseline" x1={M.left} y1={sy(100)} x2={M.left + innerW} y2={sy(100)} />
+
+        <line class="axis" x1={M.left} y1={M.top + innerH} x2={M.left + innerW} y2={M.top + innerH} />
+        <line class="axis" x1={M.left} y1={M.top} x2={M.left} y2={M.top + innerH} />
+
+        {xTicks.map((t) => (<text x={sx(t)} y={M.top + innerH + 18} text-anchor="middle" class="ax-lbl">{t}</text>))}
+        {yTicks.map((t) => (<text x={M.left - 10} y={sy(t) + 4} text-anchor="end" class="ax-lbl">{t}</text>))}
+        <text x={M.left + innerW / 2} y={H - 20} text-anchor="middle" class="ax-title">Years since introduction →</text>
+        <text x={-(M.top + innerH / 2)} y={20} text-anchor="middle" class="ax-title" transform="rotate(-90)">
+          Productivity index (t=0 → 100) →
+        </text>
+
+        {/* Curves */}
+        {series.map((s) => (
+          <g class="series" data-id={s.id}>
+            {s.projectedFrom == null ? (
+              <path class="line" d={pathFor(s.pts)} style={`stroke:${s.color}`} />
+            ) : (
+              <>
+                <path class="line" d={pathFor(s.pts, s.projectedFrom)} style={`stroke:${s.color}`} />
+                <path class="line line-projected" d={pathFrom(s.pts, s.projectedFrom)} style={`stroke:${s.color}`} />
+              </>
+            )}
+            {/* end-of-curve label */}
+            <text
+              x={sx(s.pts[s.pts.length - 1][0]) + 8}
+              y={sy(s.pts[s.pts.length - 1][1]) + 4}
+              class="end-lbl"
+              style={`fill:${s.color}`}
+            >
+              {s.label}
+            </text>
+          </g>
+        ))}
+
+        {/* "AI today" marker */}
+        <g class="now-marker">
+          <line x1={sx(4)} y1={M.top} x2={sx(4)} y2={M.top + innerH} />
+          <text x={sx(4) + 6} y={M.top + 14} class="now-lbl">AI today</text>
+        </g>
+      </svg>
+      <figcaption>
+        Stylised productivity indices (Bresnahan &amp; Trajtenberg framework). Solid lines = observed
+        regions; dashed = projection. The point is the shape of the J, not the basis points.
+      </figcaption>
+    </figure>
+
+    <section class="thesis" data-reveal>
+      <p class="kicker">The thesis</p>
+      <p>
+        Solow's famous quip — "you can see the computer age everywhere except in the productivity
+        statistics" — was published <strong>seven years before the IT productivity acceleration
+        actually arrived</strong>. The historical lesson is that the firms that capture GPT gains are
+        the ones that reorganise themselves around the technology, not the ones that simply buy it.
+        AI is a strategic and organisational question, not a procurement one.
+      </p>
+    </section>
+
+    <p class="back"><a href="/economics">← All models</a></p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll<SVGPathElement>('.line').forEach((p, i) => {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = p.classList.contains('line-projected') ? '4 6' : `${len}`;
+      if (!p.classList.contains('line-projected')) {
+        p.style.strokeDashoffset = `${len}`;
+        requestAnimationFrame(() => {
+          p.style.transition = 'stroke-dashoffset 1400ms cubic-bezier(0.22, 1, 0.36, 1)';
+          p.style.transitionDelay = `${i * 200}ms`;
+          p.style.strokeDashoffset = '0';
+        });
+      } else {
+        p.style.opacity = '0';
+        p.style.transition = 'opacity 600ms ease-out';
+        setTimeout(() => { p.style.opacity = '1'; }, 1500);
+      }
+    });
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .lead em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
+
+  .chart { margin: 0 0 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .grid line { stroke: var(--color-border-subtle); stroke-width: 1; opacity: 0.5; }
+  .baseline { stroke: var(--color-ink-tertiary); stroke-width: 1; stroke-dasharray: 2 4; opacity: 0.6; }
+  .axis { stroke: var(--color-ink-tertiary); stroke-width: 1.2; }
+  .ax-lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-tertiary); }
+  .ax-title { font-family: var(--font-mono); font-size: 12px; fill: var(--color-ink-secondary); letter-spacing: 0.06em; }
+
+  .line { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .end-lbl { font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+
+  .now-marker line { stroke: #f59e0b; stroke-width: 1.4; stroke-dasharray: 3 3; opacity: 0.6; }
+  .now-lbl { font-family: var(--font-mono); font-size: 10px; fill: #f59e0b; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  figcaption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 1rem 0 0; letter-spacing: 0.04em; }
+
+  .thesis { margin-top: 2rem; padding: 1.75rem; background: var(--color-surface-sunken); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-ink-primary); border-radius: var(--radius-md); }
+  .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
+  .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
+  .thesis strong { color: var(--color-accent); }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+</style>

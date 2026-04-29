@@ -1,0 +1,242 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Piketty: r > g. Twin time series 2010–2030, real GDP growth (g) vs return on AI capital (r).
+// The shaded gap drives wealth concentration; bottom bar projects the cumulative gap.
+
+interface Pt { year: number; g: number; r: number; }
+
+// Stylised SA-relevant figures. r series = return on AI-frontier capital baskets (NASDAQ AI proxy + private).
+// g series = real global GDP growth.
+const data: Pt[] = [
+  { year: 2010, g: 4.5, r: 8.0 },
+  { year: 2011, g: 3.2, r: 4.0 },
+  { year: 2012, g: 2.5, r: 11.0 },
+  { year: 2013, g: 2.7, r: 18.0 },
+  { year: 2014, g: 2.9, r: 12.0 },
+  { year: 2015, g: 3.0, r: 9.0 },
+  { year: 2016, g: 2.6, r: 14.0 },
+  { year: 2017, g: 3.3, r: 22.0 },
+  { year: 2018, g: 3.0, r: 6.0 },
+  { year: 2019, g: 2.6, r: 24.0 },
+  { year: 2020, g: -3.1, r: 28.0 },
+  { year: 2021, g: 6.0, r: 32.0 },
+  { year: 2022, g: 3.0, r: -8.0 },
+  { year: 2023, g: 2.6, r: 41.0 },
+  { year: 2024, g: 2.8, r: 36.0 },
+  { year: 2025, g: 2.9, r: 28.0 },
+  { year: 2026, g: 2.7, r: 24.0, },
+  // Projection
+  { year: 2027, g: 2.6, r: 22.0 },
+  { year: 2028, g: 2.5, r: 20.0 },
+  { year: 2029, g: 2.5, r: 19.0 },
+  { year: 2030, g: 2.4, r: 18.0 },
+];
+
+const projectFrom = 2027;
+
+const W = 920, H = 540;
+const M = { top: 30, right: 60, bottom: 90, left: 70 };
+const innerW = W - M.left - M.right;
+const innerH = H - M.top - M.bottom;
+
+const xMin = 2010, xMax = 2030;
+const yMin = -10, yMax = 45;
+const sx = (v: number) => M.left + ((v - xMin) / (xMax - xMin)) * innerW;
+const sy = (v: number) => M.top + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+
+function pathFor(key: 'g' | 'r', upTo?: number) {
+  const filtered = upTo == null ? data : data.filter(d => d.year <= upTo);
+  return filtered.map((d, i) => `${i === 0 ? 'M' : 'L'} ${sx(d.year).toFixed(1)} ${sy(d[key]).toFixed(1)}`).join(' ');
+}
+
+function pathFrom(key: 'g' | 'r', fromYear: number) {
+  const filtered = data.filter(d => d.year >= fromYear);
+  return filtered.map((d, i) => `${i === 0 ? 'M' : 'L'} ${sx(d.year).toFixed(1)} ${sy(d[key]).toFixed(1)}`).join(' ');
+}
+
+// Gap area: between r and g (when r > g)
+const gapArea = (() => {
+  const top = data.map(d => `${sx(d.year).toFixed(1)},${sy(Math.max(d.r, d.g)).toFixed(1)}`).join(' L ');
+  const bottom = [...data].reverse().map(d => `${sx(d.year).toFixed(1)},${sy(Math.min(d.r, d.g)).toFixed(1)}`).join(' L ');
+  return `M ${top} L ${bottom} Z`;
+})();
+
+const xTicks = [2010, 2014, 2018, 2022, 2026, 2030];
+const yTicks = [-10, 0, 10, 20, 30, 40];
+
+// Cumulative gap (sum of r - g where positive) — drives bottom bar
+const cumGap = data.reduce((acc, d) => acc + Math.max(0, d.r - d.g), 0);
+---
+
+<BaseLayout
+  seo={{
+    title: 'r vs g · Innovation Economics',
+    description: "Piketty's r > g applied to AI capital. The gap is the wealth concentration mechanism.",
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>r vs g</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics · Twin time series</p>
+      <h1>r &gt; g, applied to AI capital.</h1>
+      <p class="lead">
+        Piketty's central empirical claim: when the rate of return on capital (<em>r</em>) exceeds the rate
+        of growth (<em>g</em>), wealth concentrates. AI is a near-perfect r &gt; g technology — fixed costs
+        are enormous, marginal cost of inference is near zero, returns to scale are substantial, the
+        compounding advantage of data and infrastructure access is large. Plotted: real global GDP growth
+        against the return on a frontier-AI capital basket. The shaded gap is the concentration mechanism.
+      </p>
+    </header>
+
+    <figure class="chart" data-reveal>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Real GDP growth versus return on AI capital, 2010-2030">
+        <g class="grid">
+          {xTicks.map((t) => (<line x1={sx(t)} y1={M.top} x2={sx(t)} y2={M.top + innerH} />))}
+          {yTicks.map((t) => (<line x1={M.left} y1={sy(t)} x2={M.left + innerW} y2={sy(t)} />))}
+        </g>
+
+        {/* Zero baseline emphasised */}
+        <line class="baseline" x1={M.left} y1={sy(0)} x2={M.left + innerW} y2={sy(0)} />
+
+        {/* Gap fill */}
+        <path d={gapArea} class="gap" />
+
+        <line class="axis" x1={M.left} y1={M.top + innerH} x2={M.left + innerW} y2={M.top + innerH} />
+        <line class="axis" x1={M.left} y1={M.top} x2={M.left} y2={M.top + innerH} />
+
+        {xTicks.map((t) => (<text x={sx(t)} y={M.top + innerH + 18} text-anchor="middle" class="ax-lbl">{t}</text>))}
+        {yTicks.map((t) => (<text x={M.left - 10} y={sy(t) + 4} text-anchor="end" class="ax-lbl">{t}%</text>))}
+        <text x={M.left + innerW / 2} y={H - 50} text-anchor="middle" class="ax-title">Year →</text>
+        <text x={-(M.top + innerH / 2)} y={20} text-anchor="middle" class="ax-title" transform="rotate(-90)">
+          Annual return / growth (%)
+        </text>
+
+        {/* g line - solid then dashed projection */}
+        <path class="line line-g" d={pathFor('g', projectFrom - 1)} />
+        <path class="line line-g line-projected" d={pathFrom('g', projectFrom - 1)} />
+
+        {/* r line */}
+        <path class="line line-r" d={pathFor('r', projectFrom - 1)} />
+        <path class="line line-r line-projected" d={pathFrom('r', projectFrom - 1)} />
+
+        {/* Projection divider */}
+        <line class="proj-div" x1={sx(projectFrom - 0.5)} y1={M.top} x2={sx(projectFrom - 0.5)} y2={M.top + innerH} />
+        <text x={sx(projectFrom - 0.5) + 6} y={M.top + 14} class="proj-lbl">projection</text>
+
+        {/* End labels */}
+        <text x={sx(2030) + 8} y={sy(data[data.length - 1].r) + 4} class="end-lbl end-r">r · AI capital</text>
+        <text x={sx(2030) + 8} y={sy(data[data.length - 1].g) + 4} class="end-lbl end-g">g · global GDP</text>
+      </svg>
+      <figcaption>
+        Stylised. r is a frontier-AI capital basket (Mag-7 + named private comparators); g is IMF WEO real
+        global GDP growth. Where r &gt; g, wealth concentrates, holding savings rates and tax regimes constant.
+      </figcaption>
+    </figure>
+
+    <section class="readout" data-reveal>
+      <article class="kpi">
+        <p class="kicker">Cumulative r − g, 2010–2030</p>
+        <p class="big">+{cumGap.toFixed(0)} pp</p>
+        <p class="muted">Sum of annual gaps where r exceeds g. The wealth-concentration premium for AI capital, against the broad economy.</p>
+      </article>
+      <article class="kpi">
+        <p class="kicker">Years where r &gt; g</p>
+        <p class="big">{data.filter(d => d.r > d.g).length} / {data.length}</p>
+        <p class="muted">In this 21-year window, AI capital out-earned broad GDP growth in nearly every year.</p>
+      </article>
+    </section>
+
+    <section class="thesis" data-reveal>
+      <p class="kicker">The thesis</p>
+      <p>
+        Wealth concentration is the inequality dimension that the growth-rate-focused models systematically
+        miss. Piketty's data show that even in periods of strong productivity growth, capital concentration
+        can rise if r continues to exceed g. The institutional response is well known — progressive wealth
+        and inheritance taxation, antitrust, broad ownership models — but it requires deliberate choices
+        that most jurisdictions, including South Africa, have not yet made.
+      </p>
+    </section>
+
+    <p class="back"><a href="/economics">← All models</a></p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll<SVGPathElement>('.line').forEach((p, i) => {
+      if (p.classList.contains('line-projected')) {
+        p.style.opacity = '0';
+        p.style.transition = 'opacity 600ms ease-out';
+        setTimeout(() => { p.style.opacity = '1'; }, 1500);
+        return;
+      }
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = `${len}`;
+      p.style.strokeDashoffset = `${len}`;
+      requestAnimationFrame(() => {
+        p.style.transition = 'stroke-dashoffset 1400ms cubic-bezier(0.22, 1, 0.36, 1)';
+        p.style.transitionDelay = `${i * 200}ms`;
+        p.style.strokeDashoffset = '0';
+      });
+    });
+    const gap = document.querySelector<SVGPathElement>('.gap');
+    if (gap) {
+      gap.style.opacity = '0';
+      gap.style.transition = 'opacity 800ms ease-out';
+      setTimeout(() => { gap.style.opacity = '0.18'; }, 1800);
+    }
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .lead em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
+
+  .chart { margin: 0 0 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .grid line { stroke: var(--color-border-subtle); stroke-width: 1; opacity: 0.5; }
+  .baseline { stroke: var(--color-ink-tertiary); stroke-width: 1; opacity: 0.6; }
+  .axis { stroke: var(--color-ink-tertiary); stroke-width: 1.2; }
+  .ax-lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-tertiary); }
+  .ax-title { font-family: var(--font-mono); font-size: 12px; fill: var(--color-ink-secondary); letter-spacing: 0.06em; }
+
+  .gap { fill: #f59e0b; opacity: 0.18; }
+
+  .line { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .line-g { stroke: var(--color-ink-secondary); }
+  .line-r { stroke: #f59e0b; }
+  .line-projected { stroke-dasharray: 4 6; }
+
+  .proj-div { stroke: var(--color-ink-tertiary); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.5; }
+  .proj-lbl { font-family: var(--font-mono); font-size: 10px; fill: var(--color-ink-tertiary); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .end-lbl { font-family: var(--font-mono); font-size: 11px; font-weight: 600; }
+  .end-r { fill: #f59e0b; }
+  .end-g { fill: var(--color-ink-secondary); }
+
+  figcaption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 1rem 0 0; letter-spacing: 0.04em; }
+
+  .readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .kpi { padding: 1.25rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .kicker { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.4rem; }
+  .big { font-family: var(--font-display); font-size: 1.8rem; margin: 0 0 0.4rem; color: var(--color-ink-primary); }
+  .muted { color: var(--color-ink-secondary); margin: 0; font-size: 0.9rem; line-height: 1.5; }
+
+  .thesis { margin-top: 1rem; padding: 1.75rem; background: var(--color-surface-sunken); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-ink-primary); border-radius: var(--radius-md); }
+  .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
+  .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+</style>

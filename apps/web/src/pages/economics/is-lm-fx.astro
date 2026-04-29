@@ -140,6 +140,19 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
         <li>Capital mobility is high but not perfect: BP is drawn downward-sloping (not flat) to reflect the SA risk premium.</li>
       </ul>
     </section>
+
+    <aside class="frame" data-reveal>
+      <p class="frame-eyebrow">Framing · Mundell–Fleming impossible trinity</p>
+      <p>
+        A small open economy can pick any two of: a fixed exchange rate, free capital mobility, and
+        independent monetary policy. South Africa runs the third corner — floating rand, mostly free
+        capital, inflation-targeting SARB — and the rand absorbs the shocks. Frontier AI tooling is
+        priced in dollars; cloud GPU spend, frontier-model APIs, and most enterprise AI software bill in
+        USD. <strong>Every SA enterprise AI strategy is implicitly a position on the rand.</strong> The
+        cost that is a footnote for a JSE-listed corporate is a structural barrier for a township-based
+        fintech — same model, different exposure.
+      </p>
+    </aside>
   </section>
 </BaseLayout>
 
@@ -218,6 +231,11 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
   .prose strong { color: var(--color-ink-primary); }
   .prose em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
   .prose ul { padding-left: 1.25rem; }
+
+  .frame { margin-top: 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); }
+  .frame-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.6rem; }
+  .frame p:not(.frame-eyebrow) { margin: 0; line-height: 1.7; color: var(--color-ink-secondary); }
+  .frame strong { color: var(--color-ink-primary); }
 </style>
 
 <script>

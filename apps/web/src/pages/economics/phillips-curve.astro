@@ -11,21 +11,37 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 // Synthesised composite scores from OECD AI Policy Observatory, Stanford AI Index 2025, and BCG
 // Build for the Future. Direction-of-travel claims, not precise estimates.
 
+type Kind = 'country' | 'region';
 interface Point {
   id: string; label: string; gov: number; vel: number;
+  kind: Kind; accent?: boolean; dx?: number; dy?: number;
 }
 
 const points: Point[] = [
-  { id: 'us',   label: 'United States', gov: 32, vel: 78 },
-  { id: 'cn',   label: 'China',         gov: 58, vel: 86 },
-  { id: 'eu',   label: 'EU (avg)',      gov: 78, vel: 41 },
-  { id: 'uk',   label: 'United Kingdom',gov: 48, vel: 62 },
-  { id: 'sg',   label: 'Singapore',     gov: 38, vel: 71 },
-  { id: 'au',   label: 'Australia',     gov: 52, vel: 49 },
-  { id: 'br',   label: 'Brazil',        gov: 64, vel: 28 },
-  { id: 'in',   label: 'India',         gov: 26, vel: 64 },
-  { id: 'jp',   label: 'Japan',         gov: 56, vel: 45 },
-  { id: 'za',   label: 'South Africa',  gov: 22, vel: 18 },
+  // Country composites (gov 0-100, vel 0-100). Hand-tuned from OECD AIPO + Stanford AI Index 2025.
+  { id: 'us',   label: 'United States', gov: 32, vel: 78, kind: 'country' },
+  { id: 'cn',   label: 'China',         gov: 58, vel: 86, kind: 'country' },
+  { id: 'eu',   label: 'EU (avg)',      gov: 78, vel: 41, kind: 'country' },
+  { id: 'uk',   label: 'United Kingdom',gov: 48, vel: 62, kind: 'country' },
+  { id: 'sg',   label: 'Singapore',     gov: 38, vel: 71, kind: 'country' },
+  { id: 'au',   label: 'Australia',     gov: 52, vel: 49, kind: 'country' },
+  { id: 'br',   label: 'Brazil',        gov: 64, vel: 28, kind: 'country' },
+  { id: 'in',   label: 'India',         gov: 26, vel: 64, kind: 'country' },
+  { id: 'jp',   label: 'Japan',         gov: 56, vel: 45, kind: 'country' },
+  // African countries — direction-of-travel composites.
+  { id: 'ng',   label: 'Nigeria',       gov: 24, vel: 32, kind: 'country', dx: 8, dy: -2 },
+  { id: 'ke',   label: 'Kenya',         gov: 30, vel: 38, kind: 'country' },
+  { id: 'eg',   label: 'Egypt',         gov: 42, vel: 36, kind: 'country' },
+  { id: 'ma',   label: 'Morocco',       gov: 36, vel: 30, kind: 'country', dy: 12 },
+  { id: 'rw',   label: 'Rwanda',        gov: 34, vel: 34, kind: 'country', dx: 8, dy: 14 },
+  { id: 'gh',   label: 'Ghana',         gov: 26, vel: 26, kind: 'country', dy: 14 },
+  // Home jurisdiction — accent
+  { id: 'za',   label: 'South Africa',  gov: 22, vel: 18, kind: 'country', accent: true },
+  // Regional weighted averages — drawn as hollow rings.
+  { id: 'avg-af', label: 'avg · Africa',         gov: 28, vel: 27, kind: 'region' },
+  { id: 'avg-as', label: 'avg · Asia',           gov: 42, vel: 64, kind: 'region' },
+  { id: 'avg-na', label: 'avg · North America',  gov: 33, vel: 76, kind: 'region', dy: -10 },
+  { id: 'avg-sa', label: 'avg · South America',  gov: 60, vel: 26, kind: 'region', dy: 14 },
 ];
 
 // Layout
@@ -134,29 +150,34 @@ const r = 10; // dot radius
 
         {/* Points */}
         <g class="dots">
-          {points.map((p, i) => (
-            <g
-              class="dot-group"
-              data-id={p.id}
-              style={`--i:${i}; --cx:${sx(p.gov)}; --cy:${sy(p.vel)}`}
-            >
-              <circle cx={sx(p.gov)} cy={sy(p.vel)} r={r + 2} class="dot-glow" filter="url(#dot-glow)" />
-              <circle cx={sx(p.gov)} cy={sy(p.vel)} r={r} class="dot" />
-              <text
-                x={sx(p.gov) + r + 6}
-                y={sy(p.vel) + 4}
-                class="dot-lbl"
-              >
-                {p.label}
-              </text>
-              <title>{`${p.label} — governance ${p.gov}, velocity ${p.vel}`}</title>
-            </g>
-          ))}
+          {points.map((p, i) => {
+            const cx = sx(p.gov);
+            const cy = sy(p.vel);
+            const lblX = cx + r + 6 + (p.dx ?? 0);
+            const lblY = cy + 4 + (p.dy ?? 0);
+            const cls = ['dot-group', `is-${p.kind}`, p.accent ? 'is-accent' : ''].filter(Boolean).join(' ');
+            return (
+              <g class={cls} data-id={p.id} style={`--i:${i}`}>
+                {p.kind === 'country' && (
+                  <circle cx={cx} cy={cy} r={r + 2} class="dot-glow" filter="url(#dot-glow)" />
+                )}
+                {p.kind === 'region' ? (
+                  <circle cx={cx} cy={cy} r={r + 3} class="ring" />
+                ) : (
+                  <circle cx={cx} cy={cy} r={r} class="dot" />
+                )}
+                <text x={lblX} y={lblY} class="dot-lbl">{p.label}</text>
+                <title>{`${p.label} — governance ${p.gov}, velocity ${p.vel}`}</title>
+              </g>
+            );
+          })}
         </g>
       </svg>
       <figcaption>
         Composite scores synthesised from OECD AI Policy Observatory, Stanford AI Index 2025 and BCG Build
-        for the Future. Direction-of-travel claims, not precise estimates.
+        for the Future. Sixteen country composites plus four weighted regional averages (hollow rings). The
+        South America average is thinly observed and weighted heavily on Brazil. Direction-of-travel claims,
+        not precise estimates.
       </figcaption>
     </figure>
 
@@ -170,6 +191,16 @@ const r = 10; // dot radius
         not "more governance" or "less governance" — it is moving every jurisdiction toward the inflection.
       </p>
     </section>
+
+    <aside class="frame" data-reveal>
+      <p class="frame-eyebrow">Framing · Acemoglu &amp; Robinson</p>
+      <p>
+        Frontier technology arriving in a country with extractive institutions does not produce frontier
+        outcomes. Capital, talent, and tools can all be present, and yet innovation diffuses unevenly
+        because the institutional substrate is wrong. South Africa sits below the African average on this
+        chart for institutional, not technical, reasons. The amber dot is the home jurisdiction reading.
+      </p>
+    </aside>
 
     <p class="back"><a href="/economics">← All models</a></p>
   </section>
@@ -219,9 +250,17 @@ const r = 10; // dot radius
 
   .dot { fill: var(--color-accent); stroke: var(--color-surface-base); stroke-width: 2; }
   .dot-glow { fill: var(--color-accent); opacity: 0.35; }
-  .dot-lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-primary); }
+  .ring { fill: none; stroke: var(--color-ink-primary); stroke-width: 2.2; opacity: 0.85; }
+  .dot-lbl { font-family: var(--font-mono); font-size: 10px; fill: var(--color-ink-primary); }
   .dot-group { transition: opacity 240ms ease-out; }
   .dot-group:hover .dot { fill: var(--color-ink-primary); }
+  .dot-group:hover .ring { stroke: var(--color-accent); }
+  /* Region rings: muted label + italic */
+  .dot-group.is-region .dot-lbl { fill: var(--color-ink-secondary); font-style: italic; }
+  /* South Africa accent — amber so it reads as the home jurisdiction */
+  .dot-group.is-accent .dot { fill: #f59e0b; stroke: var(--color-surface-base); stroke-width: 2.5; }
+  .dot-group.is-accent .dot-glow { fill: #f59e0b; opacity: 0.45; }
+  .dot-group.is-accent .dot-lbl { fill: #f59e0b; font-weight: 600; }
 
   figcaption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 1rem 0 0; letter-spacing: 0.04em; }
 
@@ -236,6 +275,10 @@ const r = 10; // dot radius
   .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
   .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
   .thesis strong { color: var(--color-accent); }
+
+  .frame { margin-top: 1.25rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); }
+  .frame-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.6rem; }
+  .frame p:not(.frame-eyebrow) { margin: 0; line-height: 1.7; color: var(--color-ink-secondary); }
 
   .back { margin-top: 2rem; }
   .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }

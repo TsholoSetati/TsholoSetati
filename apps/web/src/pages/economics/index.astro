@@ -1,50 +1,126 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 
-const models = [
+interface Model {
+  slug: string; eyebrow: string; title: string; description: string; primary?: boolean;
+}
+
+interface Family {
+  id: string; label: string; eyebrow: string; intro: string; models: Model[];
+}
+
+const families: Family[] = [
   {
-    slug: 'solow-ai',
-    eyebrow: 'INTERACTIVE · GROWTH MODEL',
-    title: 'Solow-AI',
-    description: 'A three-factor production function with AI as a distinct input alongside capital and labour. Move the sliders and watch the steady-state output trajectory respond in real time.',
-    primary: true,
+    id: 'foundations',
+    label: 'Macro growth foundations',
+    eyebrow: 'Family I',
+    intro: "The stage on which innovation operates. These models shape how boards think about productivity and long-run growth, even when no one names them.",
+    models: [
+      {
+        slug: 'solow-ai',
+        eyebrow: 'INTERACTIVE · GROWTH MODEL',
+        title: 'Solow-AI',
+        description: 'A three-factor production function with AI as a distinct input alongside capital and labour. Move the sliders and watch the steady-state output trajectory respond in real time.',
+        primary: true,
+      },
+    ],
   },
   {
-    slug: 'is-lm-fx',
-    eyebrow: 'INTERACTIVE · OPEN-ECONOMY MODEL',
-    title: 'IS-LM-FX for South Africa',
-    description: 'AI capex shifts the IS curve right. GPU import dependency drags the BP curve down. Find the new equilibrium for the rand, the repo rate, and output.',
-    primary: true,
+    id: 'innovation',
+    label: 'Innovation-specific mechanics',
+    eyebrow: 'Family II',
+    intro: "How innovation actually happens \u2014 within firms, across networks, and over time.",
+    models: [
+      {
+        slug: 'schumpeter-regimes',
+        eyebrow: 'QUADRANT · MK I × MK II',
+        title: 'Schumpeter regimes',
+        description: 'Mark I disruptors versus Mark II incumbent labs, plotted across sectors. Mistaking the regime is a category error. SA fintech is mostly Mark I; frontier AI is Mark II.',
+      },
+      {
+        slug: 'triple-helix',
+        eyebrow: 'OVERLAP · UNI × INDUSTRY × GOV',
+        title: 'Triple Helix',
+        description: 'Etzkowitz and Leydesdorff: innovation emerges from the overlap of three institutional spheres. SA-anchored examples populate each region. The centre is the rarest and most productive intersection.',
+      },
+      {
+        slug: 'wright-rogers',
+        eyebrow: 'OVERLAY · COST × ADOPTION',
+        title: "Wright's Law × Rogers Diffusion",
+        description: 'Where compute cost decline meets the adoption S-curve. The intersection at each year predicts the inflection where enterprise adoption accelerates.',
+      },
+      {
+        slug: 'adoption-curves',
+        eyebrow: 'COMPARATIVE · S-CURVES',
+        title: 'Adoption Curves',
+        description: 'Four overlaid technology adoption trajectories with annotated milestones. Read off the velocity at which infrastructure, AI, and platforms ship into operating models.',
+      },
+      {
+        slug: 'gpt-jcurve',
+        eyebrow: 'HISTORICAL · J-CURVE OVERLAY',
+        title: 'GPT J-curve',
+        description: 'Productivity vs years-since-introduction for electricity, IT, and AI on a common axis. The J shape is the point. AI is at year 4; the steep ramp begins after firms reorganise.',
+      },
+      {
+        slug: 'productivity-deltas',
+        eyebrow: 'CITATION · PRODUCTIVITY',
+        title: 'Productivity Deltas',
+        description: 'Five canonical AI productivity studies, plotted side by side, with the methodology meta-row that decides whether you should believe them. The 14% bar and the 45% bar are not the same claim.',
+      },
+    ],
   },
   {
-    slug: 'wright-rogers',
-    eyebrow: 'OVERLAY · COST × ADOPTION',
-    title: "Wright's Law × Rogers Diffusion",
-    description: 'Where compute cost decline meets the adoption S-curve. The intersection at each year predicts the inflection where enterprise adoption accelerates.',
+    id: 'open-economy',
+    label: 'Open-economy frame',
+    eyebrow: 'Family III',
+    intro: "Why frontier-tech investment in South Africa is a structurally different problem from the same investment in the United States.",
+    models: [
+      {
+        slug: 'is-lm-fx',
+        eyebrow: 'INTERACTIVE · OPEN-ECONOMY MODEL',
+        title: 'IS-LM-FX for South Africa',
+        description: 'AI capex shifts the IS curve right. GPU import dependency drags the BP curve down. Find the new equilibrium for the rand, the repo rate, and output.',
+        primary: true,
+      },
+      {
+        slug: 'capital-flow',
+        eyebrow: 'SANKEY · CAPITAL FLOWS',
+        title: 'Capital Flow Direction',
+        description: 'Trailing twelve months of disclosed AI funding mapped from source region to destination bucket. Ribbon widths scale to dollar volume; three patterns are immediately legible.',
+      },
+    ],
   },
   {
-    slug: 'adoption-curves',
-    eyebrow: 'COMPARATIVE · S-CURVES',
-    title: 'Adoption Curves',
-    description: 'Four overlaid technology adoption trajectories with annotated milestones. Read off the velocity at which infrastructure, AI, and platforms ship into operating models.',
-  },
-  {
-    slug: 'capital-flow',
-    eyebrow: 'SANKEY · CAPITAL FLOWS',
-    title: 'Capital Flow Direction',
-    description: 'Trailing twelve months of disclosed AI funding mapped from source region to destination bucket. Ribbon widths scale to dollar volume; three patterns are immediately legible.',
-  },
-  {
-    slug: 'productivity-deltas',
-    eyebrow: 'CITATION · PRODUCTIVITY',
-    title: 'Productivity Deltas',
-    description: 'Five canonical AI productivity studies, plotted side by side, with the methodology meta-row that decides whether you should believe them. The 14% bar and the 45% bar are not the same claim.',
-  },
-  {
-    slug: 'phillips-curve',
-    eyebrow: 'SCATTER · GOVERNANCE × VELOCITY',
-    title: 'Innovation Phillips Curve',
-    description: 'Deployment velocity vs governance overhead across ten jurisdictions, with a fitted curve and a sweet-spot zone. The most important policy job in 2026 is moving every jurisdiction toward the inflection.',
+    id: 'inequality',
+    label: 'Poverty &amp; inequality lenses',
+    eyebrow: 'Family IV',
+    intro: "These should be layered on top of every model above \u2014 the diagnostic tools for what the growth and innovation models leave on the floor.",
+    models: [
+      {
+        slug: 'phillips-curve',
+        eyebrow: 'SCATTER · GOVERNANCE × VELOCITY',
+        title: 'Innovation Phillips Curve',
+        description: 'Deployment velocity vs governance overhead across sixteen jurisdictions plus four regional averages. The South Africa dot is the home-jurisdiction reading; the curve is the policy job.',
+      },
+      {
+        slug: 'r-vs-g',
+        eyebrow: 'TIME SERIES · PIKETTY',
+        title: 'r > g, applied to AI capital',
+        description: 'Twin time series: real global GDP growth versus return on a frontier-AI capital basket, 2010–2030. The shaded gap is the wealth-concentration mechanism, drawn for what it is.',
+      },
+      {
+        slug: 'task-displacement',
+        eyebrow: 'MATRIX · ACEMOGLU \u2013 RESTREPO',
+        title: 'Task displacement matrix',
+        description: 'Eight task families plotted on displacement vs reinstatement. The long-run labour share depends on which dominates. AI threatens cognitive mid-skill tasks previous waves left untouched.',
+      },
+      {
+        slug: 'capability-matrix',
+        eyebrow: 'HEATMAP · SEN',
+        title: 'Capability matrix',
+        description: "Ten AI deployments scored across six capability dimensions. The same tool can expand or contract substantive freedoms \u2014 the design choice is the policy.",
+      },
+    ],
   },
 ];
 ---
@@ -62,22 +138,32 @@ const models = [
       <p class="lead">
         Most strategy decks reach for vibes. This section reaches for the economist's toolkit and applies it to the
         decisions you actually face: how much AI capex shifts your steady state, what GPU import dependency does to
-        the rand, when adoption breaks the inflection. Move the sliders. Watch the curves shift.
+        the rand, when adoption breaks the inflection. Move the sliders. Watch the curves shift. Thirteen artifacts,
+        grouped into four families.
       </p>
     </header>
 
-    <ul class="grid" data-reveal>
-      {models.map((m) => (
-        <li class={'item' + (m.primary ? ' item-primary' : '')} data-reveal>
-          <a class="card card-hover" href={`/economics/${m.slug}`}>
-            <p class="kicker">{m.eyebrow}</p>
-            <h2>{m.title}</h2>
-            <p class="muted">{m.description}</p>
-            <p class="cta">Open model <span aria-hidden="true">&rarr;</span></p>
-          </a>
-        </li>
-      ))}
-    </ul>
+    {families.map((f) => (
+      <section class="family" data-reveal>
+        <header class="family-head">
+          <p class="family-eyebrow">{f.eyebrow}</p>
+          <h2 set:html={f.label} />
+          <p class="family-intro">{f.intro}</p>
+        </header>
+        <ul class="grid">
+          {f.models.map((m) => (
+            <li class={'item' + (m.primary ? ' item-primary' : '')} data-reveal>
+              <a class="card card-hover" href={`/economics/${m.slug}`}>
+                <p class="kicker">{m.eyebrow}</p>
+                <h3>{m.title}</h3>
+                <p class="muted">{m.description}</p>
+                <p class="cta">Open model <span aria-hidden="true">&rarr;</span></p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
   </section>
 </BaseLayout>
 
@@ -86,12 +172,18 @@ const models = [
   h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
   .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 3rem; line-height: 1.6; }
 
-  .grid { list-style: none; padding: 0; margin: 0 0 5rem; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .family { margin: 0 0 3.5rem; }
+  .family-head { margin: 0 0 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-border-subtle); }
+  .family-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.4rem; }
+  .family h2 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 500; margin: 0 0 0.5rem; line-height: 1.2; color: var(--color-ink-primary); }
+  .family-intro { color: var(--color-ink-secondary); max-width: 70ch; margin: 0; line-height: 1.6; font-size: 0.95rem; }
+
+  .grid { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
   .item-primary .card { border-left: 3px solid var(--color-accent); }
   .card { display: flex; flex-direction: column; gap: 0.75rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); height: 100%; transition: all var(--duration-fast) var(--ease-out-quad); text-decoration: none; color: inherit; }
   .card:hover { border-color: var(--color-accent); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
   .kicker { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin: 0; }
-  .card h2 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; margin: 0; line-height: 1.2; color: var(--color-ink-primary); }
+  .card h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; margin: 0; line-height: 1.2; color: var(--color-ink-primary); }
   .muted { color: var(--color-ink-secondary); margin: 0; line-height: 1.55; font-size: 0.95rem; }
   .cta { color: var(--color-accent); font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; margin: auto 0 0; }
 </style>

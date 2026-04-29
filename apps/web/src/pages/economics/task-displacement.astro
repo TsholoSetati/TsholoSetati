@@ -1,0 +1,196 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Acemoglu–Restrepo task-based model: displacement × reinstatement, by task family.
+// 2x2 with task families plotted; cell-tint shows net labour-share effect.
+
+interface Task {
+  id: string; label: string; displacement: number; reinstatement: number; net: 'positive' | 'neutral' | 'negative';
+  example: string;
+}
+
+const tasks: Task[] = [
+  { id: 'routine-cog',  label: 'Routine cognitive',     displacement: 86, reinstatement: 18, net: 'negative', example: 'Document review, data entry, basic coding' },
+  { id: 'mid-creative', label: 'Mid-skill creative',    displacement: 70, reinstatement: 38, net: 'negative', example: 'Marketing copy, slide drafting, image production' },
+  { id: 'analytical',   label: 'Analytical / research', displacement: 58, reinstatement: 64, net: 'neutral',  example: 'Literature review, financial modelling, code generation' },
+  { id: 'novel-orch',   label: 'Novel orchestration',   displacement: 22, reinstatement: 84, net: 'positive', example: 'Agent system design, prompt engineering, AI ops' },
+  { id: 'judgement',    label: 'Judgement / accountability', displacement: 18, reinstatement: 36, net: 'positive', example: 'Clinical decisions, legal advice, board governance' },
+  { id: 'embodied',     label: 'Embodied / physical',   displacement: 14, reinstatement: 24, net: 'neutral',  example: 'Skilled trades, eldercare, last-mile logistics' },
+  { id: 'social',       label: 'Social / contextual',   displacement: 24, reinstatement: 48, net: 'positive', example: 'Therapy, teaching, complex sales, community work' },
+  { id: 'manual-rout',  label: 'Routine manual',        displacement: 42, reinstatement: 22, net: 'negative', example: 'Warehouse picking, basic assembly, data labelling' },
+];
+
+const W = 880, H = 540;
+const M = { top: 30, right: 60, bottom: 60, left: 70 };
+const innerW = W - M.left - M.right;
+const innerH = H - M.top - M.bottom;
+const sx = (v: number) => M.left + (v / 100) * innerW;
+const sy = (v: number) => M.top + innerH - (v / 100) * innerH;
+
+const labelOffset: Record<string, { dx: number; dy: number }> = {
+  'routine-cog':  { dx: -10, dy: -16 },
+  'mid-creative': { dx: 14,  dy: -2 },
+  'analytical':   { dx: 14,  dy: -2 },
+  'novel-orch':   { dx: -10, dy: -16 },
+  'judgement':    { dx: 14,  dy: -2 },
+  'embodied':     { dx: 14,  dy: 14 },
+  'social':       { dx: 14,  dy: -2 },
+  'manual-rout':  { dx: 14,  dy: 14 },
+};
+---
+
+<BaseLayout
+  seo={{
+    title: 'Task displacement matrix · Innovation Economics',
+    description: 'Acemoglu–Restrepo task-based model: which tasks AI displaces, complements, or creates entirely new.',
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>Task displacement</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics · Task model</p>
+      <h1>The displacement-reinstatement matrix.</h1>
+      <p class="lead">
+        The standard automation model treats labour as a single factor that capital substitutes for.
+        Acemoglu and Restrepo broke labour into <em>tasks</em> and asked which tasks automation displaces,
+        which it complements, and which entirely new tasks the technology creates. The long-run labour
+        share depends on the balance. Plotted here: eight task families, scored on displacement (how much
+        AI substitutes) and reinstatement (how much new work AI creates around it).
+      </p>
+    </header>
+
+    <figure class="chart" data-reveal>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Task families plotted on displacement vs reinstatement">
+        <g class="grid">
+          {[0, 25, 50, 75, 100].map((t) => (
+            <>
+              <line x1={sx(t)} y1={M.top} x2={sx(t)} y2={M.top + innerH} />
+              <line x1={M.left} y1={sy(t)} x2={M.left + innerW} y2={sy(t)} />
+            </>
+          ))}
+        </g>
+
+        {/* Quadrant tints */}
+        <rect x={sx(50)} y={M.top} width={sx(100) - sx(50)} height={sy(50) - M.top} class="tint-pos" />
+        <rect x={M.left} y={M.top} width={sx(50) - M.left} height={sy(50) - M.top} class="tint-neutral" />
+        <rect x={sx(50)} y={sy(50)} width={sx(100) - sx(50)} height={M.top + innerH - sy(50)} class="tint-neg" />
+        <rect x={M.left} y={sy(50)} width={sx(50) - M.left} height={M.top + innerH - sy(50)} class="tint-neutral" />
+
+        <line class="midaxis" x1={sx(50)} y1={M.top} x2={sx(50)} y2={M.top + innerH} />
+        <line class="midaxis" x1={M.left} y1={sy(50)} x2={M.left + innerW} y2={sy(50)} />
+
+        <text x={sx(75)} y={sy(95)} text-anchor="middle" class="quad-lbl">Reinstatement zone</text>
+        <text x={sx(25)} y={sy(95)} text-anchor="middle" class="quad-lbl">Stable</text>
+        <text x={sx(75)} y={sy(5)} text-anchor="middle" class="quad-lbl">Displacement zone</text>
+        <text x={sx(25)} y={sy(5)} text-anchor="middle" class="quad-lbl">Insulated</text>
+
+        <line class="axis" x1={M.left} y1={M.top + innerH} x2={M.left + innerW} y2={M.top + innerH} />
+        <line class="axis" x1={M.left} y1={M.top} x2={M.left} y2={M.top + innerH} />
+        <text x={M.left + innerW / 2} y={H - 20} text-anchor="middle" class="ax-title">Displacement (AI substitutes for labour) →</text>
+        <text x={-(M.top + innerH / 2)} y={20} text-anchor="middle" class="ax-title" transform="rotate(-90)">
+          Reinstatement (new tasks created) →
+        </text>
+
+        {/* Tasks */}
+        <g class="dots">
+          {tasks.map((t, i) => {
+            const o = labelOffset[t.id];
+            return (
+              <g class={`dot-group is-${t.net}`} style={`--i:${i}`}>
+                <circle cx={sx(t.displacement)} cy={sy(t.reinstatement)} r={9} class="dot" />
+                <text x={sx(t.displacement) + o.dx} y={sy(t.reinstatement) + o.dy} class="dot-lbl">{t.label}</text>
+                <title>{`${t.label} — displacement ${t.displacement}, reinstatement ${t.reinstatement} — ${t.example}`}</title>
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+      <figcaption>Hand-tuned composites synthesised from Acemoglu &amp; Restrepo (2020), MIT FutureTech and OECD work-task taxonomies.</figcaption>
+    </figure>
+
+    <section class="legend" data-reveal>
+      <p class="kicker">Reading the colours</p>
+      <ul>
+        <li><span class="sw sw-pos"></span><strong>Net positive</strong> — AI creates more new tasks than it displaces. Labour share rises locally.</li>
+        <li><span class="sw sw-neutral"></span><strong>Neutral</strong> — Roughly balanced. Long-run effect depends on institutional response.</li>
+        <li><span class="sw sw-neg"></span><strong>Net negative</strong> — Displacement dominates. Labour share falls, wages compress.</li>
+      </ul>
+    </section>
+
+    <section class="thesis" data-reveal>
+      <p class="kicker">The thesis</p>
+      <p>
+        AI's task profile is unusual: it threatens cognitive, white-collar, mid-skill tasks that previous
+        waves of automation left untouched. The distributional consequences for South Africa, where the
+        formal middle-skill labour market is already small relative to the informal sector, are genuinely
+        unclear and worth research investment, not casual extrapolation from US data. The middle is being
+        hollowed in the rich world; what hollowing means in an economy without the middle to begin with
+        is the open question.
+      </p>
+    </section>
+
+    <p class="back"><a href="/economics">← All models</a></p>
+  </section>
+</BaseLayout>
+
+<script>
+  function bind() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll<SVGGElement>('.dot-group').forEach((g, i) => {
+      g.style.opacity = '0';
+      g.style.transition = 'opacity 320ms ease-out';
+      setTimeout(() => { g.style.opacity = '1'; }, 200 + i * 70);
+    });
+  }
+  bind();
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .lead em { color: var(--color-ink-primary); font-style: normal; font-family: var(--font-mono); font-size: 0.9em; }
+
+  .chart { margin: 0 0 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .grid line { stroke: var(--color-border-subtle); stroke-width: 1; opacity: 0.5; }
+  .midaxis { stroke: var(--color-ink-tertiary); stroke-width: 1.4; stroke-dasharray: 4 4; opacity: 0.5; }
+  .axis { stroke: var(--color-ink-tertiary); stroke-width: 1.2; }
+  .ax-title { font-family: var(--font-mono); font-size: 12px; fill: var(--color-ink-secondary); letter-spacing: 0.06em; }
+  .quad-lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-tertiary); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .tint-pos { fill: #16a34a; opacity: 0.05; }
+  .tint-neg { fill: #dc2626; opacity: 0.05; }
+  .tint-neutral { fill: var(--color-ink-tertiary); opacity: 0.03; }
+
+  .dot { stroke: var(--color-surface-base); stroke-width: 2; }
+  .is-positive .dot { fill: #16a34a; }
+  .is-negative .dot { fill: #dc2626; }
+  .is-neutral  .dot { fill: var(--color-ink-tertiary); }
+  .dot-lbl { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-primary); }
+
+  figcaption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 1rem 0 0; letter-spacing: 0.04em; }
+
+  .legend { margin-top: 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .legend .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.75rem; }
+  .legend ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; }
+  .legend li { display: flex; align-items: center; gap: 0.75rem; color: var(--color-ink-secondary); line-height: 1.5; }
+  .legend strong { color: var(--color-ink-primary); margin-right: 0.4em; }
+  .sw { display: inline-block; width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .sw-pos { background: #16a34a; }
+  .sw-neg { background: #dc2626; }
+  .sw-neutral { background: var(--color-ink-tertiary); }
+
+  .thesis { margin-top: 1.25rem; padding: 1.75rem; background: var(--color-surface-sunken); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-ink-primary); border-radius: var(--radius-md); }
+  .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
+  .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+</style>

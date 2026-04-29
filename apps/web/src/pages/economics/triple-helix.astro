@@ -1,0 +1,141 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Etzkowitz–Leydesdorff Triple Helix: University × Industry × Government overlap.
+// Three intersecting circles with concrete SA / MEA examples in each region.
+
+const W = 880, H = 600;
+const cx1 = 340, cy1 = 250;  // University
+const cx2 = 540, cy2 = 250;  // Industry
+const cx3 = 440, cy3 = 410;  // Government
+const r = 160;
+---
+
+<BaseLayout
+  seo={{
+    title: 'Triple Helix · Innovation Economics',
+    description: 'University × Industry × Government overlap, with concrete South African and MEA examples populating each intersection.',
+  }}
+>
+  <section class="container section">
+    <nav class="breadcrumb">
+      <a href="/economics">Innovation Economics</a> <span aria-hidden="true">/</span> <span>Triple Helix</span>
+    </nav>
+
+    <header data-reveal>
+      <p class="eyebrow">Innovation Economics · Institutional overlap</p>
+      <h1>The Triple Helix.</h1>
+      <p class="lead">
+        Etzkowitz and Leydesdorff: innovation emerges from the interaction of three institutional spheres
+        — universities, industry, and government — each taking on roles traditionally held by the others.
+        Universities commercialise. Firms do basic research. Governments take equity stakes. The model
+        describes Silicon Valley, Cambridge UK, and Israel's tech ecosystem better than older linear
+        models did. The interesting work happens in the overlaps; the centre is the rarest and most
+        productive intersection.
+      </p>
+    </header>
+
+    <figure class="chart" data-reveal>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Triple Helix overlap with examples">
+        <defs>
+          <radialGradient id="g-uni" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.30" />
+            <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.10" />
+          </radialGradient>
+          <radialGradient id="g-ind" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.30" />
+            <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.10" />
+          </radialGradient>
+          <radialGradient id="g-gov" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.30" />
+            <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.10" />
+          </radialGradient>
+        </defs>
+
+        <circle cx={cx1} cy={cy1} r={r} fill="url(#g-uni)" stroke="#4f46e5" stroke-width="1.5" />
+        <circle cx={cx2} cy={cy2} r={r} fill="url(#g-ind)" stroke="#0ea5e9" stroke-width="1.5" />
+        <circle cx={cx3} cy={cy3} r={r} fill="url(#g-gov)" stroke="#f59e0b" stroke-width="1.5" />
+
+        {/* Sphere labels */}
+        <text x={cx1 - 90} y={cy1 - 100} class="sphere-lbl" style="fill:#4f46e5">University</text>
+        <text x={cx2 + 30} y={cy2 - 100} class="sphere-lbl" style="fill:#0ea5e9">Industry</text>
+        <text x={cx3 - 50} y={cy3 + 130} class="sphere-lbl" style="fill:#f59e0b">Government</text>
+
+        {/* Region examples — pure spheres */}
+        <text x={cx1 - 110} y={cy1 - 20} class="ex">Public research</text>
+        <text x={cx1 - 110} y={cy1} class="ex">Doctoral training</text>
+        <text x={cx1 - 110} y={cy1 + 20} class="ex">CSIR &middot; HSRC</text>
+
+        <text x={cx2 + 60} y={cy2 - 20} class="ex">Corporate R&amp;D</text>
+        <text x={cx2 + 60} y={cy2} class="ex">JSE-listed labs</text>
+        <text x={cx2 + 60} y={cy2 + 20} class="ex">MEA bank AI teams</text>
+
+        <text x={cx3 - 80} y={cy3 + 80} class="ex">DSI &middot; DTIC</text>
+        <text x={cx3 - 80} y={cy3 + 100} class="ex">National AI policy</text>
+        <text x={cx3 - 80} y={cy3 + 120} class="ex">Public procurement</text>
+
+        {/* Pairwise overlaps */}
+        <text x={(cx1 + cx2) / 2} y={cy1 - 6} text-anchor="middle" class="overlap">Uni × Industry</text>
+        <text x={(cx1 + cx2) / 2} y={cy1 + 12} text-anchor="middle" class="ex-overlap">Spinouts &middot; tech-transfer</text>
+        <text x={(cx1 + cx2) / 2} y={cy1 + 28} text-anchor="middle" class="ex-overlap">Industry-funded chairs</text>
+
+        <text x={(cx1 + cx3) / 2 - 30} y={(cy1 + cy3) / 2 - 10} text-anchor="middle" class="overlap">Uni × Gov</text>
+        <text x={(cx1 + cx3) / 2 - 30} y={(cy1 + cy3) / 2 + 8} text-anchor="middle" class="ex-overlap">NRF grants</text>
+        <text x={(cx1 + cx3) / 2 - 30} y={(cy1 + cy3) / 2 + 24} text-anchor="middle" class="ex-overlap">SARChI chairs</text>
+
+        <text x={(cx2 + cx3) / 2 + 30} y={(cy2 + cy3) / 2 - 10} text-anchor="middle" class="overlap">Industry × Gov</text>
+        <text x={(cx2 + cx3) / 2 + 30} y={(cy2 + cy3) / 2 + 8} text-anchor="middle" class="ex-overlap">SEZs &middot; tax credits</text>
+        <text x={(cx2 + cx3) / 2 + 30} y={(cy2 + cy3) / 2 + 24} text-anchor="middle" class="ex-overlap">Sovereign equity</text>
+
+        {/* Centre — all three */}
+        <text x={(cx1 + cx2 + cx3) / 3} y={(cy1 + cy2 + cy3) / 3 - 6} text-anchor="middle" class="center">Triple Helix</text>
+        <text x={(cx1 + cx2 + cx3) / 3} y={(cy1 + cy2 + cy3) / 3 + 12} text-anchor="middle" class="ex-center">Mission-led AI funds</text>
+        <text x={(cx1 + cx2 + cx3) / 3} y={(cy1 + cy2 + cy3) / 3 + 28} text-anchor="middle" class="ex-center">Sovereign innovation co-investment</text>
+      </svg>
+      <figcaption>SA / MEA-anchored examples. The richer the overlap, the more permeable the boundaries between the three spheres.</figcaption>
+    </figure>
+
+    <section class="thesis" data-reveal>
+      <p class="kicker">The thesis</p>
+      <p>
+        Triple Helix is operationally useful because it points to specific intervention levers:
+        technology-transfer offices, sovereign innovation funds, university-affiliated incubators,
+        mission-oriented public procurement. It can also produce concentrated outcomes if the helix is
+        geographically narrow — one university region, one industry cluster, one tier of government.
+        Broadening it across provinces, across historically disadvantaged universities, across both
+        formal and informal sectors is itself a distributional choice. The question for any board engaging
+        with university partnerships is which institutions and which geographies are inside the helix —
+        and which are outside.
+      </p>
+    </section>
+
+    <p class="back"><a href="/economics">← All models</a></p>
+  </section>
+</BaseLayout>
+
+<style>
+  .breadcrumb { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-tertiary); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.18em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 1rem; line-height: 1.1; }
+  .lead { color: var(--color-ink-secondary); max-width: 70ch; margin: 0 0 2.5rem; line-height: 1.6; }
+
+  .chart { margin: 0 0 2rem; padding: 1.5rem; background: var(--color-surface-raised); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+  .chart svg { width: 100%; height: auto; display: block; }
+
+  .sphere-lbl { font-family: var(--font-display); font-size: 22px; font-weight: 500; }
+  .ex { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-secondary); }
+  .overlap { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-primary); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  .ex-overlap { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-secondary); }
+  .center { font-family: var(--font-mono); font-size: 12px; fill: var(--color-accent); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .ex-center { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink-primary); }
+
+  figcaption { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-tertiary); margin: 1rem 0 0; letter-spacing: 0.04em; }
+
+  .thesis { margin-top: 2rem; padding: 1.75rem; background: var(--color-surface-sunken); border: 1px solid var(--color-border-subtle); border-left: 3px solid var(--color-ink-primary); border-radius: var(--radius-md); }
+  .thesis .kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-tertiary); margin: 0 0 0.6rem; }
+  .thesis p { margin: 0; line-height: 1.7; color: var(--color-ink-primary); }
+
+  .back { margin-top: 2rem; }
+  .back a { color: var(--color-accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; }
+</style>
