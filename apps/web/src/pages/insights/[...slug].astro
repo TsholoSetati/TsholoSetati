@@ -3,6 +3,7 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { jsonLdArticle, jsonLdBreadcrumb } from '~/lib/seo';
 import { site } from '~/config/site';
+import { computeReadingMinutes, formatReadingTime } from '~/lib/reading';
 
 export async function getStaticPaths() {
   const posts = await getCollection('insights', ({ data }) => !data.draft);
@@ -13,6 +14,9 @@ interface Props { post: CollectionEntry<'insights'>; }
 const { post } = Astro.props;
 const { Content } = await post.render();
 const url = new URL(`/insights/${post.slug}`, site.url).toString();
+const readingMinutes = computeReadingMinutes(post.body);
+const takeaways = post.data.keyTakeaways ?? [];
+const hasSummaryBlock = Boolean(post.data.summary) || takeaways.length > 0;
 
 const jsonLd = [
   jsonLdArticle({
@@ -54,6 +58,8 @@ const jsonLd = [
       <p class="lead">{post.data.description}</p>
       <p class="byline">
         <span>{post.data.publishDate.toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        <span aria-hidden="true">·</span>
+        <span>{formatReadingTime(readingMinutes)}</span>
         {post.data.canonicalUrl && (
           <>
             <span aria-hidden="true">·</span>
@@ -63,14 +69,18 @@ const jsonLd = [
       </p>
     </header>
 
-    {post.data.summary && (
+    {hasSummaryBlock && (
       <aside class="summary card" data-reveal>
-        <p class="kicker">Summary</p>
-        <p>{post.data.summary}</p>
-        {post.data.keyTakeaways && (
+        {post.data.summary && (
           <>
-            <p class="kicker" style="margin-top:1rem;">Key takeaways</p>
-            <ul>{post.data.keyTakeaways.map((k) => <li>{k}</li>)}</ul>
+            <p class="kicker">Summary</p>
+            <p>{post.data.summary}</p>
+          </>
+        )}
+        {takeaways.length > 0 && (
+          <>
+            <p class="kicker" style={post.data.summary ? 'margin-top:1rem;' : ''}>Key takeaways</p>
+            <ul>{takeaways.map((k) => <li>{k}</li>)}</ul>
           </>
         )}
       </aside>
