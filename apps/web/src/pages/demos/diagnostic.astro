@@ -40,7 +40,9 @@ import { questions, dimensions } from '~/data/diagnostic-rubric';
         ))}
 
         <div class="actions">
-          <button type="button" id="score-btn" class="btn btn-primary" disabled>Calculate result</button>
+          <button type="button" id="score-btn" class="btn btn-primary" disabled>
+            <span class="ts-label">Calculate result</span>
+          </button>
           <button type="reset" class="btn btn-ghost" id="reset-btn">Reset</button>
         </div>
       </form>
@@ -114,42 +116,83 @@ import { questions, dimensions } from '~/data/diagnostic-rubric';
     });
 
     btn.addEventListener('click', () => {
-      const r = score(answers());
-      const ring = document.getElementById('ring') as HTMLElement;
-      const overallPct = document.getElementById('overall-pct')!;
-      const overallTier = document.getElementById('overall-tier')!;
-      const overallSummary = document.getElementById('overall-summary')!;
-      overallPct.textContent = `${Math.round(r.overallPct)}%`;
-      overallTier.textContent = r.overallTier;
-      ring.style.setProperty('--p', String(r.overallPct));
-      overallSummary.textContent = `Overall tier: ${r.overallTier}. The strongest leverage is in your three lowest-scoring dimensions, listed below.`;
+      // Tiny artificial pause so the result feels “computed” — also lets the
+      // pending state register visually for users on fast machines.
+      btn!.dataset.pending = 'true';
+      const labelEl = btn!.querySelector<HTMLElement>('.ts-label');
+      const original = labelEl?.textContent ?? btn!.textContent ?? '';
+      if (labelEl) labelEl.textContent = 'Calculating…';
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const delay = reduce ? 0 : 280;
 
-      const list = document.getElementById('dim-list')!;
-      list.innerHTML = '';
-      for (const d of r.dimensions) {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <div class="dim-row">
-            <span class="dim-name">${d.name}</span>
-            <span class="dim-tier tier-${d.tier.toLowerCase()}">${d.tier}</span>
-          </div>
-          <div class="dim-bar"><div class="dim-fill" style="width:${d.pct}%"></div></div>
-          <p class="dim-desc">${d.description}</p>
-        `;
-        list.appendChild(li);
-      }
+      window.setTimeout(() => {
+        const r = score(answers());
+        const ring = document.getElementById('ring') as HTMLElement;
+        const overallPct = document.getElementById('overall-pct')!;
+        const overallTier = document.getElementById('overall-tier')!;
+        const overallSummary = document.getElementById('overall-summary')!;
+        overallTier.textContent = r.overallTier;
+        overallSummary.textContent = `Overall tier: ${r.overallTier}. The strongest leverage is in your three lowest-scoring dimensions, listed below.`;
 
-      const recs = document.getElementById('recs')!;
-      recs.innerHTML = '';
-      for (const text of r.recommendations) {
-        const li = document.createElement('li');
-        li.textContent = text;
-        recs.appendChild(li);
-      }
+        const list = document.getElementById('dim-list')!;
+        list.innerHTML = '';
+        for (const d of r.dimensions) {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <div class="dim-row">
+              <span class="dim-name">${d.name}</span>
+              <span class="dim-tier tier-${d.tier.toLowerCase()}">${d.tier}</span>
+            </div>
+            <div class="dim-bar"><div class="dim-fill" style="--target:${d.pct}%; width:0%"></div></div>
+            <p class="dim-desc">${d.description}</p>
+          `;
+          list.appendChild(li);
+        }
 
-      result.hidden = false;
-      result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const recs = document.getElementById('recs')!;
+        recs.innerHTML = '';
+        for (const text of r.recommendations) {
+          const li = document.createElement('li');
+          li.textContent = text;
+          recs.appendChild(li);
+        }
+
+        result.hidden = false;
+        result.dataset.entered = 'true';
+        // Reveal: animate ring & bars on the next frame so transitions run.
+        requestAnimationFrame(() => {
+          ring.style.setProperty('--p', String(r.overallPct));
+          // Counter animation for the percentage label.
+          if (reduce) {
+            overallPct.textContent = `${Math.round(r.overallPct)}%`;
+          } else {
+            animateNumber(overallPct, 0, r.overallPct, 900);
+          }
+          // Stagger the dimension bars.
+          const fills = list.querySelectorAll<HTMLElement>('.dim-fill');
+          fills.forEach((f, i) => {
+            window.setTimeout(() => {
+              f.style.width = f.style.getPropertyValue('--target');
+            }, reduce ? 0 : 120 + i * 80);
+          });
+        });
+        result.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+
+        btn!.dataset.pending = 'false';
+        if (labelEl) labelEl.textContent = original;
+      }, delay);
     });
+
+    function animateNumber(el: HTMLElement, from: number, to: number, durationMs: number) {
+      const start = performance.now();
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / durationMs);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = `${Math.round(from + (to - from) * eased)}%`;
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
 
     update();
   }
@@ -186,7 +229,7 @@ import { questions, dimensions } from '~/data/diagnostic-rubric';
   .result h2 { font-family: var(--font-display); margin: 0 0 1.5rem; font-size: var(--font-xl); }
   .result h3 { font-family: var(--font-display); margin: 1.5rem 0 0.75rem; font-size: var(--font-lg); }
   .overall { display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1rem; }
-  .score-ring { width: 110px; height: 110px; border-radius: 50%; background: conic-gradient(var(--color-accent) calc(var(--p, 0) * 1%), var(--color-surface-sunken) 0); display: grid; place-content: center; position: relative; flex-shrink: 0; }
+  .score-ring { width: 110px; height: 110px; border-radius: 50%; background: conic-gradient(var(--color-accent) calc(var(--p, 0) * 1%), var(--color-surface-sunken) 0); display: grid; place-content: center; position: relative; flex-shrink: 0; transition: background var(--duration-slower) var(--ease-out-expo); }
   .score-ring::after { content: ''; position: absolute; inset: 8px; background: var(--color-surface-raised); border-radius: 50%; }
   .score-ring span, .score-ring small { position: relative; z-index: 1; text-align: center; display: block; }
   .score-ring span { font-family: var(--font-display); font-size: var(--font-xl); font-weight: 600; }
@@ -209,7 +252,11 @@ import { questions, dimensions } from '~/data/diagnostic-rubric';
   :global([data-theme='dark']) .tier-scaling { background: rgba(5,150,105,0.2); color: #6ee7b7; }
   :global([data-theme='dark']) .tier-leading { background: rgba(129,140,248,0.2); color: #a5b4fc; }
   .dim-bar { height: 4px; background: var(--color-surface-sunken); border-radius: var(--radius-full); overflow: hidden; margin: 0.4rem 0; }
-  .dim-fill { height: 100%; background: var(--color-accent); }
+  .dim-fill { height: 100%; background: var(--color-accent); transition: width var(--duration-slower) var(--ease-out-expo); }
+  @media (prefers-reduced-motion: reduce) {
+    .dim-fill { transition: none; }
+    .score-ring { transition: none; }
+  }
   .dim-desc { font-size: var(--font-xs); color: var(--color-ink-tertiary); margin: 0; }
 
   .recs { padding-left: 1.4rem; margin: 0; display: grid; gap: 0.75rem; }

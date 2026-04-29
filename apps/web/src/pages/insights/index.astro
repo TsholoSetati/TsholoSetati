@@ -62,19 +62,32 @@ const allTopics = Array.from(new Set(posts.flatMap((p) => p.data.topics))).sort(
 
     function apply() {
       const items = Array.from(grid.querySelectorAll<HTMLLIElement>('.item'));
-      let visible = 0;
-      for (const it of items) {
-        const topics = (it.dataset.topics ?? '').split('|');
-        const title = it.dataset.title ?? '';
-        const desc = it.dataset.desc ?? '';
-        const matchesTopic = !activeTopic || topics.includes(activeTopic);
-        const q = query.trim().toLowerCase();
-        const matchesQuery = !q || title.includes(q) || desc.includes(q);
-        const show = matchesTopic && matchesQuery;
-        it.hidden = !show;
-        if (show) visible++;
+      const useViewTransition =
+        typeof (document as any).startViewTransition === 'function' &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const mutate = () => {
+        let visible = 0;
+        for (const it of items) {
+          const topics = (it.dataset.topics ?? '').split('|');
+          const title = it.dataset.title ?? '';
+          const desc = it.dataset.desc ?? '';
+          const matchesTopic = !activeTopic || topics.includes(activeTopic);
+          const q = query.trim().toLowerCase();
+          const matchesQuery = !q || title.includes(q) || desc.includes(q);
+          const show = matchesTopic && matchesQuery;
+          it.dataset.filterState = show ? 'in' : 'out';
+          it.hidden = !show;
+          if (show) visible++;
+        }
+        if (empty) empty.hidden = visible !== 0;
+      };
+
+      if (useViewTransition) {
+        (document as any).startViewTransition(mutate);
+      } else {
+        mutate();
       }
-      if (empty) empty.hidden = visible !== 0;
     }
 
     chips.forEach((c) =>
@@ -106,6 +119,13 @@ const allTopics = Array.from(new Set(posts.flatMap((p) => p.data.topics))).sort(
   .chip.is-active { background: var(--color-accent); color: white; border-color: var(--color-accent); }
   .grid { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
   .grid a { display: block; text-decoration: none; color: inherit; height: 100%; }
+  /* Filter transitions — fade items in/out without layout snap */
+  .item { transition: opacity var(--duration-base) var(--ease-out-quad), transform var(--duration-base) var(--ease-out-quad); }
+  .item[data-filter-state='in'] { opacity: 1; transform: translateY(0); }
+  .item[data-filter-state='out'] { opacity: 0; transform: translateY(6px); }
+  @media (prefers-reduced-motion: reduce) {
+    .item { transition: none; transform: none; opacity: 1; }
+  }
   .kicker { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent); margin: 0; }
   h2 { font-family: var(--font-display); font-size: var(--font-xl); margin: 0.5rem 0; }
   .muted { color: var(--color-ink-secondary); margin: 0; }

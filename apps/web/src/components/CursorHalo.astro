@@ -1,0 +1,96 @@
+---
+/**
+ * CursorHalo — soft accent ring that follows the pointer over interactive
+ * surfaces marked with `[data-cursor="accent"]`. Pure decoration; pointer
+ * events disabled. Cinematic-only (gated by data-motion attribute), and
+ * not rendered on touch devices.
+ */
+---
+
+<div id="ts-cursor-halo" class="ts-cursor-halo" aria-hidden="true"></div>
+
+<script>
+  const halo = document.getElementById('ts-cursor-halo');
+  if (halo) {
+    const isCinematic = () =>
+      document.documentElement.dataset.motion === 'cinematic' &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      !window.matchMedia('(hover: none)').matches;
+
+    let active = false;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let raf = 0;
+
+    function tick(): void {
+      currentX += (targetX - currentX) * 0.18;
+      currentY += (targetY - currentY) * 0.18;
+      halo!.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%) scale(${active ? 1 : 0.4})`;
+      raf = requestAnimationFrame(tick);
+    }
+
+    const ACCENT_SELECTOR = '[data-cursor="accent"], .btn-primary, .btn-accent';
+    function handleMove(e: PointerEvent): void {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      const target = (e.target as Element | null)?.closest(ACCENT_SELECTOR);
+      const nextActive = !!target && isCinematic();
+      if (nextActive !== active) {
+        active = nextActive;
+        halo!.dataset.state = active ? 'on' : 'off';
+      }
+    }
+
+    function start(): void {
+      if (!isCinematic()) return;
+      window.addEventListener('pointermove', handleMove, { passive: true });
+      if (!raf) {
+        currentX = window.innerWidth / 2;
+        currentY = window.innerHeight / 2;
+        raf = requestAnimationFrame(tick);
+      }
+    }
+
+    start();
+    document.addEventListener('astro:page-load', start);
+  }
+</script>
+
+<style is:global>
+  .ts-cursor-halo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-accent) 35%, transparent) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0;
+    mix-blend-mode: multiply;
+    transition: opacity 200ms var(--ease-out-quad), background 200ms ease;
+    will-change: transform, opacity;
+  }
+  .ts-cursor-halo[data-state='on'] {
+    opacity: 1;
+  }
+  [data-theme='dark'] .ts-cursor-halo {
+    mix-blend-mode: screen;
+    background: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-accent-2) 45%, transparent) 0%,
+      transparent 70%
+    );
+  }
+  /* Hide on touch / reduced-motion. */
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .ts-cursor-halo { display: none; }
+  }
+</style>

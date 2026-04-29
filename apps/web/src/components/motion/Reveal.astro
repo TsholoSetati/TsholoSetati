@@ -1,0 +1,36 @@
+---
+/**
+ * Reveal — thin wrapper for the [data-reveal] primitive.
+ *
+ * Forwards stagger metadata so new code can opt into ordered reveals without
+ * touching motion.ts. Existing `[data-reveal]` usage continues to work.
+ *
+ * Usage:
+ *   <Reveal as="section" stagger={2} variant="rise">…</Reveal>
+ */
+type Variant = 'rise' | 'fade' | 'slide-left' | 'slide-right';
+
+interface Props {
+  /** HTML element to render. Defaults to <div>. */
+  as?: keyof HTMLElementTagNameMap;
+  /** Manual stagger index. If omitted, the parent observer derives it. */
+  stagger?: number;
+  /** Motion variant (CSS-keyed via `[data-motion-variant]`). */
+  variant?: Variant;
+  /** Extra class names. */
+  class?: string;
+}
+
+const { as = 'div', stagger, variant, class: className = '', ...rest } = Astro.props;
+const Tag = as as any;
+---
+
+<Tag
+  class={className}
+  data-reveal
+  data-stagger-index={stagger}
+  data-motion-variant={variant}
+  {...rest}
+>
+  <slot />
+</Tag>

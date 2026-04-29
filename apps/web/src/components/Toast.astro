@@ -1,0 +1,114 @@
+---
+/**
+ * Toast — site-wide notification surface.
+ *
+ * Mounts a single `<div>` host once per page; exposes `window.tsToast(opts)`
+ * for any island to call. Polite aria-live ensures screen-reader announcements.
+ * Dismisses automatically after `duration` ms; click to dismiss early.
+ */
+---
+
+<div
+  id="ts-toast-host"
+  class="ts-toast-host"
+  role="region"
+  aria-live="polite"
+  aria-label="Notifications"
+></div>
+
+<script>
+  type ToastVariant = 'success' | 'error' | 'info';
+  interface ToastOptions {
+    message: string;
+    variant?: ToastVariant;
+    duration?: number;
+  }
+
+  function ensureHost(): HTMLElement | null {
+    let host = document.getElementById('ts-toast-host');
+    if (!host) {
+      host = document.createElement('div');
+      host.id = 'ts-toast-host';
+      host.className = 'ts-toast-host';
+      host.setAttribute('role', 'region');
+      host.setAttribute('aria-live', 'polite');
+      host.setAttribute('aria-label', 'Notifications');
+      document.body.appendChild(host);
+    }
+    return host;
+  }
+
+  function show(opts: ToastOptions): void {
+    const host = ensureHost();
+    if (!host) return;
+    const { message, variant = 'info', duration = 4500 } = opts;
+    const el = document.createElement('div');
+    el.className = `ts-toast ts-toast-${variant}`;
+    el.setAttribute('role', variant === 'error' ? 'alert' : 'status');
+    el.textContent = message;
+    el.addEventListener('click', () => dismiss(el));
+    host.appendChild(el);
+    // Trigger entrance on next frame so the transition runs.
+    requestAnimationFrame(() => el.setAttribute('data-state', 'in'));
+    window.setTimeout(() => dismiss(el), duration);
+  }
+
+  function dismiss(el: HTMLElement): void {
+    if (el.dataset.state === 'out') return;
+    el.dataset.state = 'out';
+    el.addEventListener(
+      'transitionend',
+      () => el.remove(),
+      { once: true }
+    );
+    // Fallback in case transitionend doesn't fire (reduced-motion).
+    window.setTimeout(() => el.remove(), 600);
+  }
+
+  (window as any).tsToast = show;
+</script>
+
+<style is:global>
+  .ts-toast-host {
+    position: fixed;
+    z-index: 9999;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    right: max(1rem, env(safe-area-inset-right));
+    display: grid;
+    gap: 0.5rem;
+    pointer-events: none;
+    max-width: min(380px, calc(100vw - 2rem));
+  }
+  .ts-toast {
+    pointer-events: auto;
+    cursor: pointer;
+    background: var(--color-surface-raised);
+    color: var(--color-ink-primary);
+    border: 1px solid var(--color-border-default);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1rem;
+    box-shadow: var(--shadow-lg);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--duration-base) var(--ease-out-quad),
+      transform var(--duration-base) var(--ease-out-expo);
+  }
+  .ts-toast[data-state='in'] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .ts-toast[data-state='out'] {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .ts-toast-success { border-left-color: var(--color-signal-up); }
+  .ts-toast-error { border-left-color: var(--color-signal-down); }
+  .ts-toast-info { border-left-color: var(--color-accent); }
+  @media (prefers-reduced-motion: reduce) {
+    .ts-toast { transition: opacity 120ms linear; transform: none !important; }
+  }
+</style>

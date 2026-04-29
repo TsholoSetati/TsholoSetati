@@ -3,14 +3,15 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import { capabilities } from '~/data/capabilities';
 ---
 
-<BaseLayout seo={{ title: 'Expertise', description: 'Three practices (AI Strategy, Innovation Economics, and Frontier Technology Architecture), with the artefacts each engagement produces.' }}>
+<BaseLayout seo={{ title: 'Expertise', description: 'Domains of expertise across AI & technology governance, frontier technology transformation, innovation economics, technology economics, cloud FinSecOps, automation, and cross-sector strategy.' }}>
   <section class="container section">
     <header data-reveal>
-      <p class="eyebrow">Expertise</p>
-      <h1>Three practices, one operating system for value.</h1>
+      <p class="eyebrow">Areas of Expertise</p>
+      <h1>Where I work, write and think in public.</h1>
       <p class="lead">
-        Most enterprise AI work fails not because the technology is bad, but because the strategy, the
-        economics and the architecture are designed in isolation. Engagements span all three.
+        These are the domains I have built depth in across enterprise, government, multilateral and non-profit
+        contexts. They are not a service catalogue — they are the lenses through which I read the technology,
+        economics and governance questions facing institutions today.
       </p>
     </header>
 
@@ -29,9 +30,9 @@ import { capabilities } from '~/data/capabilities';
 
     <div class="cta-band" data-reveal>
       <div class="cta-inner">
-        <h2>Want to see this applied to your context?</h2>
-        <p>Discovery engagements typically run 2–4 weeks and produce a signed-off roadmap with a funded first wave.</p>
-        <a class="btn btn-primary" href="/contact">Start a conversation</a>
+        <h2>Want to compare notes?</h2>
+        <p>I write, speak and advise across these areas. If your work intersects with any of them, get in touch.</p>
+        <a class="btn btn-primary" href="/contact">Get in touch</a>
       </div>
     </div>
   </section>
@@ -49,7 +50,7 @@ import { capabilities } from '~/data/capabilities';
   .cap ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
   .cap li { padding-left: 1.1rem; position: relative; font-size: var(--font-sm); color: var(--color-ink-secondary); }
   .cap li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
-  .cta-band { padding: 2.5rem; border-radius: var(--radius-xl); background: linear-gradient(120deg, var(--color-accent), var(--color-accent-2)); color: white; text-align: center; }
-  .cta-inner h2 { font-family: var(--font-display); margin: 0 0 0.5rem; color: white; }
-  .cta-inner p { color: rgba(255,255,255,0.85); margin: 0 0 1.25rem; }
+  .cta-band { padding: clamp(1.75rem, 5vw, 2.5rem); border-radius: var(--radius-xl); background: linear-gradient(120deg, var(--color-accent), var(--color-accent-2)); color: white; text-align: center; }
+  .cta-inner h2 { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 2rem); margin: 0 0 0.5rem; color: white; }
+  .cta-inner p { color: rgba(255,255,255,0.85); margin: 0 0 1.25rem; font-size: clamp(0.95rem, 1.6vw, 1.05rem); }
 </style>

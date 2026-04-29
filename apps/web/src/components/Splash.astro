@@ -1,0 +1,243 @@
+---
+/**
+ * Splash — first-visit cinematic opener.
+ *
+ * Plays once per browser (`ts:splash-seen` in localStorage). Skipped entirely
+ * for repeat visitors and visitors with prefers-reduced-motion. The sequence:
+ *   1. Monogram fades + scales in       (~280ms)
+ *   2. Name letters stagger in          (~600ms)
+ *   3. Tagline fades                    (~240ms)
+ *   4. Curtain wipes upward             (~480ms)
+ * Total: ~1.6s. Always skippable via the Skip button or Esc.
+ *
+ * Coexists with IntroOverlay: splash plays first, IntroOverlay still shows
+ * its own welcome dialog if its localStorage flag isn't set.
+ */
+import { site } from '~/config/site';
+
+const monogram = (site.author?.name ?? site.name)
+  .split(' ')
+  .map((part: string) => part[0])
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
+
+const letters = site.name.split('');
+---
+
+<div id="ts-splash" class="ts-splash" data-state="hidden" hidden aria-hidden="true">
+  <button type="button" class="ts-splash-skip" data-splash-skip aria-label="Skip intro (Esc)">
+    Skip
+  </button>
+  <div class="ts-splash-stage" aria-hidden="true">
+    <div class="ts-splash-mono" data-splash-mono>{monogram}</div>
+    <div class="ts-splash-name" data-splash-name>
+      {letters.map((ch: string, i: number) =>
+        ch === ' '
+          ? <span class="ts-splash-space"> </span>
+          : <span class="ts-splash-letter" style={`--i:${i}`}>{ch}</span>
+      )}
+    </div>
+    <div class="ts-splash-tag" data-splash-tag>{site.tagline}</div>
+  </div>
+  <div class="ts-splash-curtain" data-splash-curtain></div>
+</div>
+
+<script>
+  const SEEN_KEY = 'ts:splash-seen';
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function shouldPlay(): boolean {
+    if (reduce) return false;
+    try {
+      return localStorage.getItem(SEEN_KEY) !== '1';
+    } catch {
+      return false;
+    }
+  }
+
+  function markSeen(): void {
+    try {
+      localStorage.setItem(SEEN_KEY, '1');
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function play(): void {
+    const root = document.getElementById('ts-splash');
+    if (!root) return;
+    root.hidden = false;
+    root.removeAttribute('aria-hidden');
+    root.dataset.state = 'enter';
+    document.documentElement.classList.add('ts-splash-active');
+
+    const skipBtn = root.querySelector<HTMLButtonElement>('[data-splash-skip]');
+    skipBtn?.addEventListener('click', finish, { once: true });
+    document.addEventListener('keydown', onKey);
+
+    // Schedule the curtain pull. Skip listener short-circuits this.
+    const totalMs = 1450;
+    timeoutId = window.setTimeout(finish, totalMs);
+  }
+
+  let timeoutId = 0;
+  function onKey(e: KeyboardEvent): void {
+    if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+      finish();
+    }
+  }
+
+  function finish(): void {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = 0;
+    }
+    document.removeEventListener('keydown', onKey);
+    const root = document.getElementById('ts-splash');
+    if (!root || root.dataset.state === 'done') return;
+    root.dataset.state = 'leaving';
+    markSeen();
+    window.setTimeout(() => {
+      root.dataset.state = 'done';
+      root.hidden = true;
+      root.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('ts-splash-active');
+    }, 520);
+  }
+
+  if (shouldPlay()) {
+    // Defer to the next frame so the initial paint isn't blocked.
+    requestAnimationFrame(play);
+  }
+</script>
+
+<style is:global>
+  /* Lock scroll while the splash is on screen so it owns the canvas. */
+  html.ts-splash-active,
+  html.ts-splash-active body {
+    overflow: hidden !important;
+  }
+</style>
+
+<style>
+  .ts-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: var(--color-surface-base);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .ts-splash[hidden] { display: none !important; }
+
+  .ts-splash-skip {
+    position: absolute;
+    top: max(1rem, env(safe-area-inset-top));
+    right: max(1rem, env(safe-area-inset-right));
+    background: transparent;
+    border: 1px solid var(--color-border-default);
+    color: var(--color-ink-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    padding: 0.45rem 0.8rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    opacity: 0;
+    animation: ts-splash-skip-in 280ms 200ms ease-out forwards;
+  }
+  .ts-splash-skip:hover {
+    color: var(--color-ink-primary);
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+  }
+  @keyframes ts-splash-skip-in {
+    to { opacity: 1; }
+  }
+
+  .ts-splash-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .ts-splash-mono {
+    width: clamp(56px, 14vw, 72px);
+    height: clamp(56px, 14vw, 72px);
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+    color: white;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 3.6vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    box-shadow: var(--shadow-md), var(--shadow-glass-inset);
+    opacity: 0;
+    transform: scale(0.85);
+    animation: ts-splash-mono-in 360ms 80ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes ts-splash-mono-in {
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .ts-splash-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: var(--color-ink-primary);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .ts-splash-letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.4em);
+    animation: ts-splash-letter-in 380ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(380ms + var(--i, 0) * 30ms);
+  }
+  .ts-splash-space { display: inline-block; width: 0.32em; }
+  @keyframes ts-splash-letter-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ts-splash-tag {
+    font-size: 0.85rem;
+    color: var(--color-ink-secondary);
+    max-width: 36ch;
+    opacity: 0;
+    animation: ts-splash-fade 320ms 900ms ease-out forwards;
+  }
+  @keyframes ts-splash-fade {
+    to { opacity: 1; }
+  }
+
+  .ts-splash-curtain {
+    position: absolute;
+    inset: 0;
+    background: var(--color-surface-base);
+    transform: translateY(100%);
+    pointer-events: none;
+  }
+  .ts-splash[data-state='leaving'] .ts-splash-curtain {
+    animation: ts-splash-curtain 520ms cubic-bezier(0.83, 0, 0.17, 1) forwards;
+  }
+  .ts-splash[data-state='leaving'] .ts-splash-stage,
+  .ts-splash[data-state='leaving'] .ts-splash-skip {
+    animation: ts-splash-fade-out 220ms ease-out forwards;
+  }
+  @keyframes ts-splash-curtain {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(-100%); }
+  }
+  @keyframes ts-splash-fade-out {
+    to { opacity: 0; }
+  }
+</style>

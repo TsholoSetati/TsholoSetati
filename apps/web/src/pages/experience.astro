@@ -3,16 +3,20 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import { experience } from '~/data/experience';
 ---
 
-<BaseLayout seo={{ title: 'Experience', description: 'Professional experience across Microsoft, EY, and economic research institutions.' }}>
+<BaseLayout seo={{ title: 'Experience', description: 'Professional experience across global Big Tech, Big 4 professional services, and economic research institutions.' }}>
   <section class="container section">
     <header data-reveal>
       <p class="eyebrow">Experience</p>
       <h1>A career arc from quantitative research to enterprise AI leadership.</h1>
     </header>
 
-    <div class="timeline">
+    <div class="timeline" data-timeline>
+      <div class="timeline-rail" aria-hidden="true">
+        <div class="timeline-rail-fill" data-timeline-fill></div>
+      </div>
       {experience.map((co) => (
-        <article class="company card" data-reveal>
+        <article class="company card" data-reveal data-timeline-item>
+          <span class="timeline-node" aria-hidden="true"></span>
           <div class="company-head">
             <h2>{co.name}</h2>
             {co.location && <span class="loc">{co.location}</span>}
@@ -34,11 +38,83 @@ import { experience } from '~/data/experience';
 <style>
   .eyebrow { font-family: var(--font-mono); font-size: var(--font-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-ink-tertiary); margin: 0 0 0.5rem; }
   h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 3rem; max-width: 24ch; }
-  .timeline { display: grid; gap: 1.25rem; }
+  .timeline { position: relative; display: grid; gap: 1.25rem; padding-left: 0; }
+  /* Cinematic-only: a left-side rail that fills with scroll progress. */
+  [data-motion='cinematic'] .timeline { padding-left: 2.5rem; }
+  .timeline-rail { display: none; }
+  [data-motion='cinematic'] .timeline-rail {
+    display: block;
+    position: absolute;
+    left: 0.85rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-border-subtle);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .timeline-rail-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--color-accent), var(--color-accent-2));
+    transform-origin: top;
+    transform: scaleY(var(--ts-rail-progress, 0));
+    transition: transform 120ms linear;
+  }
+  .timeline-node { display: none; }
+  [data-motion='cinematic'] .timeline-node {
+    display: block;
+    position: absolute;
+    left: -2rem;
+    top: 1.6rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-accent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-accent) 12%, transparent);
+  }
+  [data-motion='cinematic'] .company { position: relative; }
   .company-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-border); }
   .company-head h2 { font-family: var(--font-display); font-size: var(--font-2xl); margin: 0; }
   .loc { color: var(--color-ink-tertiary); font-family: var(--font-mono); font-size: var(--font-sm); }
   .roles { display: grid; gap: 1.25rem; }
   .role h3 { font-family: var(--font-display); font-size: var(--font-lg); margin: 0 0 0.5rem; color: var(--color-accent); }
   .role p { margin: 0; color: var(--color-ink-secondary); line-height: 1.7; }
+  @media (max-width: 600px) {
+    [data-motion='cinematic'] .timeline { padding-left: 1.5rem; }
+    [data-motion='cinematic'] .timeline-rail { left: 0.4rem; }
+    [data-motion='cinematic'] .timeline-node { left: -1.25rem; top: 1.4rem; width: 10px; height: 10px; }
+  }
 </style>
+
+<script>
+  // Drive the cinematic rail fill from scroll progress through the timeline.
+  function bindTimeline() {
+    const root = document.querySelector<HTMLElement>('[data-timeline]');
+    const fill = document.querySelector<HTMLElement>('[data-timeline-fill]');
+    if (!root || !fill) return;
+    if (document.documentElement.dataset.motion !== 'cinematic') return;
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = root.getBoundingClientRect();
+      const viewport = window.innerHeight;
+      const start = viewport * 0.7;
+      const total = rect.height + viewport * 0.4;
+      const traveled = Math.max(0, start - rect.top);
+      const progress = Math.max(0, Math.min(1, traveled / total));
+      root.style.setProperty('--ts-rail-progress', progress.toFixed(3));
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  }
+  bindTimeline();
+  document.addEventListener('astro:page-load', bindTimeline);
+</script>

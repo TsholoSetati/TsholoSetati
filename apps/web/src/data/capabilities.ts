@@ -6,36 +6,69 @@ export interface Capability {
 
 export const capabilities: Capability[] = [
   {
-    title: 'AI Strategy & Transformation',
+    title: 'AI & Technology Governance',
     summary:
-      'Defining the AI ambition, the operating model, and the multi-year roadmap that takes an enterprise from pilot to production at scale.',
+      'How institutions — public, private, government and non-profit — set the rules under which AI and emerging technology can be trusted, deployed, and held accountable.',
     bullets: [
-      'AI ambition statement and value-themed roadmap',
-      'AI Centre of Excellence design and stand-up',
-      'Responsible-AI bar, model governance, and evaluation harnesses',
-      'Talent and capability blueprint',
+      'Responsible-AI frameworks and assurance models',
+      'Model risk, evaluation, and audit harnesses',
+      'Cross-border data and AI policy interpretation',
+      'Board- and regulator-grade reporting',
     ],
   },
   {
-    title: 'Innovation Economics & Value Realization',
+    title: 'Frontier Technology Transformation',
     summary:
-      'Building the business cases, financial models, and measurement systems that prove AI investment is creating durable value.',
+      'The discipline of turning frontier technology — GenAI, agentic systems, advanced analytics — into transformations that actually ship and survive their first executive review.',
     bullets: [
-      'IRR / NPV models with explicit risk adjustment',
+      'Pilot-to-production patterns that hold under load',
+      'Operating-model design for AI-native delivery',
+      'Capability and talent architectures',
+      'Honest diagnostics on why transformations stall',
+    ],
+  },
+  {
+    title: 'Innovation Economics',
+    summary:
+      'Applying economic theory and quantitative method to the question of whether innovation investments compound — or quietly destroy value.',
+    bullets: [
       'Real-options analysis for frontier-technology bets',
-      'Run-cost forecasting and FinOps for AI workloads',
-      'Post-implementation re-baselining against actuals',
+      'IRR, NPV, and risk-adjusted return modelling',
+      'Productivity, diffusion and adoption dynamics',
+      'Public-good and externality framing for policy contexts',
     ],
   },
   {
-    title: 'Frontier Technology Architecture',
+    title: 'Technology Economics & Cloud FinSecOps',
     summary:
-      'Designing the platform, integration, and delivery patterns that turn GenAI and Agentic AI from demos into dependable enterprise systems.',
+      'The unit economics of running modern technology at scale — where cloud, security, AI workload cost, and engineering productivity meet on the same balance sheet.',
     bullets: [
-      'Reference architectures on Azure AI and Microsoft Fabric',
-      'LLM gateway, evaluation, and observability tooling',
-      'Agentic workflow design and orchestration',
-      'Cross-platform integration with the existing data estate',
+      'FinOps for AI inference, training, and data platforms',
+      'Security-as-cost and shift-left economics',
+      'Total cost of ownership across hybrid estates',
+      'Run-cost forecasting and re-baselining',
+    ],
+  },
+  {
+    title: 'Automation & Operating Models',
+    summary:
+      'Where automation, AI agents, and human work are recomposed — the design choices that decide whether productivity gains are realised, captured, or evaporate.',
+    bullets: [
+      'Process re-architecture vs. naive automation',
+      'Human-in-the-loop design for high-stakes work',
+      'Agentic workflow orchestration patterns',
+      'Measurement systems for productivity claims',
+    ],
+  },
+  {
+    title: 'Strategy for the Public, Private & Civic Sectors',
+    summary:
+      'A cross-sector view on how technology, economics, and governance intersect — written for enterprises, governments, multilaterals, and the non-profit institutions that work alongside them.',
+    bullets: [
+      'Long-horizon strategy under technological uncertainty',
+      'Sector-specific roadmaps (financial services, public sector, energy, telco)',
+      'Africa- and emerging-market context as first-class input',
+      'Policy-to-implementation translation',
     ],
   },
 ];

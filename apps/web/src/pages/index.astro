@@ -14,28 +14,28 @@ const featuredDemos = demos.slice(0, 3);
 <BaseLayout seo={{ title: site.name, description: site.description }}>
   <section class="hero">
     <div class="hero-bg" aria-hidden="true">
-      <div class="mesh m1"></div>
-      <div class="mesh m2"></div>
-      <div class="mesh m3"></div>
+      <div class="mesh-wrap" data-parallax data-parallax-speed="-0.18"><div class="mesh m1"></div></div>
+      <div class="mesh-wrap" data-parallax data-parallax-speed="-0.12"><div class="mesh m2"></div></div>
+      <div class="mesh-wrap" data-parallax data-parallax-speed="-0.28"><div class="mesh m3"></div></div>
       <div class="grain"></div>
     </div>
     <div class="container hero-inner">
-      <p class="eyebrow" data-reveal>AI Strategy · Innovation Economics · Frontier Technology</p>
+      <p class="eyebrow" data-reveal>AI & Technology Governance · Innovation Economics · Frontier Technology</p>
       <h1 class="display" data-reveal>
-        Translating frontier technology into <span class="grad">compounding business advantage</span>.
+        Reading frontier technology through the lens of <span class="grad">economics, governance and strategy</span>.
       </h1>
       <p class="lead" data-reveal>
-        I partner with C-suite leaders to architect, fund and deliver AI transformations that survive
-        CFO review, executive turnover and the next hype cycle.
+        I work, write and advise at the intersection of AI, technology economics and institutional strategy —
+        across enterprise, government, multilateral and non-profit contexts.
       </p>
       <div class="hero-ctas" data-reveal>
-        <a class="btn btn-primary" href="/contact">Start a conversation</a>
-        <a class="btn btn-ghost" href="/expertise">See how I work →</a>
+        <a class="btn btn-primary" href="/expertise">Areas of expertise</a>
+        <a class="btn btn-ghost" href="/insights">Read the insights →</a>
       </div>
       <div class="hero-meta" data-reveal>
-        <span><strong>15+</strong> enterprise transformations</span>
+        <span><strong>Cross-sector</strong> · enterprise & public sector</span>
         <span class="dot" aria-hidden="true">·</span>
-        <span><strong>Microsoft</strong> · MEA region</span>
+        <span><strong>Big Tech</strong> · MEA region</span>
         <span class="dot" aria-hidden="true">·</span>
         <span><strong>PhD candidate</strong> · Innovation Economics</span>
       </div>
@@ -43,7 +43,7 @@ const featuredDemos = demos.slice(0, 3);
   </section>
 
   <section class="proof container" data-reveal>
-    <p class="proof-label">Trusted by enterprises across</p>
+    <p class="proof-label">Cross-sector experience across</p>
     <div class="proof-row">
       <span>Financial Services</span>
       <span>Public Sector</span>
@@ -55,8 +55,8 @@ const featuredDemos = demos.slice(0, 3);
 
   <section class="section container">
     <header class="section-head">
-      <p class="eyebrow">What I do</p>
-      <h2>Three practices, one operating system for value.</h2>
+      <p class="eyebrow">Areas of expertise</p>
+      <h2>Six lenses on technology, economics and governance.</h2>
     </header>
     <div class="capabilities">
       {capabilities.map((c) => (
@@ -112,17 +112,34 @@ const featuredDemos = demos.slice(0, 3);
 
   <section class="cta-band">
     <div class="container cta-inner" data-reveal>
-      <h2>Have a transformation that has stalled?</h2>
-      <p>Most do. The shape of the fix is usually familiar, even when the context is not.</p>
+      <h2>Working at the same intersection?</h2>
+      <p>If your work touches AI, technology economics or institutional strategy — in enterprise, public sector or civic contexts — I am always open to comparing notes.</p>
       <a class="btn btn-accent" href="/contact">Get in touch</a>
     </div>
   </section>
 </BaseLayout>
 
+<script>
+  // Hero parallax — opt into the cinematic layer for the mesh blobs.
+  // Skip on touch / coarse pointers: the meshes already fill the small hero,
+  // so the work just costs battery without visual payoff.
+  import { registerParallax } from '~/lib/motion-orchestra';
+  function bindHeroParallax() {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
+      const speed = parseFloat(el.dataset.parallaxSpeed ?? '-0.2');
+      registerParallax(el, { speed });
+    });
+  }
+  bindHeroParallax();
+  document.addEventListener('astro:page-load', bindHeroParallax);
+</script>
+
 <style>
   .hero { position: relative; isolation: isolate; padding: clamp(5rem, 12vh, 9rem) 0 clamp(4rem, 10vh, 7rem); overflow: clip; }
-  .hero-bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
-  .mesh { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.55; will-change: transform; }
+  .hero-bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .mesh-wrap { position: absolute; inset: 0; will-change: transform; pointer-events: none; }
+  .mesh { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.55; will-change: transform; pointer-events: none; }
   .m1 { width: 60vmax; height: 60vmax; top: -25vmax; left: -10vmax; background: radial-gradient(circle, var(--color-accent), transparent 60%); animation: float1 22s ease-in-out infinite alternate; }
   .m2 { width: 55vmax; height: 55vmax; top: -10vmax; right: -20vmax; background: radial-gradient(circle, var(--color-accent-2), transparent 60%); animation: float2 26s ease-in-out infinite alternate; }
   .m3 { width: 40vmax; height: 40vmax; bottom: -20vmax; left: 30%; background: radial-gradient(circle, color-mix(in oklab, var(--color-accent) 60%, var(--color-accent-2)), transparent 60%); animation: float3 30s ease-in-out infinite alternate; opacity: 0.4; }

@@ -60,6 +60,22 @@
   }
   .ticker-skeleton {
     opacity: 0.4;
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in oklab, var(--color-accent) 12%, transparent) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+    animation: ticker-shimmer 1600ms ease-in-out infinite;
+  }
+  @keyframes ticker-shimmer {
+    0% { background-position: -120% 0; }
+    100% { background-position: 220% 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-skeleton { animation: none; background-image: none; }
   }
 
   /* Marquee on small screens */
@@ -67,6 +83,11 @@
     .ticker-track {
       animation: ticker-scroll 40s linear infinite;
       width: max-content;
+    }
+    /* Pause when the user hovers the strip or focuses any child */
+    .ticker:hover .ticker-track,
+    .ticker:focus-within .ticker-track {
+      animation-play-state: paused;
     }
     @keyframes ticker-scroll {
       from {

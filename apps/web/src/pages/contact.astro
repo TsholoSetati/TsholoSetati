@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import Spinner from '~/components/Spinner.astro';
 import { site } from '~/config/site';
 import { integrations } from '~/config/features';
 
@@ -44,7 +45,12 @@ const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
             <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute; left:-9999px;" aria-hidden="true" />
             <input type="hidden" name="_subject" value="New enquiry from tsholosetati.com" />
             <input type="hidden" name="_t" id="contact-t" value="" />
-            <button class="btn btn-primary" type="submit">Send message</button>
+            <button class="btn btn-primary" type="submit" id="contact-submit">
+              <span class="ts-pending-slot" aria-hidden="true" hidden>
+                <Spinner size="1em" label="Sending" />
+              </span>
+              <span class="ts-label">Send message</span>
+            </button>
             <p class="muted small">Replies usually within two business days.</p>
           </form>
         ) : (
@@ -89,8 +95,63 @@ const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
     const el = document.getElementById('contact-t') as HTMLInputElement | null;
     if (el) el.value = String(Date.now());
   }
+
+  function bindContactForm() {
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    const btn = document.getElementById('contact-submit') as HTMLButtonElement | null;
+    if (!form || !btn || form.dataset.bound === 'true') return;
+    form.dataset.bound = 'true';
+
+    const spinnerSlot = btn.querySelector<HTMLElement>('.ts-pending-slot');
+    const label = btn.querySelector<HTMLElement>('.ts-label');
+    const toast = (window as any).tsToast as
+      | ((opts: { message: string; variant?: 'success' | 'error' | 'info' }) => void)
+      | undefined;
+
+    function setPending(pending: boolean) {
+      btn!.dataset.pending = pending ? 'true' : 'false';
+      btn!.disabled = pending;
+      if (spinnerSlot) spinnerSlot.hidden = !pending;
+      if (label) label.textContent = pending ? 'Sending…' : 'Send message';
+    }
+
+    form.addEventListener('submit', async (event) => {
+      // If JS is enabled and the action is set, intercept; otherwise let the browser submit.
+      if (!form.action) return;
+      event.preventDefault();
+      setPending(true);
+      try {
+        const data = new FormData(form);
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        toast?.({
+          message: 'Message sent. I\u2019ll be in touch within two business days.',
+          variant: 'success',
+        });
+        form.reset();
+        setT();
+      } catch {
+        toast?.({
+          message: 'Couldn\u2019t send right now. Please email tsholo@tsholosetati.com directly.',
+          variant: 'error',
+          duration: 7000,
+        } as any);
+      } finally {
+        setPending(false);
+      }
+    });
+  }
+
   setT();
-  document.addEventListener('astro:page-load', setT);
+  bindContactForm();
+  document.addEventListener('astro:page-load', () => {
+    setT();
+    bindContactForm();
+  });
 </script>
 
 <style>

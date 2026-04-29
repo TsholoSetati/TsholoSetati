@@ -1,0 +1,58 @@
+---
+/**
+ * Spinner — small animated indicator used by buttons in pending states.
+ * Pure CSS; respects prefers-reduced-motion (replaces spin with a pulsing dot).
+ */
+interface Props {
+  /** Pixel size. Defaults to 1em so it inherits button text size. */
+  size?: string;
+  /** Accessible label (read by screen readers). */
+  label?: string;
+  class?: string;
+}
+const { size = '1em', label = 'Loading', class: className = '' } = Astro.props;
+---
+
+<span
+  class={`ts-spinner ${className}`}
+  role="status"
+  aria-live="polite"
+  aria-label={label}
+  style={`--ts-spinner-size:${size}`}
+>
+  <span class="ts-spinner-arc" aria-hidden="true"></span>
+</span>
+
+<style>
+  .ts-spinner {
+    display: inline-block;
+    width: var(--ts-spinner-size, 1em);
+    height: var(--ts-spinner-size, 1em);
+    line-height: 0;
+    vertical-align: -0.15em;
+  }
+  .ts-spinner-arc {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    opacity: 0.85;
+    animation: ts-spin 700ms linear infinite;
+  }
+  @keyframes ts-spin {
+    to { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ts-spinner-arc {
+      animation: ts-spinner-pulse 1200ms ease-in-out infinite;
+      border-color: currentColor;
+    }
+    @keyframes ts-spinner-pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+  }
+</style>

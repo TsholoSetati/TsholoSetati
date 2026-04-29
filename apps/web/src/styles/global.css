@@ -296,8 +296,17 @@ select {
     box-shadow var(--duration-base) var(--ease-out-expo);
 }
 
+.card-hover {
+  will-change: transform;
+}
+
 .card-hover:hover {
   border-color: var(--color-border-default);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+}
+
+[data-motion='calm'] .card-hover:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
@@ -328,6 +337,104 @@ select {
 [data-reveal='in'] {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Reveal variants — opt-in via [data-motion-variant] */
+[data-reveal][data-motion-variant='fade'] {
+  transform: none;
+}
+[data-reveal][data-motion-variant='slide-left'] {
+  transform: translateX(-32px);
+}
+[data-reveal][data-motion-variant='slide-right'] {
+  transform: translateX(32px);
+}
+[data-reveal='in'][data-motion-variant^='slide-'] {
+  transform: translateX(0);
+}
+
+/* =========================================================
+ * View Transitions — global page cross-fade
+ * (cinematic-only; calm/reduced-motion keeps default snap)
+ * ========================================================= */
+@keyframes ts-vt-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes ts-vt-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-4px); }
+}
+[data-motion='cinematic']::view-transition-old(root) {
+  animation: ts-vt-fade-out 180ms var(--ease-out-quad) both;
+}
+[data-motion='cinematic']::view-transition-new(root) {
+  animation: ts-vt-fade-in 220ms var(--ease-out-expo) both;
+}
+
+/* =========================================================
+ * Pending state — shared button affordance
+ * Buttons get [data-pending="true"] while an async action runs;
+ * pointer events disabled, opacity dimmed, spinner visible.
+ * ========================================================= */
+.btn[data-pending='true'] {
+  pointer-events: none;
+  cursor: progress;
+  opacity: 0.75;
+  position: relative;
+}
+.btn[data-pending='true'] > .ts-spinner {
+  margin-right: 0.5rem;
+}
+
+/* =========================================================
+ * Pull-quote reveal — used by long-form articles
+ * Triggered by [data-pullquote="in"] which the BaseLayout script
+ * sets when a blockquote scrolls into view.
+ * ========================================================= */
+blockquote[data-pullquote] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out-expo),
+    transform var(--duration-slow) var(--ease-out-expo);
+}
+blockquote[data-pullquote='in'] {
+  opacity: 1;
+  transform: translateY(0);
+}
+blockquote[data-pullquote] {
+  position: relative;
+}
+blockquote[data-pullquote]::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: clamp(2px, 0.4vw, 3px);
+  border-radius: 3px;
+  background: var(--color-accent);
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 700ms var(--ease-out-expo) 120ms;
+}
+blockquote[data-pullquote='in']::before {
+  transform: scaleY(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  blockquote[data-pullquote] { opacity: 1; transform: none; transition: none; }
+  blockquote[data-pullquote]::before { transform: scaleY(1); transition: none; }
+}
+
+/* Cursor accent target — light hover bump for buttons + key links
+ * (the actual halo follower lives in CursorHalo.astro). */
+.btn-primary,
+.btn-accent {
+}
+.btn-primary[data-cursor='accent']:hover,
+.btn-accent[data-cursor='accent']:hover {
+  filter: brightness(1.04);
 }
 
 /* =========================================================
