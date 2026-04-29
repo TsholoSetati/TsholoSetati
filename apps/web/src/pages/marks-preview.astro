@@ -5,7 +5,10 @@ import Mark from '~/components/Mark.astro';
 // Scratch page — preview four candidate site marks side-by-side.
 // Unlisted (underscore prefix). Delete after concept is locked.
 
-type Id = 'prism' | 'monogram' | 'inflection' | 'aperture';
+type Id =
+  | 'prism' | 'monogram' | 'inflection' | 'aperture'
+  | 'cross' | 'compound' | 'network' | 'lattice' | 'jcurve'
+  | 'wavefront' | 'threshold' | 'arbitrage' | 'frontier' | 'sprout';
 
 const concepts: { id: Id; name: string; note: string }[] = [
   {
@@ -27,6 +30,57 @@ const concepts: { id: Id; name: string; note: string }[] = [
     id: 'aperture',
     name: 'Aperture',
     note: 'Four overlapping arcs forming a soft eye with a focal dot. Quiet cousin of the prism — about focus rather than refraction.',
+  },
+  // ── Round 2: economics + innovation ──
+  {
+    id: 'cross',
+    name: 'Supply · demand cross',
+    note: 'The first chart in every economics textbook. Two crossing lines, equilibrium dot at the centre. Direct, almost cheeky.',
+  },
+  {
+    id: 'compound',
+    name: 'Compounding curve',
+    note: 'Exponential rise with three milestone dots. Innovation, growth, learning effects — the things that look flat for a long time and then aren\'t.',
+  },
+  {
+    id: 'network',
+    name: 'Triangle network',
+    note: 'Three connected nodes. Diffusion, peer effects, networked production — the idea that ideas travel along ties.',
+  },
+  {
+    id: 'lattice',
+    name: 'Frontier lattice',
+    note: '3×3 lattice with a brighter top-right node. Technology frontier, Solow-style — adoption marching across a grid.',
+  },
+  {
+    id: 'jcurve',
+    name: 'J-curve',
+    note: 'Reform J: dip, then long climb. Captures the political economy of doing the right hard thing.',
+  },
+  {
+    id: 'wavefront',
+    name: 'Diffusion wavefront',
+    note: 'Point source emitting three concentric arcs. Ideas, prices, shocks propagating outward.',
+  },
+  {
+    id: 'threshold',
+    name: 'Threshold step',
+    note: 'A step function with the tipping point dotted. Regime change, policy threshold, phase shift.',
+  },
+  {
+    id: 'arbitrage',
+    name: 'Arbitrage spread',
+    note: 'Two parallel rails bridged by a diagonal arrow. Price discovery, closing the gap, the work of moving things from where they cost less to where they cost more.',
+  },
+  {
+    id: 'frontier',
+    name: 'PPF frontier',
+    note: 'Convex production possibility frontier with one efficient point. Trade-offs, scarcity, the shape of every constraint.',
+  },
+  {
+    id: 'sprout',
+    name: 'Breakout sprout',
+    note: 'Arrow growing up from a baseline. Bottom-up innovation, leapfrogging, new entry. Optimistic without being saccharine.',
   },
 ];
 

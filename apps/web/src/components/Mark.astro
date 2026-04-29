@@ -1,15 +1,27 @@
 ---
 /**
  * Site mark — inline SVG, monochrome, themed via currentColor.
- * Concepts (id):
- *   prism      — refracting prism, single beam → three
- *   monogram   — geometric T·S
- *   inflection — S-curve with dot at the inflection point
- *   aperture   — three overlapping arcs (soft eye)
+ * Round 1: prism, monogram, inflection, aperture
+ * Round 2 (econ + innovation):
+ *   cross       — supply/demand X (price discovery)
+ *   compound    — exponential growth curve with tick marks
+ *   network     — three-node triangle network (diffusion)
+ *   lattice     — 3×3 lattice with one filled node (frontier)
+ *   jcurve      — J-shape (reform, adoption dip-then-rise)
+ *   wavefront   — three concentric arcs radiating right (diffusion)
+ *   threshold   — step function (regime change / tipping point)
+ *   arbitrage   — two parallel rails bridged diagonally (spread)
+ *   frontier    — convex PPF arc with point on it
+ *   sprout      — upward arrow emerging from a baseline (breakout)
  */
 
+type MarkId =
+  | 'prism' | 'monogram' | 'inflection' | 'aperture'
+  | 'cross' | 'compound' | 'network' | 'lattice' | 'jcurve'
+  | 'wavefront' | 'threshold' | 'arbitrage' | 'frontier' | 'sprout';
+
 interface Props {
-  id: 'prism' | 'monogram' | 'inflection' | 'aperture';
+  id: MarkId;
   size?: number;
   title?: string;
   class?: string;
@@ -17,6 +29,16 @@ interface Props {
 
 const { id, size = 28, title = 'Tsholo Setati', class: cls = '' } = Astro.props;
 const sw = size <= 16 ? 1.6 : size <= 28 ? 1.5 : 1.4;
+const common = {
+  width: size,
+  height: size,
+  viewBox: '0 0 24 24',
+  fill: 'none' as const,
+  role: 'img' as const,
+  'aria-label': title,
+  class: cls,
+  style: 'display:inline-block;vertical-align:middle',
+};
 ---
 
 {id === 'prism' && (
@@ -100,5 +122,128 @@ const sw = size <= 16 ? 1.6 : size <= 28 ? 1.5 : 1.4;
     </g>
     {/* small focal dot */}
     <circle cx="12" cy="12" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
+
+{/* ───── Round 2 — economics + innovation ───── */}
+
+{id === 'cross' && (
+  <svg {...common}>
+    {/* Supply (rising) and demand (falling) crossing at centre */}
+    <line x1="3" y1="20" x2="21" y2="4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="3" y1="4" x2="21" y2="20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="12" cy="12" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'compound' && (
+  <svg {...common}>
+    {/* baseline */}
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* exponential curve */}
+    <path d="M3 20 C 10 20, 14 18, 17 12 S 20 5, 21 3" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* tick milestones */}
+    <circle cx="9" cy="19.6" r={sw * 0.7} fill="currentColor" />
+    <circle cx="15.5" cy="14.5" r={sw * 0.85} fill="currentColor" />
+    <circle cx="20.2" cy="4" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'network' && (
+  <svg {...common}>
+    {/* triangle network: 3 nodes + 3 edges */}
+    <line x1="5" y1="19" x2="19" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="5" y1="19" x2="12" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="19" y1="19" x2="12" y2="5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <circle cx="5" cy="19" r={sw * 1.4} fill="currentColor" />
+    <circle cx="19" cy="19" r={sw * 1.4} fill="currentColor" />
+    <circle cx="12" cy="5" r={sw * 1.7} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'lattice' && (
+  <svg {...common}>
+    {/* 3×3 lattice of dots, top-right filled (frontier) */}
+    <g fill="currentColor">
+      <circle cx="6" cy="18" r={sw * 0.9} opacity="0.4" />
+      <circle cx="12" cy="18" r={sw * 0.9} opacity="0.4" />
+      <circle cx="18" cy="18" r={sw * 0.9} opacity="0.55" />
+      <circle cx="6" cy="12" r={sw * 0.9} opacity="0.4" />
+      <circle cx="12" cy="12" r={sw * 0.9} opacity="0.55" />
+      <circle cx="18" cy="12" r={sw * 0.9} opacity="0.7" />
+      <circle cx="6" cy="6" r={sw * 0.9} opacity="0.55" />
+      <circle cx="12" cy="6" r={sw * 0.9} opacity="0.7" />
+    </g>
+    {/* highlighted frontier node */}
+    <circle cx="18" cy="6" r={sw * 1.6} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'jcurve' && (
+  <svg {...common}>
+    {/* axis */}
+    <line x1="3" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    <line x1="3" y1="20" x2="3" y2="4" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* J: short dip then long rise */}
+    <path d="M4 13 C 6 17, 8 19, 10 19 C 14 19, 18 14, 21 4" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    <circle cx="10" cy="19" r={sw * 1.1} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'wavefront' && (
+  <svg {...common}>
+    {/* origin point */}
+    <circle cx="5" cy="12" r={sw * 1.3} fill="currentColor" />
+    {/* three concentric arcs propagating right */}
+    <g stroke="currentColor" stroke-linecap="round" fill="none">
+      <path d="M9 8 A 5 5 0 0 1 9 16" stroke-width={sw} />
+      <path d="M13 6 A 8 8 0 0 1 13 18" stroke-width={sw} opacity="0.7" />
+      <path d="M17 4 A 11 11 0 0 1 17 20" stroke-width={sw} opacity="0.4" />
+    </g>
+  </svg>
+)}
+
+{id === 'threshold' && (
+  <svg {...common}>
+    {/* step function: low → jump → high */}
+    <path d="M3 17 L 10 17 L 10 7 L 21 7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    {/* tipping point dot */}
+    <circle cx="10" cy="12" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'arbitrage' && (
+  <svg {...common}>
+    {/* two parallel rails */}
+    <line x1="3" y1="7" x2="21" y2="7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <line x1="3" y1="17" x2="21" y2="17" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* diagonal bridge with arrowhead */}
+    <line x1="7" y1="17" x2="17" y2="7" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    <path d="M17 7 L 13.5 7 M17 7 L 17 10.5" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+  </svg>
+)}
+
+{id === 'frontier' && (
+  <svg {...common}>
+    {/* axes */}
+    <line x1="4" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    <line x1="4" y1="20" x2="4" y2="3" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-linecap="round" />
+    {/* convex production possibility frontier */}
+    <path d="M4 4 C 14 4, 20 10, 20 20" stroke="currentColor" stroke-width={sw} stroke-linecap="round" fill="none" />
+    {/* efficient point */}
+    <circle cx="14.2" cy="7.2" r={sw * 1.3} fill="currentColor" />
+  </svg>
+)}
+
+{id === 'sprout' && (
+  <svg {...common}>
+    {/* baseline */}
+    <line x1="3" y1="19" x2="21" y2="19" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* upward stem */}
+    <line x1="12" y1="19" x2="12" y2="6" stroke="currentColor" stroke-width={sw} stroke-linecap="round" />
+    {/* arrowhead */}
+    <path d="M7 11 L 12 6 L 17 11" stroke="currentColor" stroke-width={sw} stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    {/* anchor dot at base */}
+    <circle cx="12" cy="19" r={sw * 1.1} fill="currentColor" />
   </svg>
 )}
