@@ -147,11 +147,26 @@ const euPostDday = daysUntil(EU_AI_ACT_DDAY) <= 0;
   .dot { opacity: 0.5; }
 
   @media (max-width: 880px) {
-    .strip-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .strip { padding-block: 0.5rem; }
+    .strip-grid {
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .strip-grid::-webkit-scrollbar { display: none; }
+    .cell {
+      scroll-snap-align: start;
+      padding: 0.3rem 0.55rem 0.3rem 0.7rem;
+    }
+    .cell-value { font-size: 1rem; }
+    .cell-label { font-size: 0.58rem; letter-spacing: 0.14em; }
+    .cell-meta { font-size: 0.62rem; }
   }
   @media (max-width: 480px) {
-    .strip-grid { grid-template-columns: 1fr; }
-    .cell { padding-block: 0.3rem; }
+    .strip-grid { grid-template-columns: repeat(4, minmax(150px, 1fr)); }
   }
 </style>
 
