@@ -1,12 +1,12 @@
 {
-  "updated": "2026-05-01T08:58:07.288Z",
+  "updated": "2026-05-01T11:04:21.352Z",
   "source": "yahoo+stooq",
   "quotes": [
     {
       "symbol": "USDZAR",
       "label": "USD/ZAR",
-      "price": 16.7048,
-      "changePct": 0.71,
+      "price": 16.7417,
+      "changePct": 0.94,
       "source": "yahoo"
     },
     {
