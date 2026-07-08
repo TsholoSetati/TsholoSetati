@@ -1,47 +1,47 @@
 {
-  "updated": "2026-07-08T11:44:47.105Z",
+  "updated": "2026-07-08T15:17:39.685Z",
   "source": "yahoo+stooq",
   "quotes": [
     {
       "symbol": "USDZAR",
       "label": "USD/ZAR",
-      "price": 16.3904,
-      "changePct": -0.03,
+      "price": 16.471,
+      "changePct": 0.46,
       "source": "yahoo"
     },
     {
       "symbol": "J203",
       "label": "JSE Top 40",
-      "price": 108259.32,
-      "changePct": -1.98,
+      "price": 108489.03,
+      "changePct": -1.77,
       "source": "yahoo"
     },
     {
       "symbol": "NVDA",
       "label": "NVDA",
-      "price": 196.93,
-      "changePct": 1.01,
+      "price": 196.739,
+      "changePct": -1.67,
       "source": "yahoo"
     },
     {
       "symbol": "TSM",
       "label": "TSM",
-      "price": 432.57,
-      "changePct": -4.95,
+      "price": 431.475,
+      "changePct": -9.65,
       "source": "yahoo"
     },
     {
       "symbol": "ASML",
       "label": "ASML",
-      "price": 1747.28,
-      "changePct": -7.21,
+      "price": 1736.66,
+      "changePct": -12.71,
       "source": "yahoo"
     },
     {
       "symbol": "BOTZ",
       "label": "BOTZ",
-      "price": 36.59,
-      "changePct": -0.73,
+      "price": 35.6,
+      "changePct": -6.17,
       "source": "yahoo"
     }
   ]
