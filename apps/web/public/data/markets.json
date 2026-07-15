@@ -1,19 +1,19 @@
 {
-  "updated": "2026-07-15T09:07:20.595Z",
+  "updated": "2026-07-15T11:26:18.057Z",
   "source": "yahoo+stooq",
   "quotes": [
     {
       "symbol": "USDZAR",
       "label": "USD/ZAR",
-      "price": 16.3665,
-      "changePct": -0.21,
+      "price": 16.3752,
+      "changePct": -0.15,
       "source": "yahoo"
     },
     {
       "symbol": "J203",
       "label": "JSE Top 40",
-      "price": 110419,
-      "changePct": 0.85,
+      "price": 110098.97,
+      "changePct": 0.56,
       "source": "yahoo"
     },
     {
