@@ -1,19 +1,19 @@
 {
-  "updated": "2026-09-14T20:07:50.069Z",
+  "updated": "2026-09-15T12:25:55.876Z",
   "source": "yahoo+stooq",
   "quotes": [
     {
       "symbol": "USDZAR",
       "label": "USD/ZAR",
-      "price": 16.2644,
-      "changePct": 1.76,
+      "price": 16.2656,
+      "changePct": 1.62,
       "source": "yahoo"
     },
     {
       "symbol": "J203",
       "label": "JSE Top 40",
-      "price": 113536.3,
-      "changePct": -3.34,
+      "price": 113692.67,
+      "changePct": -2.43,
       "source": "yahoo"
     },
     {
@@ -26,8 +26,8 @@
     {
       "symbol": "TSM",
       "label": "TSM",
-      "price": 418.445,
-      "changePct": -2.44,
+      "price": 418.01,
+      "changePct": -2.54,
       "source": "yahoo"
     },
     {
